@@ -1,0 +1,37 @@
+{
+  "name": "restful-api-express-mongoose",
+  "version": "1.0.0",
+  "description": "Example of a RESTful API built with Node.js, Express.js and Mongoose.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js",
+    "debug": "ndb server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fedosejev/restful-api-express-mongoose.git"
+  },
+  "author": "Artemij Fedosejev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fedosejev/restful-api-express-mongoose/issues"
+  },
+  "homepage": "https://github.com/fedosejev/restful-api-express-mongoose",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.14.1",
+    "dotenv": "^10.0.0",
+    "ndb": "^1.1.5",
+    "express": "^4.13.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.0",
+    "nodemailer": "^6.7.2",
+    "nodemon": "^2.0.15",
+    "slugify": "^1.6.4",
+    "validator": "^13.7.0"
+  },
+  "engines":{
+    "node": ">=10.0.0"
+  }
+}

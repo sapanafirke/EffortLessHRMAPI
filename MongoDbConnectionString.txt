@@ -1,0 +1,5 @@
+mongodb+srv://Admin:Admin@cluster0.c8der.mongodb.net/test
+
+mongodb+srv://Admin:Admin@cluster0.mbv3z.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+
+mongosh "mongodb+srv://cluster0.mbv3z.mongodb.net/myFirstDatabase" --username Admin
