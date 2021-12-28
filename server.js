@@ -4,9 +4,7 @@ const dotenv = require('dotenv');
 
 // Handle unhandled exceptions
 // For synchronous code
-process.on('uncaughtException', err => {
-  console.log('UNCAUGHT EXCEPTION! Shutting down...');
-  console.log(err);
+process.on('uncaughtException', err => {  
   process.exit(1);
 });
 
@@ -49,8 +47,8 @@ const server = app.listen(port, () => {
 // In the future, unhadled rejections will exit our application
 // For asynchronous code
 process.on('unhandledRejection', err => {
-  console.log('UNHADLED REJECTION! Shutting down...');
-  console.log(err.name, err.message);
+  // console.log('UNHADLED REJECTION! Shutting down...');
+  // console.log(err.name, err.message);
 
   // To exit gracefuly, we should first close server and
   // just then exit the application

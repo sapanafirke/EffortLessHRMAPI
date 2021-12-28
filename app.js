@@ -12,11 +12,12 @@ var app = express();
 
 app.use(express.json({ lmit: '10kb' }));
 
-app.use(compression);
+//app.use(compression);
 
 // Each request will contain requested time
 app.use((req, res, next) => {    
-    next(); // run next middleware in stack
+  console.log('received the request');  
+  next(); // run next middleware in stack
   });  
   
   // Use api routes
