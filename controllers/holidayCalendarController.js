@@ -29,8 +29,7 @@ exports.getHolidayList = catchAsync(async (req, res, next) => {
   }); 
 });
 exports.getHolidayCalendar = (req, res) => {
-    const holidayCalendarRecords = factory.getAll(HolidayCalendar);
-    
+    const holidayCalendarRecords = factory.getAll(HolidayCalendar);    
     res.status(200).json({
       status: 'success',
       data: {
