@@ -81,7 +81,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   // Key: Authorization
   // Value: Bearer <TOKEN_VALUE>
   console.log('protected');
-  let token;
+  let token;  
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
