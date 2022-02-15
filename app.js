@@ -7,12 +7,13 @@ var userRouter = require('./routes/userRoutes');
 var timeLogRouter = require('./routes/timeLogRoutes');
 var holidayCalendarRouter = require('./routes/holidayCalendarRouter');
 const compression = require('compression');
+const cors = require('cors');
 var authRouter = require('./routes/authRouter');
 const AppError = require('./utils/appError');
 var app = express();
 
 app.use(express.json({ lmit: '10kb' }));
-
+app.use(cors);
 //app.use(compression);
 
 // Each request will contain requested time
