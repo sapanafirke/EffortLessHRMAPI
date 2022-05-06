@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 // Handle unhandled exceptions
 // For synchronous code
 process.on('uncaughtException', err => {  
+  console.log(err);
   process.exit(1);
 });
 
@@ -13,7 +14,7 @@ dotenv.config({ path: './config.env' });
 const app = require('./app');
 
 // Get db url from env file and replace <PW> with actual password
-const DB = process.env.DATABASE.replace(
+const DB = process.env.DATABASE.replace(  
   '<PASSWORD>',
   process.env.DATABASE_PASSWORD
 );

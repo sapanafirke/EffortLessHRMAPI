@@ -1,38 +1,27 @@
 const nodemailer = require('nodemailer');
-
+const sgMail = require('@sendgrid/mail')
 const sendEmail = async options => {
-  // 1) Create a transporter
-  // Gmail transporter - it is only good for private purposes
-  //   const transporter = nodemailer.createTransport({
-  //     service: 'Gmail',
-  //     auth: {
-  //       user: process.env.EMAIL_USERNAME,
-  //       pass: process.env.EMAIL_PASSWORD
-  //     }
-  //     // Activate in gmail "less secure app" option
-  //   });
-  // Gmail transporter - it is only good for private purposes
-  //
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    auth: {
-      user: process.env.EMAIL_USERNAME,
-      pass: process.env.EMAIL_PASSWORD
-    }
-    // Activate in gmail "less secure app" option
-  });
-
-  // 2) Define the email options
-  const mailOptions = {
-    from: 'ARSTEG <info@arsteg.com>',
+ 
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)  
+  // 1) Define the email options
+  
+  const msg = {
+    from: 'apptesting157@gmail.com',
     to: options.email,
     subject: options.subject,
     text: options.message
-    // html: true
-  };
-  // 3) Actually send the email
-  await transporter.sendMail(mailOptions);
+}
+  // 2) Actually send the email
+ 
+ sgMail
+  .send(msg)
+  .then((response) => {
+    console.log(response[0].statusCode)
+    console.log(response[0].headers)
+  })
+  .catch((error) => {
+    console.error(error)
+  })
 };
 
 module.exports = sendEmail;
