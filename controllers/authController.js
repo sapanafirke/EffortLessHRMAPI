@@ -151,14 +151,14 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   // 2) Generate the random reset token
   const resetToken = user.createPasswordResetToken();
-
+  
   // Deactivate all validators - thanks to it, we don't have to specify email
   await user.save({ validateBeforeSave: false });
 
   // 3) Send it to user's email
   const resetURL = `${req.protocol}://${process.env.WEBSITE_DOMAIN}/resetPassword/${resetToken}`;
 
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email.`;
+  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL} \nIf you didn't forget your password, please ignore this email.`;
 
   try {
     await sendEmail({
@@ -185,19 +185,19 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
   // 1) Get user based on the token
-  console.log("called");
-  const hashedToken = crypto
+    const hashedToken = crypto
     .createHash('sha256')
     .update(req.params.token)
     .digest('hex');
-
-  const user = await User.findOne({
+  
+    const user = await User.findOne({
     passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() }
   });
-
+ 
   // 2) If token has not expired, and there is user, set the new password
   if (!user) return next(new AppError('Token is invalid or has expired', 400));
+  
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
   user.passwordResetToken = undefined;
