@@ -21,6 +21,11 @@ var timeLogSchema = new Schema({
   endTime: {
     type: Date,
     required: true    
-  }  
+  },
+  filePath:{
+    type: String,
+    required: true
+  }
+
 }, { collection: 'TimeLog' });
 module.exports = mongoose.model('TimeLog', timeLogSchema);
