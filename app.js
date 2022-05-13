@@ -5,6 +5,7 @@ var itemRouter = require('./routes/item');
 var tourRouter = require('./routes/tourRoutes');
 var userRouter = require('./routes/userRoutes');
 var timeLogRouter = require('./routes/timeLogRoutes');
+var commonRouter = require('./routes/commonRouter');
 var holidayCalendarRouter = require('./routes/holidayCalendarRouter');
 const compression = require('compression');
 const cors =  require('cors');
@@ -33,5 +34,6 @@ app.use((req, res, next) => {
   app.use('/api/v1/tours', tourRouter);
   app.use('/api/v1/timeLogs', timeLogRouter);
   app.use('/api/v1/holidayCalendar', holidayCalendarRouter);
-
+  // api route for common API like Country , Role , Permission , RolePermission
+  app.use('/api/v1/common', commonRouter);
 module.exports = app;
