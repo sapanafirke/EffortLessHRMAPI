@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 var rolePermsModelSchema = new Schema({  
-    Perms: {
+    perms: {
       type: Boolean
     },
     role: {
@@ -26,10 +26,10 @@ var rolePermsModelSchema = new Schema({
 rolePermsModelSchema.pre(/^find/, function(next) {
   this.populate({
     path: 'role',
-    select: 'RoleName'
+    select: 'roleName'
   }).populate({
     path: 'permission',
-    select: 'PermissionName PermissionDetails'
+    select: 'permissionName permissionDetails'
   });
   next();
 });

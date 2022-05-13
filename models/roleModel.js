@@ -2,11 +2,11 @@ var mongoose = require('mongoose');
 var AutoIncrement = require('mongoose-sequence')(mongoose);
 var Schema = mongoose.Schema;
 var roleModelSchema = new Schema({  
-    RoleId: {
+    roleId: {
       type: Number,
       unique: true
     },
-    RoleName: {
+    roleName: {
       type: String,
       required: true,
       unique: true
@@ -16,11 +16,11 @@ var roleModelSchema = new Schema({
     toObject: { virtuals: true } // Use virtuals when outputing as Object
   },
   { collection: 'Role' });
-  roleModelSchema.plugin(AutoIncrement, {id:'RoleId_seq',inc_field: 'RoleId'});
+  roleModelSchema.plugin(AutoIncrement, {id:'RoleId_seq',inc_field: 'roleId'});
   roleModelSchema.virtual('rolePerms', {
     ref: 'RolePerms',
     foreignField: 'role', // tour field in review model pointing to this model
-    localField: 'RoleId' // id of current model
+    localField: 'roleId' // id of current model
   });
   
   module.exports = mongoose.model('Role', roleModelSchema);

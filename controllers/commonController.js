@@ -19,7 +19,7 @@ const RolePerms = require('../models/rolePermsModel');
  // Save Country
   exports.saveCoutry = catchAsync(async (req, res, next) => {
     const newCountry = await Country.create({      
-        CountryName:req.body.countryName
+        countryName:req.body.countryName
     });  
     res.status(200).json({
       status: 'success',
@@ -51,7 +51,7 @@ const RolePerms = require('../models/rolePermsModel');
   // Save New Role
   exports.saveRole = catchAsync(async (req, res, next) => {
     const newRole = await Role.create({      
-        RoleName:req.body.RoleName
+        roleName:req.body.roleName
     });  
     res.status(200).json({
       status: 'success',
@@ -75,8 +75,8 @@ const RolePerms = require('../models/rolePermsModel');
   // Save Permission
   exports.savePermission = catchAsync(async (req, res, next) => {
     const newPermission = await Permission.create({      
-      PermissionName:req.body.PermissionName,
-      PermissionDetails:req.body.PermissionDetails
+      permissionName:req.body.permissionName,
+      permissionDetails:req.body.permissionDetails
 
     });  
     res.status(200).json({
@@ -102,9 +102,9 @@ const RolePerms = require('../models/rolePermsModel');
   exports.saveRolePermission = catchAsync(async (req, res, next) => {
     
     const newRolePerms = await RolePerms.create({      
-      Perms:req.body.Perms,
-      permission:req.body.Permission,
-      role:req.body.Role
+      perms:req.body.perms,
+      permission:req.body.permission,
+      role:req.body.role
     });  
     res.status(200).json({
       status: 'success',

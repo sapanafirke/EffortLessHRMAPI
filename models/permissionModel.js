@@ -2,16 +2,16 @@ var mongoose = require('mongoose');
 var AutoIncrement = require('mongoose-sequence')(mongoose);
 var Schema = mongoose.Schema;
 var permissionModelSchema = new Schema({  
-  PermissionId: {
+   permissionId: {
       type: Number,
       unique: true
     },
-    PermissionName: {
+    permissionName: {
       type: String,
       required: true,
       unique: true
     },
-    PermissionDetails: {
+    permissionDetails: {
       type: String
     }
   },{
@@ -19,10 +19,10 @@ var permissionModelSchema = new Schema({
     toObject: { virtuals: true } // Use virtuals when outputing as Object
   },
    { collection: 'Permission' });
-  permissionModelSchema.plugin(AutoIncrement, {id:'PermissionId_seq',inc_field: 'PermissionId'});
+  permissionModelSchema.plugin(AutoIncrement, {id:'permissionId_seq',inc_field: 'permissionId'});
   permissionModelSchema.virtual('rolePerms', {
     ref: 'RolePerms',
     foreignField: 'permission', // tour field in review model pointing to this model
-    localField: 'PermissionId' // id of current model
+    localField: 'permissionId' // id of current model
   });
   module.exports = mongoose.model('Permission', permissionModelSchema);
