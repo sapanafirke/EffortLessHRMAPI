@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
-
 var Schema = mongoose.Schema;
+
 var rolePermsModelSchema = new Schema({  
     perms: {
       type: Boolean
@@ -20,8 +20,7 @@ var rolePermsModelSchema = new Schema({
     toJSON: { virtuals: true }, // Use virtuals when outputing as JSON
     toObject: { virtuals: true } // Use virtuals when outputing as Object
   },
-   { collection: 'RolePerms' });
-  
+  { collection: 'RolePerms' }); 
   
 rolePermsModelSchema.pre(/^find/, function(next) {
   this.populate({
@@ -33,4 +32,5 @@ rolePermsModelSchema.pre(/^find/, function(next) {
   });
   next();
 });
-  module.exports = mongoose.model('RolePerms', rolePermsModelSchema);
+
+module.exports = mongoose.model('RolePerms', rolePermsModelSchema);

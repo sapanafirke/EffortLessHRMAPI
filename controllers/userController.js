@@ -1,14 +1,77 @@
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError.js');
-const factory = require('./handlerFactory');
+const APIFeatures = require('../utils/apiFeatures');
 
-// Generic functions
-exports.deleteUser = factory.deleteOne(User);
-// Do not update passwords with this
-exports.updateUser = factory.updateOne(User);
-exports.getUser = factory.getOne(User);
-exports.getAllUsers = factory.getAll(User);
+exports.getAllUsers=catchAsync(async (req, res, next) => {
+    // To allow for nested GET revicews on tour (hack)
+    let filter = {};
+    // Thanks to merging params in routers      
+    // Generate query based on request params
+    const features = new APIFeatures(User.find(filter), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+    // Run created query
+    // .explain() to return more information
+    // const document = await features.query.explain();
+    const document = await features.query;  
+    res.status(201).json({
+      status: 'success',
+      results: document.length,
+      data: {
+        data: document
+      }
+    });
+  });
+
+exports.deleteUser = catchAsync(async (req, res, next) => {
+    const document = await User.findByIdAndDelete(req.params.id);
+    if (!document) {
+      return next(new AppError('No document found with that ID', 404));
+    }
+    res.status(204).json({
+      status: 'success',
+      data: null
+    });
+  });
+
+exports.updateUser =  catchAsync(async (req, res, next) => {
+    const document = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true, // If not found - add new
+      runValidators: true // Validate data
+    });
+    if (!document) {
+      return next(new AppError('No document found with that ID', 404));
+    }
+    res.status(201).json({
+      status: 'success',
+      data: {
+        data: document
+      }
+    });
+  });
+
+exports.getUser = catchAsync(async (req, res, next) => {    
+  const users = await User.findById(req.params.id);   
+  res.status(200).json({
+    status: 'success',
+    data: {
+      users: users
+    }
+  });  
+});
+
+exports.getUsersByCompany = catchAsync(async (req, res, next) => {    
+  const users = await User.find({}).where('company').equals(req.body.company);  
+  res.status(200).json({
+    status: 'success',
+    data: {
+      users: users
+    }
+  });  
+});
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -62,8 +125,7 @@ exports.createUser = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getMe = (req, res, next) => {
-  console.log('Hello');
+exports.getMe = (req, res, next) => {  
   req.params.id = req.user.id;
   next();
 };

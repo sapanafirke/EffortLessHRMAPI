@@ -4,16 +4,17 @@ const AppError = require('../utils/appError.js');
 const { v1: uuidv1} = require('uuid');
 const { BlobServiceClient } = require('@azure/storage-blob');
 const { Stream } = require('nodemailer/lib/xoauth2');
-const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
 
+  // AZURE STORAGE CONNECTION DETAILS
+const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
 if (!AZURE_STORAGE_CONNECTION_STRING) {
 throw Error("Azure Storage Connection string not found");
 }
 const blobServiceClient = BlobServiceClient.fromConnectionString(
   AZURE_STORAGE_CONNECTION_STRING
 );
-
 const containerClient = blobServiceClient.getContainerClient(process.env.CONTAINER_NAME);
+
 exports.addLog = catchAsync(async (req, res, next) => { 
 
   // Upload Capture image on block blob client

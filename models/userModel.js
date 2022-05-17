@@ -4,10 +4,37 @@ const validator = require('validator');
 const bcrpyt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  name: {
+  firstName: {
     type: String,
     required: [true, 'Name field is required']
   },
+  lastName: {
+    type: String,
+    required: [true, 'Name field is required']
+  },
+  jobTitle: {
+    type: String
+  },
+  address: {
+    type: String
+  },
+  city: {
+    type: String
+  },
+  state: {
+    type: String
+  },
+  country: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Country'//,
+   // required: [true, 'Country must belong to a Country']
+  },
+  pincode: {
+    type: String
+  },
+  phone: {
+    type: Number
+  },  
   email: {
     type: String,
     required: [true, 'Email field is required'],
@@ -15,13 +42,28 @@ const userSchema = new mongoose.Schema({
     lowercase: true, // Transform value to lowercase
     validate: [validator.isEmail, 'Specified email ({VALUE}) is incorrect']
   },
+  extraDetails: {
+    type: String
+  },
+  isSuperAdmin: {
+    type: Boolean
+  },
+  status: {
+    type: String
+  },
+  company: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Company',
+    required: [true, 'Company must belong to a Company']
+  },
   // Used for authorization
   photo: String,
   role: {
-    type: String,
-    enum: ['user', 'guide', 'lead-guide', 'admin'],
-    default: 'user'
+    type: mongoose.Schema.ObjectId,
+    ref: 'Role',
+    required: [true, 'Role must belong to a Role']
   },
+
   password: {
     type: String,
     required: [true, 'Please provide a password'],
@@ -47,9 +89,52 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
     select: false
-  }
+  },
+  createdBy: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User'//,
+  //  required: [true, 'User must belong to a User']
+  },
+  updatedBy: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User'//,
+    //required: [true, 'User must belong to a User']
+  },
+  createdOn: {
+    type: Date,
+    required: true    
+  },
+  updatedOn: {
+    type: Date,
+    required: true    
+  }  
+},
+{
+ toJSON: { virtuals: true }, // Use virtuals when outputing as JSON
+ toObject: { virtuals: true } // Use virtuals when outputing as Object
+},
+{ collection: 'User' });
+userSchema.pre(/^find/,async function(next) {
+  this.populate({
+    path: 'company',
+    select: 'companyName'
+  }).populate({
+    path: 'role',
+    select: 'roleName'
+  }).populate({
+    path: 'createdBy',
+    select: 'firstName'
+  }).populate({
+    path: 'updatedBy',
+    select: 'firstName'
+  });
+  next();
 });
-
+userSchema.virtual('taskUser', {
+  ref: 'TaskUsers',
+  foreignField: 'user', // tour field in review model pointing to this model
+  localField: '_id' // id of current model
+});
 // Hashing functions
 userSchema.pre('save', function(next) {
   if (!this.isModified('password') || this.isNew) return next();
@@ -119,7 +204,6 @@ userSchema.methods.createPasswordResetToken = function() {
 
   return resetToken;
 };
-
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
