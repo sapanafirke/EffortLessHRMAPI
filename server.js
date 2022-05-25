@@ -21,7 +21,7 @@ const DB = process.env.DATABASE.replace(
 console.log(DB);
 //Connect to database
 mongoose
-  .connect(DB, {    
+  .connect(DB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })

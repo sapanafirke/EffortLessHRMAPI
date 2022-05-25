@@ -48,6 +48,15 @@ const RolePerms = require('../models/rolePermsModel');
       }
     });  
   });
+  exports.getRoleByName = catchAsync(async (req, res, next) => {    
+    const role = await Role.find({}).where('roleName').equals(req.body.roleName);  
+    res.status(200).json({
+      status: 'success',
+      data: {
+        role: role
+      }
+    });  
+  });
   // Save New Role
   exports.saveRole = catchAsync(async (req, res, next) => {
     const newRole = await Role.create({      

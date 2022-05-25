@@ -40,6 +40,7 @@ res.status(200).json({
 
  // Get Country List
  exports.getProjectList = catchAsync(async (req, res, next) => {    
+    console.log("hi");
     const projectList = await Project.find({}).all();  
     res.status(200).json({
       status: 'success',
@@ -58,7 +59,7 @@ res.status(200).json({
       estimatedTime:req.body.estimatedTime,
       createdOn: new Date(Date.now()),
       updatedOn: new Date(Date.now()),
-      company:company,
+      company:req.body.company,
       createdBy: req.body.createdBy,
       updatedBy: req.body.updatedBy,
       status:"Active"

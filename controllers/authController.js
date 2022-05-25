@@ -15,7 +15,8 @@ const signToken = async id => {
 };
 
 const createAndSendToken = async (user, statusCode, res) => {
-  const token = await signToken(user._id);
+  console.log("hi4");
+   const token = await signToken(user._id);
   const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 
@@ -27,6 +28,7 @@ const createAndSendToken = async (user, statusCode, res) => {
   res.cookie('jwt', token, cookieOptions);
   // Remove password from the output
   user.password = undefined;
+ 
   console.log(statusCode);
    res.status(statusCode).json({
     status: 'success',
@@ -37,7 +39,8 @@ const createAndSendToken = async (user, statusCode, res) => {
   });
 };
 
-exports.signup = catchAsync(async(req, res, next) => {    
+exports.signup = catchAsync(async(req, res, next) => { 
+
   const newCompany = await Company.create({
     companyName: req.body.companyName,
     contactPerson: req.body.firstName + " " + req.body.lastName,
@@ -256,14 +259,17 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
-  // 1) Get user from collection
-  const user = await User.findById(req.user.id).select('+password');
 
+  // 1) Get user from collection
+  const user = await User.findById(req.body.id).select('+password');
   // 2) Check if POSTed current password is correct
+  console.log("hii");
+  console.log(req.body.password);
+  console.log(req.body.passwordCurrent);
   if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
     return next(new AppError('Your current password is wrong.', 401));
   }
-
+  console.log(req.body.password)
   // 3) If so, update password
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;

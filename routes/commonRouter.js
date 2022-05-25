@@ -11,6 +11,7 @@ router.post('/savecountry',commonController.saveCoutry);
 router.get('/rolelist',commonController.getRoleList);
 router.post('/saverole',commonController.saveRole);
 router.get('/getrole',commonController.getRole);
+router.get('/getrolebyname',commonController.getRoleByName);
 
 // Permission Router
 router.get('/permissionlist',commonController.getPermissionList);
