@@ -8,6 +8,7 @@ router.post('/getTimeLogs',authController.protect,timeLogController.getTimeLogs)
 router
   .route('/')
   .get(authController.protect,timeLogController.getLog)
-  .post(authController.protect,timeLogController.addLog); 
-  
+  .post(authController.protect,timeLogController.addLog);   
+  router.post('/getLogsWithImages',authController.protect,timeLogController.getLogsWithImages);  
+
 module.exports = router;

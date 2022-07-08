@@ -16,7 +16,13 @@ var authRouter = require('./routes/authRouter');
 const AppError = require('./utils/appError');
 var app = express();
 
-app.use(express.json({ lmit: '10kb' }));
+//app.use(express.json({ lmit: '5000mb' }));
+
+app.use(express.json({ extended: false, limit: '500mb' }))
+app.use(express.urlencoded({ limit: '500mb', extended: false, parameterLimit: 500000 }))
+
+console.log('max limit set');
+
 //app.use(compression);
 app.use(cors());
 

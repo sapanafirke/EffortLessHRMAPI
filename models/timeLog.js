@@ -25,6 +25,18 @@ var timeLogSchema = new Schema({
   filePath:{
     type: String,
     required: true
+  },
+  fileString:{
+    type: String,
+    required: false
+  },
+  keysPressed:{
+    type: Number,
+    required: false
+  },
+  clicks:{
+    type: Number,
+    required: false
   }
 
 }, { collection: 'TimeLog' });
