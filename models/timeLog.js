@@ -37,6 +37,10 @@ var timeLogSchema = new Schema({
   clicks:{
     type: Number,
     required: false
+  },
+  url:{
+    type: String,
+    required: false
   }
 
 }, { collection: 'TimeLog' });

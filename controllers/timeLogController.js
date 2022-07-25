@@ -19,28 +19,26 @@ const containerClient = blobServiceClient.getContainerClient(process.env.CONTAIN
 exports.addLog = catchAsync(async (req, res, next) => { 
 
   // Upload Capture image on block blob client
-  const blobName = "Capture" + uuidv1() + ".png";
+  const blobName = "Capture" + uuidv1() + `${req.body.filePath}`;
   // Get a block blob client
   const blockBlobClient = containerClient.getBlockBlobClient(blobName);
   console.log("\nUploading to Azure storage as blob:\n\t", blobName);
   // Upload data to the blob
   var FileString = req.body.fileString;
-  const buffer = new Buffer.from(FileString, 'base64');
-  const uploadBlobResponse = await blockBlobClient.upload(buffer,buffer.byteLength );
-  console.log(
-    "Blob was uploaded successfully. requestId: ",
-    uploadBlobResponse.requestId
-  );
+  //const buffer = new Buffer.from(FileString, 'base64');
+  const uploadBlobResponse = await blockBlobClient.upload(FileString,FileString.length);
+  console.log(`Blob was uploaded successfully. requestId: ${uploadBlobResponse.requestId}, url: ${uploadBlobResponse}`);
 
   const newTimeLog = await TimeLog.create({
     user: req.body.user,
-    task:req.body.task,
+    task:req.body.task, 
     date :req.body.date,
     startTime: req.body.startTime,
     endTime:req.body.endTime,
     filePath:blobName,
     keysPressed:req.body.keysPressed,
-    clicks:req.body.clicks
+    clicks:req.body.clicks,
+    url:uploadBlobResponse.url
   });  
   console.log('time log created');
   res.status(200).json({
@@ -55,9 +53,7 @@ exports.getTimeLogs = catchAsync(async (req, res, next) => {
   const timeLogs = await TimeLog.find({}).where('user').equals(req.body.user).where('date').equals(req.body.date);  
   res.status(200).json({
     status: 'success',
-    data: {
-      timeLogs: timeLogs
-    }
+    data: timeLogs
   });  
 });
 
@@ -72,23 +68,39 @@ exports.getLog = catchAsync(async (req, res, next) => {
 
 exports.getLogsWithImages = catchAsync(async (req, res, next) => {    
   
-  const timeLogs = await TimeLog.find({}).where('user').equals(req.body.user).where('date').eq(req.body.date);   
-  
+  const timeLogs = await TimeLog.find({}).where('user').equals(req.body.user).where('date').eq(req.body.date);  
+  console.log(timeLogs.length);
+
+  let response =[];
   for (const timeLog of timeLogs) {
     const blobName = timeLog.filePath;
-    const blobClient = containerClient.getBlobClient(blobName);
+    const blobClient = containerClient.getBlobClient(blobName);    
+    try{
     const downloadBlockBlobResponse = await blobClient.download(0);        
-    const fileString = await streamToString(await downloadBlockBlobResponse.readableStreamBody);
+    const fileString =await streamToText(downloadBlockBlobResponse.readableStreamBody)
     timeLog.fileString= fileString;
-  }
+    response.push(timeLog);    
+    }
+    catch(err){      
+    }
+  } 
 
   res.status(200).json({
     status: 'success',
-    data: {
-      timeLog: timeLogs
-    }
+    data: response
   });
 });
+
+// Convert stream to text
+async function streamToText(readable) {
+  readable.setEncoding('utf8');
+  let data = '';
+  for await (const chunk of readable) {
+    data += chunk;
+  }
+  return data;
+}
+
 
 async function streamToString(readableStream) {
   return new Promise((resolve, reject) => {

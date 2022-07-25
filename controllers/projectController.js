@@ -37,11 +37,13 @@ res.status(200).json({
   }
 });  
 });
-
  // Get Country List
- exports.getProjectList = catchAsync(async (req, res, next) => {    
-    console.log("hi");
-    const projectList = await Project.find({}).all();  
+ exports.getProjectList = catchAsync(async (req, res, next) => {        
+  console.log('getProjectList call');  
+  const projectList = await Project.find({}).all();  
+
+  console.log(projectList);  
+    
     res.status(200).json({
       status: 'success',
       data: {

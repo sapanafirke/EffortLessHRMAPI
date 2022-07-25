@@ -7,6 +7,7 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
 const roleModel = require('../models/roleModel');
+const { request } = require('http');
 
 const signToken = async id => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -14,8 +15,7 @@ const signToken = async id => {
   });
 };
 
-const createAndSendToken = async (user, statusCode, res) => {
-  console.log("hi4");
+const createAndSendToken = async (user, statusCode, res) => {  
    const token = await signToken(user._id);
   const cookieOptions = {
     expires: new Date(
@@ -41,13 +41,8 @@ const createAndSendToken = async (user, statusCode, res) => {
 
 exports.signup = catchAsync(async(req, res, next) => { 
 
-  const newCompany = await Company.create({
-    companyName: req.body.companyName,
-    contactPerson: req.body.firstName + " " + req.body.lastName,
-    email: req.body.email,
-    createdOn: new Date(Date.now()),
-    updatedOn: new Date(Date.now())
-  }); 
+  console.log(req.body.companyId);
+  const company = await Company.findOne({_id:req.body.companyId});
   const newUser = await User.create({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -59,7 +54,7 @@ exports.signup = catchAsync(async(req, res, next) => {
     status:"Active",   
     createdOn: new Date(Date.now()),
     updatedOn: new Date(Date.now()),
-    company:newCompany._id
+    company:company._id
   }); 
   createAndSendToken(newUser, 201, res);
 });
@@ -78,7 +73,7 @@ exports.CreateUser = catchAsync(async(req, res, next) => {
     updatedOn: new Date(),
     createdBy: req.body.createdBy,
     updatedBy: req.body.updatedBy,
-    company:req.body.company
+    company:company.company._id
   }); 
   // 3) Send it to user's email
   const resetURL = `${req.protocol}://${process.env.WEBSITE_DOMAIN}/updateuser/${newUser._id}`;
@@ -129,6 +124,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   // Key: Authorization
   // Value: Bearer <TOKEN_VALUE>
   console.log('protected');
+  console.log(req.headers.authorization);
   let token;  
   if (
     req.headers.authorization &&

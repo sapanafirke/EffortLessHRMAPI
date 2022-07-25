@@ -3,6 +3,9 @@ var AutoIncrement = require('mongoose-sequence')(mongoose);
 var Schema = mongoose.Schema;
 
 var projectModelSchema = new Schema({ 
+  _id: {
+    type:String    
+  } ,
   projectName: {
     type: String,
     required: true,
