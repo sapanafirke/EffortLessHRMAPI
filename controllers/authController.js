@@ -349,7 +349,7 @@ exports.deleteRole = catchAsync(async (req, res, next) => {
   console.log(req.params.id);
   
   const role = await Role.find({}).where('RoleId').equals(req.params.id);        
-  console.log(role);
+  
   if (!role) {
     return next(new AppError('No role found', 403));
   }  
