@@ -2,21 +2,25 @@ var mongoose = require('mongoose');
 var AutoIncrement = require('mongoose-sequence')(mongoose);
 var Schema = mongoose.Schema;
 
-var roleModelSchema = new Schema({  
-    roleId: {
+var userRoleModelSchema = new Schema({  
+  userRoleId: {
+    type: Number,
+    required:true,
+    unique:true
+  },  
+  roleId: {
       type: Number,
-      unique: true
+      required:true
     },
-    roleName: {
-      type: String,
-      required: true,
-      unique: true
+    userId: {
+      type: Number,
+      required: true      
     }  
   },
   {
     toJSON: { virtuals: true }, // Use virtuals when outputing as JSON
     toObject: { virtuals: true } // Use virtuals when outputing as Object
   },
-  {collection: 'Role' });      
+  {collection: 'UserRole' });
   
-  module.exports = mongoose.model('Role', roleModelSchema);
+  module.exports = mongoose.model('UserRole', userRoleModelSchema);

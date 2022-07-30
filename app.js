@@ -39,6 +39,7 @@ app.use((req, res, next) => {
   });  
   
   // Use api routes
+  app.use('/api/v1/auth', authRouter);
   app.use('/api/v1/users', userRouter);
   app.use('/api/v1/tours', tourRouter);
   app.use('/api/v1/timeLogs', timeLogRouter);

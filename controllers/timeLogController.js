@@ -5,6 +5,7 @@ const { v1: uuidv1} = require('uuid');
 const { BlobServiceClient } = require('@azure/storage-blob');
 const { Stream } = require('nodemailer/lib/xoauth2');
 const  FileAPI = require('file-api');
+var moment = require('moment'); 
 
   // AZURE STORAGE CONNECTION DETAILS
 const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
@@ -28,7 +29,7 @@ exports.addLog = catchAsync(async (req, res, next) => {
   //const buffer = new Buffer.from(FileString, 'base64');
   const uploadBlobResponse = await blockBlobClient.upload(FileString,FileString.length);
   console.log(`Blob was uploaded successfully. requestId: ${uploadBlobResponse.requestId}, url: ${uploadBlobResponse}`);
-
+  
   const newTimeLog = await TimeLog.create({
     user: req.body.user,
     task:req.body.task, 
@@ -49,7 +50,7 @@ exports.addLog = catchAsync(async (req, res, next) => {
   });  
 });
 
-exports.getTimeLogs = catchAsync(async (req, res, next) => {    
+exports.getTimeLogs = catchAsync(async (req, res, next) => {      
   const timeLogs = await TimeLog.find({}).where('user').equals(req.body.user).where('date').equals(req.body.date);  
   res.status(200).json({
     status: 'success',
@@ -67,10 +68,9 @@ exports.getLog = catchAsync(async (req, res, next) => {
 });
 
 exports.getLogsWithImages = catchAsync(async (req, res, next) => {    
-  
-  const timeLogs = await TimeLog.find({}).where('user').equals(req.body.user).where('date').eq(req.body.date);  
-  console.log(timeLogs.length);
 
+  const timeLogs = await TimeLog.find({}).where('user').equals(req.body.user).where('date').equals(req.body.date);  
+  
   let response =[];
   for (const timeLog of timeLogs) {
     const blobName = timeLog.filePath;

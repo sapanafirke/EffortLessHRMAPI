@@ -6,7 +6,7 @@ const Company = require('../models/companyModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
-const roleModel = require('../models/roleModel');
+const Role = require('../models/roleModel');
 const { request } = require('http');
 
 const signToken = async id => {
@@ -292,3 +292,81 @@ exports.updateUserbyinvitation = catchAsync(async (req, res, next) => {
   // 4) Log user in, send JWT
   createAndSendToken(user, 200, res);
 });
+
+
+exports.addRole = catchAsync(async (req, res, next) => {
+  
+  const role = await Role.find({}).where('Rolename').equals(req.body.RoleId);    
+  if (!role) {
+    return next(new AppError('No role found with that ID', 404));
+  }
+  res.status(201).json({
+    status: 'success',
+    data: {
+      data: role
+    }
+  }); 
+});
+
+exports.deleteRole = catchAsync(async (req, res, next) => {  
+  console.log('delete role called');  
+  
+  res.status(200).json({
+    status: 'success',
+    data: {
+      timeLog: "success"
+    }
+  });  
+ });
+
+
+ exports.updateRole = catchAsync(async (req, res, next) => {  
+  console.log('updateRole role called'); 
+  
+  res.status(200).json({
+    status: 'success',
+    data: {
+      timeLog: "success"
+    }
+  });
+  
+ });
+
+
+ exports.deleteRole = catchAsync(async (req, res, next) => {  
+  console.log('delete role called');    
+  
+  res.status(200).json({
+    status: 'success',
+    data: {
+      timeLog: "success"
+    }
+  });
+ });
+
+
+ exports.getRole = catchAsync(async (req, res, next) => {    
+  console.log(req.params.id);
+  
+  const role = await Role.find({}).where('RoleId').equals(req.params.id);        
+  console.log(role);
+  if (!role) {
+    return next(new AppError('No role found', 403));
+  }  
+  res.status(200).json({
+    status: 'success',
+    data: role
+  });  
+ });
+
+ exports.getRoles = catchAsync(async (req, res, next) => {    
+  const roles = await Role.find({});  
+  if (!roles) {
+    return next(new AppError('No role found', 403));
+  }
+  res.status(201).json({
+    status: 'success',
+    data: roles
+  });   
+ });
+

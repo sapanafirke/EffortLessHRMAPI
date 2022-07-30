@@ -2,5 +2,7 @@
     "appService.zipIgnorePattern": [
         "node_modules{,/**}",
         ".vscode{,/**}"
-    ]
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/913f7750-2fc8-4038-8bf1-3cbdcdb14003/microsoft.web/sites/subscriptions/913f7750-2fc8-4038-8bf1-3cbdcdb14003/resourceGroups/Testing/providers/Microsoft.Web/sites/ARSTEGEffortlessHRMAPI",
+    "appService.deploySubpath": "."
 }
