@@ -22,4 +22,6 @@ router.get('/rolepermissionlist',commonController.getRolePermsList);
 router.post('/saverolepermission',commonController.saveRolePermission);
 router.get('/getrolepermsbyrole',commonController.getRolePermsByRole);
 
+
+
 module.exports = router;

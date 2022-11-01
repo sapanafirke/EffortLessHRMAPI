@@ -1,13 +1,16 @@
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const User = require('../models/userModel');
+const User = require('../models/permissions/userModel');
 const Company = require('../models/companyModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
-const Role = require('../models/roleModel');
+const Role = require('../models/permissions/roleModel');
 const { request } = require('http');
+const userSubordinate = require('../models/userSubordinateModel');
+const { distinct } = require('../models/permissions/userModel');
+const RolePermission = require('../models/permissions/rolePermissionModel');
 
 const signToken = async id => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -51,10 +54,10 @@ exports.signup = catchAsync(async(req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,    
     role: req.body.role,   
     isSuperAdmin: false,
+    company:company,
     status:"Active",   
     createdOn: new Date(Date.now()),
-    updatedOn: new Date(Date.now()),
-    company:company._id
+    updatedOn: new Date(Date.now())    
   }); 
   createAndSendToken(newUser, 201, res);
 });
@@ -369,4 +372,119 @@ exports.deleteRole = catchAsync(async (req, res, next) => {
     data: roles
   });   
  });
+ 
+ exports.addSubordinate = catchAsync(async (req, res, next) => {    
+  
+  const roles = await userSubordinate.find({}).where('userId').equals(req.body.userId).where('subordinateUserId').equals(req.body.subordinateUserId);  
+  
+  if (roles.length>0) {
+    return next(new AppError('User subordinate already exists.', 403));
+  }
+  else{    
+    const subordinate = await userSubordinate.create({
+      userId:req.body.userId,
+      subordinateUserId:req.body.subordinateUserId,
+      modifiedOn : req.body.modifiedOn,
+      modifiedBy : req.body.modifiedBy
+    }); 
 
+    res.status(201).json({
+      status: 'success',
+      data: subordinate
+    });    
+  }});
+
+ exports.getSubordinates = catchAsync(async (req, res, next) => {  
+  console.log(req.params.id);
+  const ids = await userSubordinate.find({}).distinct("subordinateUserId").where('userId' ).equals(req.params.id);   
+    res.status(201).json({
+      status: 'success',
+      data: ids
+    });    
+ });
+
+ exports.deleteSubordinates = catchAsync(async (req, res, next) => {  
+  
+  //const result = await userSubordinate.find({userId:req.params.userId,subordinateUserId:subordinateUserId}).remove().exec();  
+
+  userSubordinate.deleteOne({userId:req.params.userId,subordinateUserId:req.params.subordinateUserId}, function (err) {
+    if(err) console.log(err);
+    console.log("Successful deletion");
+  });
+
+    res.status(201).json({
+      status: 'success',
+      data: ''
+    });    
+ });
+ //#region Role Permissions
+ exports.getRolePermission = catchAsync(async (req, res, next) => {
+  const rolePermission = await RolePermission.find({}).where('rolePermissionId').equals(req.params.id);  
+  
+  if (!rolePermission) {
+    return next(new AppError('No Role Permission found', 403));
+  }  
+  res.status(201).json({
+    status: 'success',
+    data: rolePermission
+  });    
+});
+
+exports.getAllRolePermissions = catchAsync(async (req, res, next) => {
+  console.log('getAllRolePermissions called');
+  const rolePermissions = await RolePermission.find({});   
+  res.status(201).json({
+    status: 'success',
+    data: rolePermissions
+  });    
+});
+
+exports.createRolePermission = catchAsync(async (req, res, next) => {  
+  console.log('createRolePermission called');
+  const rolePermission = await RolePermission.find({}).where('rolePermissionId').equals(req.body.Id);  
+  
+  if (rolePermission.length>0) {
+    return next(new AppError('Role Permission already exists.', 403));
+  }
+  else{    
+    const rolePermission = await RolePermission.create({
+      rolePermissionId:req.body.rolePermissionId,
+      roleId:req.body.roleId,
+      permissionId : req.body.permissionId,
+      company : req.body.company
+    });
+  }
+  res.status(201).json({
+    status: 'success',
+    data: rolePermission
+  });    
+});
+
+exports.updateRolePermission = catchAsync(async (req, res, next) => {
+  console.log(req.body.id);
+  const rolePermission = await RolePermission.findByIdAndUpdate(req.body.id, req.body, {
+    new: true, // If not found - add new
+    runValidators: true // Validate data
+  });
+  if (!rolePermission) {
+    return next(new AppError('No Role Permission found with that ID', 404));
+  }
+  res.status(201).json({
+    status: 'success',
+    data: rolePermission
+  });    
+});
+
+exports.deleteRolePermission = catchAsync(async (req, res, next) => {  
+  console.log(req.params.id);
+  const rolePermission = await RolePermission.findByIdAndDelete(req.params.id);
+  if (!rolePermission) {
+    return next(new AppError('No Role Permission found with that ID', 404));
+  }
+  res.status(201).json({
+    status: 'success',
+    data: rolePermission
+  });    
+});
+
+ //#endregion

@@ -1,8 +1,8 @@
 const Country = require('../models/countryModel');
-const Role = require('../models/roleModel');
+const Role = require('../models/permissions/roleModel');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
-const Permission = require('../models/permissionModel');
+const Permission = require('../models/permissions/permissionModel');
 const RolePerms = require('../models/rolePermsModel');
 
  // Get Country List
@@ -19,7 +19,8 @@ const RolePerms = require('../models/rolePermsModel');
  // Save Country
   exports.saveCoutry = catchAsync(async (req, res, next) => {
     const newCountry = await Country.create({      
-        countryName:req.body.countryName
+        countryName:req.body.countryName,
+        Code:req.body.countryName
     });  
     res.status(200).json({
       status: 'success',
@@ -132,3 +133,27 @@ const RolePerms = require('../models/rolePermsModel');
       }
     });  
   });
+
+  //Country region
+  exports.getCountries = catchAsync(async (req, res, next) => {    
+    const countries = await Country.find({});  
+    res.status(200).json({
+      status: 'success',
+      data:countries 
+    });  
+  });
+
+  exports.saveCountry = catchAsync(async (req, res, next) => {        
+    const newCountry = await Country.create({      
+      Name:req.body.Name,
+      Code:req.body.Code      
+    });
+    res.status(200).json({
+      status: 'success',
+      data:newCountry 
+    });  
+  });
+
+  //End Country region
+  
+

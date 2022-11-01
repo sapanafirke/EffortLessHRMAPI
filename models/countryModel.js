@@ -11,6 +11,11 @@ var countryModelSchema = new Schema({
     type: String,
     required: true,
     unique: true
+  },
+  Code: {
+    type: String,
+    required: true,
+    unique: true
   }  
 },
 {

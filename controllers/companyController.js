@@ -1,5 +1,5 @@
 const Company = require('../models/companyModel');
-const Role = require('../models/roleModel');
+const Role = require('../models/permissions/roleModel');
 const catchAsync = require('../utils/catchAsync');
 
 exports.deleteCompany = catchAsync(async (req, res, next) => {

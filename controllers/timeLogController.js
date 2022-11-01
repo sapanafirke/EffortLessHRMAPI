@@ -50,10 +50,22 @@ exports.addLog = catchAsync(async (req, res, next) => {
   });  
 });
 
-exports.getTimeLogs = catchAsync(async (req, res, next) => {      
-  const timeLogs = await TimeLog.find({}).where('user').equals(req.body.user).where('date').equals(req.body.date);  
+exports.getTimeLogs = catchAsync(async (req, res, next) => {
+  let date = `${req.body.date}.000+00:00`;
+  console.log("getTimeLogs, date:" + date);
+  const timeLogs = await TimeLog.find({}).where('user').equals(req.body.user).where('date').equals(date);
   res.status(200).json({
     status: 'success',
+    data: timeLogs
+  });  
+});
+
+exports.getCurrentWeekTotalTime = catchAsync(async (req, res, next) => {      
+  const timeLogs = await TimeLog.find({}).where('user').equals(req.body.user).find({
+    "date" : {"$gte": req.body.startDate,"$lte": req.body.endDate}});
+  res.status(200).json({
+    status: 'success',
+    length:timeLogs.length,
     data: timeLogs
   });  
 });
@@ -67,10 +79,9 @@ exports.getLog = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getLogsWithImages = catchAsync(async (req, res, next) => {    
-
-  const timeLogs = await TimeLog.find({}).where('user').equals(req.body.user).where('date').equals(req.body.date);  
-  
+exports.getLogsWithImages = catchAsync(async (req, res, next) => {
+  //let date = `${req.body.date}.000+00:00`;
+  const timeLogs = await TimeLog.find({}).where('user').equals(req.body.user).where('date').equals(req.body.date);    
   let response =[];
   for (const timeLog of timeLogs) {
     const blobName = timeLog.filePath;

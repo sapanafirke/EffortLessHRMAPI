@@ -1,4 +1,4 @@
-const User = require('../models/userModel');
+const User = require('../models/permissions/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError.js');
 const APIFeatures = require('../utils/apiFeatures');
@@ -129,3 +129,11 @@ exports.getMe = (req, res, next) => {
   req.params.id = req.user.id;
   next();
 };
+
+exports.getUsers = catchAsync(async (req, res, next) => {  
+  var users = await User.find({'_id': {$in: req.body.userId }});  
+  res.status(200).json({
+    status: 'success',
+    data: users
+  });
+});

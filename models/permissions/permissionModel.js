@@ -13,6 +13,9 @@ var permissionModelSchema = new Schema({
     },
     permissionDetails: {
       type: String
+    },
+    parentPermission:{
+      type:Number
     }
   },{
     toJSON: { virtuals: true }, // Use virtuals when outputing as JSON

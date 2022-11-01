@@ -14,6 +14,7 @@ const compression = require('compression');
 const cors =  require('cors');
 var authRouter = require('./routes/authRouter');
 const AppError = require('./utils/appError');
+var recruitmentRouter = require('./routes/recruitmentRouter');
 var app = express();
 
 //app.use(express.json({ lmit: '5000mb' }));
@@ -47,6 +48,10 @@ app.use((req, res, next) => {
   app.use('/api/v1/company', companyRouter);
   app.use('/api/v1/project', projectRouter);
   app.use('/api/v1/task', taskRouter);
+  app.use('/api/v1/recruitment', recruitmentRouter);
+  app.use('/api/v1/recruitment', recruitmentRouter);
+  
+
   // api route for common API like Country , Role , Permission , RolePermission
   app.use('/api/v1/common', commonRouter);
 module.exports = app;

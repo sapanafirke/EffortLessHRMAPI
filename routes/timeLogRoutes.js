@@ -11,4 +11,7 @@ router
   .post(authController.protect,timeLogController.addLog);   
   router.post('/getLogsWithImages',authController.protect,timeLogController.getLogsWithImages);  
 
+  router.post('/getCurrentWeekTotalTime',timeLogController.getCurrentWeekTotalTime);
+  
+
 module.exports = router;
