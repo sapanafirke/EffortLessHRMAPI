@@ -101,7 +101,7 @@ exports.getSkill=catchAsync(async (req, res, next) => {
   //#region Skill Role
 
 exports.getRole=catchAsync(async (req, res, next) => {
-  const roles = await Role.find({}).all();
+  const roles = await Role.find({Id:req.params.id});
   res.status(200).json({
     status: 'success',
     data: roles
