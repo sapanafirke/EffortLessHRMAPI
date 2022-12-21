@@ -3,11 +3,11 @@ var AutoIncrement = require('mongoose-sequence')(mongoose);
 var Schema = mongoose.Schema;
 
 var roleModelSchema = new Schema({  
-    roleId: {
+    Id: {
       type: Number,
       unique: true
     },
-    roleName: {
+    Name: {
       type: String,
       required: true,
       unique: true
