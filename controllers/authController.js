@@ -28,7 +28,7 @@ const createAndSendToken = async (user, statusCode, res) => {
   };
   // In production save cookie only in https connection
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
-  res.cookie('jwt', token, cookieOptions);
+   res.cookie('jwt', token, cookieOptions);
   // Remove password from the output
   user.password = undefined;
  
@@ -115,8 +115,8 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError(`Incorrect email or password.`, 401));
   }
-
-  // 3) If everything ok, send token to client
+  
+   // 3) If everything ok, send token to client
   createAndSendToken(user, 200, res);
 });
 
@@ -299,16 +299,20 @@ exports.updateUserbyinvitation = catchAsync(async (req, res, next) => {
 
 exports.addRole = catchAsync(async (req, res, next) => {
   
-  const role = await Role.find({}).where('Rolename').equals(req.body.RoleId);    
-  if (!role) {
-    return next(new AppError('No role found with that ID', 404));
+  const newRole = await Role.create({      
+    roleName:req.body.roleName,
+    company:req.body.company,
+    active:true,   
+    createdOn: new Date(Date.now()),
+    updatedOn: new Date(Date.now()) 
+
+});  
+res.status(200).json({
+  status: 'success',
+  data: {
+    Role:newRole
   }
-  res.status(201).json({
-    status: 'success',
-    data: {
-      data: role
-    }
-  }); 
+}); 
 });
 
 exports.deleteRole = catchAsync(async (req, res, next) => {  
