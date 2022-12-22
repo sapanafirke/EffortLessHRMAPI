@@ -51,6 +51,7 @@ exports.addLog = catchAsync(async (req, res, next) => {
 });
 
 exports.getTimeLogs = catchAsync(async (req, res, next) => {
+  console.log(req.cookies.companyId);
   let date = `${req.body.date}.000+00:00`;
   console.log("getTimeLogs, date:" + date);
   const timeLogs = await TimeLog.find({}).where('user').equals(req.body.user).where('date').equals(date);
