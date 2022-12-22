@@ -111,7 +111,7 @@ exports.addTask = catchAsync(async (req, res, next) => {
     comment :req.body.comment,
     isSubTask: false,
     priority:req.body.priority,
-    company:req.body.company,
+    company:req.cookies.companyId,
     status:"Active",
     createdOn: new Date(),
     updatedOn: new Date(),
@@ -123,7 +123,7 @@ exports.addTask = catchAsync(async (req, res, next) => {
     const newTaskUserItem = await TaskUser.create({
       task:newTask._id,
       user:req.body.taskUsers[i].user,
-      company:req.body.company,
+      company:req.cookies.companyId,
       status:"Active",
       createdOn: new Date(),
       updatedOn: new Date(),
@@ -179,7 +179,7 @@ exports.addTaskUser = catchAsync(async (req, res, next) => {
     const newTaskUserItem = await TaskUser.create({
       task:req.body.taskId,
       user:req.body.taskUsers[i].user,
-      company:req.body.company,
+      company:req.cookies.companyId,
       status:"Active",
       createdOn: new Date(),
       updatedOn: new Date(),
