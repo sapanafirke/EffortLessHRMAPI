@@ -5,6 +5,36 @@ const router = express.Router();
 
 // Auth routes
 router.post('/signup', authController.signup);
+/**
+ * @swagger
+ * /api/v1/users/login:
+ *  post:
+ *      tags:
+ *          - Authorization
+ *      summary: "Returns Authorization Token"
+ *      description: "Authorizes default users with username and password set as root to use the endpoints"
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          email:
+ *                              type: string
+ *                          password:
+ *                              type: string
+ *              
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Authorization token"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
 router.post('/login', authController.login);
 router.get('/getUsersByCompany',authController.protect,userController.getUsersByCompany);
 router.post('/getusers',userController.getUsers);

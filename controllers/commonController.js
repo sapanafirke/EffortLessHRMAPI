@@ -61,7 +61,12 @@ const RolePerms = require('../models/rolePermsModel');
   // Save New Role
   exports.saveRole = catchAsync(async (req, res, next) => {
     const newRole = await Role.create({      
-        roleName:req.body.roleName
+        roleName:req.body.roleName,
+        company:req.cookies.companyId,
+        active:true,   
+        createdOn: new Date(Date.now()),
+        updatedOn: new Date(Date.now()) 
+
     });  
     res.status(200).json({
       status: 'success',

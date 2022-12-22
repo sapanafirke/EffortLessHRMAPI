@@ -16,7 +16,7 @@ var authRouter = require('./routes/authRouter');
 const AppError = require('./utils/appError');
 var recruitmentRouter = require('./routes/recruitmentRouter');
 var app = express();
-
+const cookieParser = require("cookie-parser");
 //app.use(express.json({ lmit: '5000mb' }));
 
 app.use(express.json({ extended: false, limit: '500mb' }))
@@ -34,11 +34,13 @@ app.use((req, res, next) => {
   
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");    
-
+ 
   console.log('received the request');  
   next(); // run next middleware in stack
   });  
-  
+
+// cookie parser middleware
+  app.use(cookieParser());
   // Use api routes
   app.use('/api/v1/auth', authRouter);
   app.use('/api/v1/users', userRouter);

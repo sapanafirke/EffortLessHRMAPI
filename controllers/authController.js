@@ -12,26 +12,28 @@ const userSubordinate = require('../models/userSubordinateModel');
 const { distinct } = require('../models/permissions/userModel');
 const RolePermission = require('../models/permissions/rolePermissionModel');
 
-const signToken = async id => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const signToken = async (id) => {
+   return jwt.sign({ id },process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
   });
 };
 
 const createAndSendToken = async (user, statusCode, res) => {  
-   const token = await signToken(user._id);
+  const token = await signToken(user._id);
+
   const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 
     ),
     httpOnly: true
   };
+  res.cookie('companyId', user.company.id);  
   // In production save cookie only in https connection
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
   res.cookie('jwt', token, cookieOptions);
   // Remove password from the output
   user.password = undefined;
- 
+
   console.log(statusCode);
    res.status(statusCode).json({
     status: 'success',
@@ -115,8 +117,8 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError(`Incorrect email or password.`, 401));
   }
-
-  // 3) If everything ok, send token to client
+  
+   // 3) If everything ok, send token to client
   createAndSendToken(user, 200, res);
 });
 
@@ -147,8 +149,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   // jwt.verify(token, process.env.JWT_SECRET) takes in a callback
   // In order to not brake our async await way to deal with async code
   // We can transform it into a promise using promisify from util pckg
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET); 
   // 3) Check if user still exists
   const currentUser = await User.findById(decoded.id);
   if (!currentUser)
@@ -167,7 +168,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
   // Grant access to protected route
-  req.user = currentUser;
+  req.user = currentUser;  
   next();
 });
 
@@ -299,16 +300,20 @@ exports.updateUserbyinvitation = catchAsync(async (req, res, next) => {
 
 exports.addRole = catchAsync(async (req, res, next) => {
   
-  const role = await Role.find({}).where('Rolename').equals(req.body.RoleId);    
-  if (!role) {
-    return next(new AppError('No role found with that ID', 404));
+  const newRole = await Role.create({      
+    roleName:req.body.roleName,
+    company:req.cookies.companyId,
+    active:true,   
+    createdOn: new Date(Date.now()),
+    updatedOn: new Date(Date.now()) 
+
+});  
+res.status(200).json({
+  status: 'success',
+  data: {
+    Role:newRole
   }
-  res.status(201).json({
-    status: 'success',
-    data: {
-      data: role
-    }
-  }); 
+}); 
 });
 
 exports.deleteRole = catchAsync(async (req, res, next) => {  
@@ -451,7 +456,7 @@ exports.createRolePermission = catchAsync(async (req, res, next) => {
       rolePermissionId:req.body.rolePermissionId,
       roleId:req.body.roleId,
       permissionId : req.body.permissionId,
-      company : req.body.company
+      company : req.cookies.companyId
     });
   }
   res.status(201).json({

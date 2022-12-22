@@ -1,7 +1,13 @@
 // This is our run file
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const swaggerUi = require('swagger-ui-express');
+const swaggerConfig = require('./config/swaggerConfig');
+const swaggerJsDoc = require('swagger-jsdoc');
+require('dotenv').config();
 
+const routes = require('./routes');
+//  import environment variables
 // Handle unhandled exceptions
 // For synchronous code
 process.on('uncaughtException', err => {  
@@ -12,7 +18,12 @@ process.on('uncaughtException', err => {
 // Load config file (before app)
 dotenv.config({ path: './config.env' });
 const app = require('./app');
+const swaggerSpec = (swaggerJsDoc(swaggerConfig));
 
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.use("/api/v1/", routes);
+       
 // Get db url from env file and replace <PW> with actual password
 const DB = process.env.DATABASE.replace(  
   '<PASSWORD>',
