@@ -19,10 +19,8 @@ const swaggerDefinition = {
                 bearerFormat: 'JWT',
             }
         }
-    },
-    security: [{
-        bearerAuth: []
-    }],
+    }
+    
     
 };
 

@@ -16,6 +16,9 @@ authRouter
  *      tags:
  *          - Role Management
  *      summary: "Add New Role"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
  *      requestBody:
  *          content:
  *              application/json:
@@ -25,7 +28,7 @@ authRouter
  *                          name:
  *                              type: string
  *                          
- *              
+
  *      produces:
  *          - application/json
  *      responses:
@@ -45,6 +48,9 @@ authRouter
  *      tags:
  *          - Role Management
  *      summary: "Delete Role"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
  *      parameters:
  *       - name: id
  *         in: path
@@ -73,6 +79,9 @@ authRouter
  *      tags:
  *          - Role Management
  *      summary: "Update Role"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
  *      parameters:
  *       - name: id
  *         in: path
@@ -110,6 +119,9 @@ authRouter
  *      tags:
  *          - Role Management
  *      summary: "Get Role Based On Id"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
  *      parameters:
  *       - name: id
  *         in: path
@@ -138,6 +150,9 @@ authRouter
  *      tags:
  *          - Role Management
  *      summary: "Get all Role"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
  *      produces:
  *          - application/json
  *      responses:
