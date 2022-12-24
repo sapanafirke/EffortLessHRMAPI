@@ -11,7 +11,7 @@ const { request } = require('http');
 const userSubordinate = require('../models/userSubordinateModel');
 const { distinct } = require('../models/permissions/userModel');
 const RolePermission = require('../models/permissions/rolePermissionModel');
-
+const factory = require('./handlerFactory');
 const signToken = async (id) => {
    return jwt.sign({ id },process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
@@ -300,13 +300,13 @@ exports.updateUserbyinvitation = catchAsync(async (req, res, next) => {
 
 exports.addRole = catchAsync(async (req, res, next) => {
   
-  const newRole = await Role.create({      
-    roleName:req.body.roleName,
+  
+  const newRole = await Role.create({    
+    Name:req.body.name,
     company:req.cookies.companyId,
     active:true,   
     createdOn: new Date(Date.now()),
     updatedOn: new Date(Date.now()) 
-
 });  
 res.status(200).json({
   status: 'success',
@@ -317,47 +317,25 @@ res.status(200).json({
 });
 
 exports.deleteRole = catchAsync(async (req, res, next) => {  
-  console.log('delete role called');  
-  
-  res.status(200).json({
+  const document = await Role.findByIdAndDelete(req.params.id);
+  if (!document) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+  res.status(204).json({
     status: 'success',
-    data: {
-      timeLog: "success"
-    }
-  });  
- });
-
-
- exports.updateRole = catchAsync(async (req, res, next) => {  
-  console.log('updateRole role called'); 
-  
-  res.status(200).json({
-    status: 'success',
-    data: {
-      timeLog: "success"
-    }
+    data: null
   });
-  
- });
+});
 
 
- exports.deleteRole = catchAsync(async (req, res, next) => {  
-  console.log('delete role called');    
-  
-  res.status(200).json({
-    status: 'success',
-    data: {
-      timeLog: "success"
-    }
-  });
- });
+
+ exports.updateRole = factory.updateOne(Role);
 
 
- exports.getRole = catchAsync(async (req, res, next) => {    
-  console.log(req.params.id);
-  
-  const role = await Role.find({}).where('RoleId').equals(req.params.id);        
-  
+
+
+ exports.getRole = catchAsync(async (req, res, next) => {       
+  const role = await Role.find({}).where('_id').equals(req.params.id);   
   if (!role) {
     return next(new AppError('No role found', 403));
   }  

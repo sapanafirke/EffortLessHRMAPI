@@ -2,11 +2,7 @@ var mongoose = require('mongoose');
 var AutoIncrement = require('mongoose-sequence')(mongoose);
 var Schema = mongoose.Schema;
 
-var roleModelSchema = new Schema({  
-    Id: {
-      type: Number,
-      unique: true
-    },
+var roleModelSchema = new Schema({    
     Name: {
       type: String,
       required: true,

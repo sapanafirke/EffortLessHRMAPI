@@ -8,9 +8,7 @@ router.get('/countrylist',commonController.getCountryList);
 router.post('/savecountry',commonController.saveCoutry);
 
 // Role Router
-router.get('/rolelist',commonController.getRoleList);
-router.post('/saverole',commonController.saveRole);
-router.get('/getrole',commonController.getRole);
+
 router.get('/getrolebyname',commonController.getRoleByName);
 
 // Permission Router

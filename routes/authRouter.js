@@ -9,12 +9,147 @@ var authRouter = express.Router();
 authRouter
   .route('/signup')
   .post(authController.signup);
-
-  authRouter.route('/role').post(authController.addRole);
-  authRouter.route('/role').delete(authController.deleteRole);
-  authRouter.route('/role/update').post(authController.updateRole);
-  authRouter.route('/role/:id').get(authController.getRole);
-  authRouter.route('/roles').get(authController.getRoles);
+/**
+ * @swagger
+ * /api/v1/auth/role:
+ *  post:
+ *      tags:
+ *          - Role Management
+ *      summary: "Add New Role"
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          name:
+ *                              type: string
+ *                          
+ *              
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Role added successfully"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+  authRouter.route('/role').post(authController.protect,authController.addRole);
+  /**
+ * @swagger
+ * /api/v1/auth/role/{id}:
+ *  delete:
+ *      tags:
+ *          - Role Management
+ *      summary: "Delete Role"
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Role ID
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *                
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+  authRouter.route('/role/:id').delete(authController.protect,authController.deleteRole);
+    /**
+ * @swagger
+ * /api/v1/auth/role/update/{id}:
+ *  post:
+ *      tags:
+ *          - Role Management
+ *      summary: "Update Role"
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Role ID
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *           
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          Name:
+ *                              type: string
+ *                          
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+  authRouter.route('/role/update/:id').post(authController.protect,authController.updateRole);
+   /**
+ * @swagger
+ * /api/v1/auth/role/{id}:
+ *  get:
+ *      tags:
+ *          - Role Management
+ *      summary: "Get Role Based On Id"
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Role ID
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *                
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+  authRouter.route('/role/:id').get(authController.protect,authController.getRole);
+   /**
+ * @swagger
+ * /api/v1/auth/roles:
+ *  get:
+ *      tags:
+ *          - Role Management
+ *      summary: "Get all Role"
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+  authRouter.route('/roles').get(authController.protect,authController.getRoles);
   authRouter.route('/roles/addSubordinate').post(authController.addSubordinate);
   authRouter.route('/roles/getSubordinates/:id').get(authController.getSubordinates);
   authRouter.route('/roles/deleteSubordinate/:userId/:subordinateUserId').delete(authController.deleteSubordinates);

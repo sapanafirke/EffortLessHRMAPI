@@ -30,25 +30,7 @@ const RolePerms = require('../models/rolePermsModel');
     }); 
   });
 
-  // Save Role List
-  exports.getRoleList = catchAsync(async (req, res, next) => {    
-    const roleList = await Role.find({}).all();  
-    res.status(200).json({
-      status: 'success',
-      data: {
-        roleList: roleList
-      }
-    });  
-  });
-  exports.getRole = catchAsync(async (req, res, next) => {    
-    const role = await Role.find({}).where('id').equals(req.body.id);  
-    res.status(200).json({
-      status: 'success',
-      data: {
-        role: role
-      }
-    });  
-  });
+  
   exports.getRoleByName = catchAsync(async (req, res, next) => {    
     const role = await Role.find({}).where('roleName').equals(req.body.roleName);  
     res.status(200).json({
@@ -58,23 +40,7 @@ const RolePerms = require('../models/rolePermsModel');
       }
     });  
   });
-  // Save New Role
-  exports.saveRole = catchAsync(async (req, res, next) => {
-    const newRole = await Role.create({      
-        roleName:req.body.roleName,
-        company:req.cookies.companyId,
-        active:true,   
-        createdOn: new Date(Date.now()),
-        updatedOn: new Date(Date.now()) 
 
-    });  
-    res.status(200).json({
-      status: 'success',
-      data: {
-        Role:newRole
-      }
-    }); 
-  });
 
   // Save Permission List
   exports.getPermissionList = catchAsync(async (req, res, next) => {    
