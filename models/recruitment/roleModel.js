@@ -4,13 +4,11 @@ var Schema = mongoose.Schema;
 
 var roleModelSchema = new Schema({  
     Id: {
-      type: Number,
-      unique: true
+      type: Number      
     },
     Name:{
       type: String,
-      required: true,
-      unique: true
+      required: true      
     },
     company: {
         type: mongoose.Schema.ObjectId,

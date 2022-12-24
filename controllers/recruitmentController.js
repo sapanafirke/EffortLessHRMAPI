@@ -101,7 +101,7 @@ exports.getSkill=catchAsync(async (req, res, next) => {
   //#region Skill Role
 
 exports.getRole=catchAsync(async (req, res, next) => {
-  const roles = await Role.find({Id:req.params.id});
+  const roles = await Role.findById(req.params.id);
   res.status(200).json({
     status: 'success',
     data: roles
@@ -109,7 +109,7 @@ exports.getRole=catchAsync(async (req, res, next) => {
 });
 
 exports.getAllRoles=catchAsync(async (req, res, next) => {
-  const roles = await Roles.findById(req.params.id);   
+  const roles = await Role.find();   
   res.status(200).json({
     status: 'success',
     data: roles
@@ -118,6 +118,7 @@ exports.getAllRoles=catchAsync(async (req, res, next) => {
 
 exports.createRole = async(req, res) => {
   try{        
+    console.log(req.body);
     const newRole = await Role.create(req.body);
   res.status(201).json({
     status:'success',
@@ -125,6 +126,7 @@ exports.createRole = async(req, res) => {
   })
   }
   catch(err){
+    console.log(err);
   res.status(400).json({
     status:'failed',
     message:err
@@ -135,7 +137,7 @@ exports.createRole = async(req, res) => {
 exports.deleteRole = catchAsync(async (req, res, next) => {
   const role = await Role.findByIdAndDelete(req.params.id);
   if (!role) {
-    return next(new AppError('No skill found with that ID', 404));
+    return next(new AppError('No Role found with that ID', 404));
   }
   res.status(204).json({
     status: 'success',
@@ -144,6 +146,7 @@ exports.deleteRole = catchAsync(async (req, res, next) => {
 });
 
 exports.updateRole =  catchAsync(async (req, res, next) => {
+  console.log("updateRole is called");
   const role = await Role.findByIdAndUpdate(req.params.id, req.body, {
     new: true, // If not found - add new
     runValidators: true // Validate data

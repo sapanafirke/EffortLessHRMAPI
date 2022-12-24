@@ -175,9 +175,9 @@ authRouter.delete('/permission/delete/:id',recruitmentController.deleteSkill);
 
 //#region UserRole
 authRouter.get('/userRole/:id',recruitmentController.getRole);
-authRouter.get('/userRole/All',recruitmentController.getAllRoles);
+authRouter.get('/userRoles',recruitmentController.getAllRoles);
 authRouter.post('/userRole/create',recruitmentController.createRole);
-authRouter.post('/userRole/update/:id',recruitmentController.updateSkill);
+authRouter.post('/userRole/update/:id',recruitmentController.updateRole);
 authRouter.delete('/userRole/delete/:id',recruitmentController.deleteRole);
 
 //#endregion
