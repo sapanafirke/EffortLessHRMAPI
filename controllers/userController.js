@@ -64,7 +64,7 @@ exports.getUser = catchAsync(async (req, res, next) => {
 });
 
 exports.getUsersByCompany = catchAsync(async (req, res, next) => {    
-  const users = await User.find({}).where('company').equals(req.body.company);  
+  const users = await User.find({}).where('company').equals(req.params.companyId);  
   res.status(200).json({
     status: 'success',
     data: {
@@ -97,7 +97,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   const filteredBody = filterObj(req.body, 'name', 'email');
 
   // 3) Update user document
-  const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
+  const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
     new: true, // Reutrn updated object instead of old one
     runValidators: true
   });

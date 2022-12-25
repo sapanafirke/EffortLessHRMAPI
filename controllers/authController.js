@@ -327,14 +327,9 @@ exports.deleteRole = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.updateRole = factory.updateOne(Role);
 
-
- exports.updateRole = factory.updateOne(Role);
-
-
-
-
- exports.getRole = catchAsync(async (req, res, next) => {       
+exports.getRole = catchAsync(async (req, res, next) => {       
   const role = await Role.find({}).where('_id').equals(req.params.id);   
   if (!role) {
     return next(new AppError('No role found', 403));
@@ -345,7 +340,7 @@ exports.deleteRole = catchAsync(async (req, res, next) => {
   });  
  });
 
- exports.getRoles = catchAsync(async (req, res, next) => {    
+exports.getRoles = catchAsync(async (req, res, next) => {    
   const roles = await Role.find({});  
   if (!roles) {
     return next(new AppError('No role found', 403));
@@ -356,7 +351,7 @@ exports.deleteRole = catchAsync(async (req, res, next) => {
   });   
  });
  
- exports.addSubordinate = catchAsync(async (req, res, next) => {    
+exports.addSubordinate = catchAsync(async (req, res, next) => {    
   
   const roles = await userSubordinate.find({}).where('userId').equals(req.body.userId).where('subordinateUserId').equals(req.body.subordinateUserId);  
   
