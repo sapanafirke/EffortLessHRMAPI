@@ -58,6 +58,7 @@ exports.signup = catchAsync(async(req, res, next) => {
     isSuperAdmin: false,
     company:company,
     status:"Active",   
+    active:true,
     createdOn: new Date(Date.now()),
     updatedOn: new Date(Date.now())    
   }); 

@@ -5,7 +5,7 @@ const APIFeatures = require('../utils/apiFeatures');
 
 exports.getAllUsers=catchAsync(async (req, res, next) => {
     // To allow for nested GET revicews on tour (hack)
-    let filter = {};
+    let filter = { status: 'Active' };
     // Thanks to merging params in routers      
     // Generate query based on request params
     const features = new APIFeatures(User.find(filter), req.query)
@@ -54,7 +54,7 @@ exports.updateUser =  catchAsync(async (req, res, next) => {
   });
 
 exports.getUser = catchAsync(async (req, res, next) => {   
-  const users = await User.findById(req.params.id);   
+  const users = await User.findById(req.body.id);   
   res.status(200).json({
     status: 'success',
     data: {
@@ -97,7 +97,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   const filteredBody = filterObj(req.body, 'name', 'email');
 
   // 3) Update user document
-  const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+  const updatedUser = await User.findByIdAndUpdate(req.body.id, req.body, {
     new: true, // Reutrn updated object instead of old one
     runValidators: true
   });
@@ -111,7 +111,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
-  await User.findByIdAndUpdate(req.user.id, { active: false });
+  await User.findByIdAndUpdate(req.body.id, { status: 'Deleted' });
   res.status(204).json({
     status: 'success',
     data: null
