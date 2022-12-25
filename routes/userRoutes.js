@@ -76,7 +76,35 @@ router.post('/signup', authController.signup);
  *
  */
 router.post('/login', authController.login);
-router.get('/getUsersByCompany',authController.protect,userController.getUsersByCompany);
+/**
+ * @swagger
+ * /api/v1/users/getUsersByCompany/{companyId}:
+ *  get:
+ *      tags:
+ *          - User Management
+ *      summary: "Get all UserBased On Company"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *       - name: companyId
+ *         in: path
+ *         description: Company Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+router.get('/getUsersByCompany/:companyId',authController.protect,userController.getUsersByCompany);
 router.post('/getusers',userController.getUsers);
   /**
  * @swagger
@@ -115,7 +143,7 @@ router.post('/forgotPassword', authController.forgotPassword);
  *      parameters:
  *       - name: token
  *         in: path
- *         description: Role ID
+ *         description: Token
  *         required: true
  *         schema:
  *           type: string
@@ -201,18 +229,104 @@ router.patch(
 
 // Protect all routes from now on
 //router.use(authController.protect);
-
-router.get('/me', userController.getMe, userController.getUser);
-router.patch('/updateMe', userController.updateMe);
-router.delete('/deleteMe', userController.deleteMe);
+/**
+ * @swagger
+ * /api/v1/users/me/{id}:
+ *  get:
+ *      tags:
+ *          - User Management
+ *      summary: "Get User By Id"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: User ID
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *    
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+router.get('/me/:id',authController.protect,userController.getUser);
+  /**
+ * @swagger
+ * /api/v1/users/updateMe/{id}:
+ *  patch:
+ *      tags:
+ *          - User Management
+ *      summary: "Update User"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: User Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *           
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          Firstname:
+ *                              type: string
+ *                          
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+router.patch('/updateMe/:id',authController.protect, userController.updateMe);
+router.delete('/deleteMe',userController.deleteMe);
 
 // Only admins are able to use routes below
 //router.use(authController.restrictTo('admin'));
+/**
+ * @swagger
+ * /api/v1/users:
+ *  get:
+ *      tags:
+ *          - User Management
+ *      summary: "Get all User"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+ router.get('/',authController.protect, userController.getAllUsers);
 
-router
-  .route('/')
-  .get(userController.getAllUsers)
-  .post(userController.createUser);
 
 router
   .route('/:id')
