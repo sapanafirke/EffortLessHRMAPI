@@ -28,6 +28,7 @@ const createAndSendToken = async (user, statusCode, res) => {
     httpOnly: true
   };
   res.cookie('companyId', user.company.id);  
+  res.cookie('userId', user._id);  
   // In production save cookie only in https connection
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
   res.cookie('jwt', token, cookieOptions);
@@ -77,9 +78,9 @@ exports.CreateUser = catchAsync(async(req, res, next) => {
     status:"Active",
     createdOn: new Date(),
     updatedOn: new Date(),
-    createdBy: req.body.createdBy,
-    updatedBy: req.body.updatedBy,
-    company:company.company._id
+    createdBy: req.cookies.user,
+    updatedBy: req.cookies.user,
+    company:req.req.cookies.companyId
   }); 
   // 3) Send it to user's email
   const resetURL = `${req.protocol}://${process.env.WEBSITE_DOMAIN}/updateuser/${newUser._id}`;

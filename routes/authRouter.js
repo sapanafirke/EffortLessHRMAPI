@@ -15,7 +15,7 @@ authRouter
  *  post:
  *      tags:
  *          - Role Management
- *      summary: "Add New Role"
+ *      summary: "Create Role"
  *      security: [{
  *         bearerAuth: []
  *     }]
@@ -41,13 +41,13 @@ authRouter
  *
  */
   authRouter.route('/role').post(authController.protect,authController.addRole);
-  /**
+/**
  * @swagger
  * /api/v1/auth/role/{id}:
  *  delete:
  *      tags:
  *          - Role Management
- *      summary: "Delete Role"
+ *      summary: "Delete Role Based on Id"
  *      security: [{
  *         bearerAuth: []
  *     }]
@@ -72,13 +72,13 @@ authRouter
  *
  */
   authRouter.route('/role/:id').delete(authController.protect,authController.deleteRole);
-    /**
+/**
  * @swagger
  * /api/v1/auth/role/update/{id}:
  *  post:
  *      tags:
  *          - Role Management
- *      summary: "Update Role"
+ *      summary: "Update Role based on RoleId"
  *      security: [{
  *         bearerAuth: []
  *     }]
@@ -112,7 +112,7 @@ authRouter
  *
  */
   authRouter.route('/role/update/:id').post(authController.protect,authController.updateRole);
-   /**
+/**
  * @swagger
  * /api/v1/auth/role/{id}:
  *  get:
@@ -143,7 +143,7 @@ authRouter
  *
  */
   authRouter.route('/role/:id').get(authController.protect,authController.getRole);
-   /**
+/**
  * @swagger
  * /api/v1/auth/roles:
  *  get:

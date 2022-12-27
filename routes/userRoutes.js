@@ -50,7 +50,7 @@ router.post('/signup', authController.signup);
  *  post:
  *      tags:
  *          - Authorization
- *      summary: "Returns Authorization Token"
+ *      summary: "Login & Returns Authorization Token"
  *      description: "Authorizes default users with username and password set as root to use the endpoints"
 
  *      requestBody:
@@ -82,7 +82,7 @@ router.post('/login', authController.login);
  *  get:
  *      tags:
  *          - User Management
- *      summary: "Get all UserBased On Company"   
+ *      summary: "Get all User Based On CompanyId"   
  *      security: [{
  *         bearerAuth: []
  *     }]
@@ -106,7 +106,7 @@ router.post('/login', authController.login);
  */
 router.get('/getUsersByCompany/:companyId',authController.protect,userController.getUsersByCompany);
 router.post('/getusers',userController.getUsers);
-  /**
+/**
  * @swagger
  * /api/v1/users/forgotPassword:
  *  post:
@@ -133,7 +133,7 @@ router.post('/getusers',userController.getUsers);
  *
  */
 router.post('/forgotPassword', authController.forgotPassword);
- /**
+/**
  * @swagger
  * /api/v1/users/resetPassword/{token}:
  *  patch:
@@ -177,8 +177,8 @@ router.patch('/resetPassword/:token', authController.resetPassword);
  * /api/v1/users/inviteUser:
  *  post:
  *      tags:
- *          - Registration
- *      summary: "Invite User"   
+ *          - User Management
+ *      summary: "Create User and Invite on email to update profile"   
  *      requestBody:
  *          content:
  *              application/json:
@@ -198,12 +198,6 @@ router.patch('/resetPassword/:token', authController.resetPassword);
  *                          role:
  *                              type: string
  *                          phone:
- *                               type:string
- *                          companyId:
- *                              type: string
- *                          createdBy:
- *                               type:string
- *                          updatedBy:
  *                              type: string
  *              
  *      produces:
@@ -347,7 +341,7 @@ router.delete('/deleteMe',userController.deleteMe);
  *                          type: object
  *
  */
- router.get('/',authController.protect, userController.getAllUsers);
+router.get('/',authController.protect, userController.getAllUsers);
 
 
 router

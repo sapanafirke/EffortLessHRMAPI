@@ -1,8 +1,10 @@
 const Task = require('../models/taskModel');
 const TaskUser = require('../models/taskUserModel');
+const TaskAttachments = require('../models/taskAttachmentModel');
 const catchAsync = require('../utils/catchAsync');
 const { BlobServiceClient } = require('@azure/storage-blob');
-
+const { v1: uuidv1} = require('uuid');
+const AppError = require('../utils/appError');
 // AZURE STORAGE CONNECTION DETAILS
 const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
 if (!AZURE_STORAGE_CONNECTION_STRING) {
@@ -14,10 +16,9 @@ const blobServiceClient = BlobServiceClient.fromConnectionString(
 const containerClient = blobServiceClient.getContainerClient(process.env.CONTAINER_NAME);
 
 exports.deleteTask = catchAsync(async (req, res, next) => {
+  const newTaskUserList = await TaskUser.findOneAndDelete({}).where('task').equals(req.params.id);  
+  const newTaskAttachmentList = await TaskAttachments.findOneAndDelete({}).where('task').equals(req.params.id);
   const document = await Task.findByIdAndDelete(req.params.id);
-  if (!document) {
-    return next(new AppError('No document found with that ID', 404));
-  }
   res.status(204).json({
     status: 'success',
     data: null
@@ -87,7 +88,21 @@ exports.getTaskUser  = catchAsync(async (req, res, next) => {
       }
     });  
 });
-
+exports.updateTaskUser =  catchAsync(async (req, res, next) => {
+  const document = await TaskUser.findByIdAndUpdate(req.params.id, req.body, {
+    new: true, // If not found - add new
+    runValidators: true // Validate data
+  });
+  if (!document) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+  res.status(201).json({
+    status: 'success',
+    data: {
+      data: document
+    }
+  });
+});
 exports.getTaskAttachment  = catchAsync(async (req, res, next) => {    
       const newTaskAttachment = await TaskAttachments.find({}).where('_id').equals(req.params.id);  
       res.status(200).json({
@@ -97,7 +112,21 @@ exports.getTaskAttachment  = catchAsync(async (req, res, next) => {
         }
       });  
 });
-
+exports.updateTaskAttachments =  catchAsync(async (req, res, next) => {
+  const document = await TaskAttachments.findByIdAndUpdate(req.params.id, req.body, {
+    new: true, // If not found - add new
+    runValidators: true // Validate data
+  });
+  if (!document) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+  res.status(201).json({
+    status: 'success',
+    data: {
+      data: document
+    }
+  });
+});
 exports.addTask = catchAsync(async (req, res, next) => { 
 
   // Upload Capture image on block blob client 
@@ -115,11 +144,15 @@ exports.addTask = catchAsync(async (req, res, next) => {
     status:"Active",
     createdOn: new Date(),
     updatedOn: new Date(),
-    createdBy: req.body.createdBy,
-    updatedBy: req.body.updatedBy
+    createdBy: req.cookies.userId,
+    updatedBy: req.cookies.userId
   });  
-  
+  if(req.body.taskUsers!=null)
+  {
   for(var i = 0; i < req.body.taskUsers.length; i++) {
+    console.log(req.body.taskUsers[i].user);
+    console.log(req.cookies.companyId);
+    console.log(req.cookies.userId);
     const newTaskUserItem = await TaskUser.create({
       task:newTask._id,
       user:req.body.taskUsers[i].user,
@@ -127,12 +160,17 @@ exports.addTask = catchAsync(async (req, res, next) => {
       status:"Active",
       createdOn: new Date(),
       updatedOn: new Date(),
-      createdBy: req.body.createdBy,
-      updatedBy: req.body.updatedBy
+      createdBy: req.cookies.userId,
+      updatedBy: req.cookies.userId
     });  
+    
   
   }
+  }
+  if(req.body.taskAttachments!=null)
+  {
   for(var i = 0; i < req.body.taskAttachments.length; i++) {
+    console.log("attach");
     const blobName = "Capture" + uuidv1() + ".png";
   // Get a block blob client
   const blockBlobClient = containerClient.getBlockBlobClient(blobName);
@@ -155,11 +193,13 @@ exports.addTask = catchAsync(async (req, res, next) => {
       status:"Active",
       createdOn: new Date(),
       updatedOn: new Date(),
-      createdBy: req.body.createdBy,
-      updatedBy: req.body.updatedBy
+      createdBy: req.cookies.userId,
+      updatedBy: req.cookies.userId
     });  
   
   }
+}
+
   const newTaskAttachmentList = await TaskAttachments.find({}).where('task').equals(newTask._id);  
  
   const newTaskUserList = await TaskUser.find({}).where('task').equals(newTask._id);  
@@ -183,19 +223,29 @@ exports.addTaskUser = catchAsync(async (req, res, next) => {
       status:"Active",
       createdOn: new Date(),
       updatedOn: new Date(),
-      createdBy: req.body.createdBy,
-      updatedBy: req.body.updatedBy
+      createdBy: req.cookies.userId,
+      updatedBy: req.cookies.userId
     });    
   }  
-  const newTaskUserList = await TaskUser.find({}).where('task').equals(newTask._id);  
+  const newTaskUserList = await TaskUser.find({}).where('task').equals(req.body.taskId);  
   res.status(200).json({
     status: 'success',
     data: {      
-      newTaskAttachmentList:newTaskAttachmentList
+      TaskUserList:newTaskUserList
     }
   });
 });
-
+exports.deleteTaskUser = catchAsync(async (req, res, next) => {
+  console.log("hii");
+  const document = await TaskUser.findByIdAndDelete(req.params.id);
+  if (!document) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+  res.status(204).json({
+    status: 'success',
+    data: null
+  });
+});
 exports.addTaskAttachment = catchAsync(async (req, res, next) => { 
 
   // Upload Capture image on block blob client 
@@ -203,10 +253,10 @@ exports.addTaskAttachment = catchAsync(async (req, res, next) => {
     const blobName = "Capture" + uuidv1() + ".png";
   // Get a block blob client
   const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-  console.log("\nUploading to Azure storage as blob:\n\t", blobName);
+  console.log("\nUploading to Azure storage as blob:\n\t", );
   // Upload data to the blob
-  var FileString =  req.body.taskAttachments[i].file;
-  const buffer = new Buffer.from(FileString, 'base64');
+  var fileString =  req.body.taskAttachments[i].file;
+  const buffer = fileString;
   const uploadBlobResponse = await blockBlobClient.upload(buffer,buffer.byteLength );
   console.log(
     "Blob was uploaded successfully. requestId: ",
@@ -221,21 +271,31 @@ exports.addTaskAttachment = catchAsync(async (req, res, next) => {
       status:"Active",
       createdOn: new Date(),
       updatedOn: new Date(),
-      createdBy: req.body.createdBy,
-      updatedBy: req.body.updatedBy
+      createdBy: req.cookies.userId,
+      updatedBy: req.cookies.userId
     });    
   }
-  const newTaskAttachmentList = await TaskAttachments.find({}).where('task').equals(newTask._id);  
+  const newTaskAttachmentList = await TaskAttachments.find({}).where('task').equals(req.body.taskId);  
    res.status(200).json({
     status: 'success',
     data: {
-      newTaskUserList:newTaskUserList
+      newTaskUserList:newTaskAttachmentList
     }
+  });
+});
+exports.deleteTaskAttachment = catchAsync(async (req, res, next) => {
+  const document = await TaskAttachments.findByIdAndDelete(req.params.id);
+  if (!document) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+  res.status(204).json({
+    status: 'success',
+    data: null
   });
 });
  // Get Country List
 exports.getTaskList = catchAsync(async (req, res, next) => {    
-    const taskList = await Task.find({}).all();  
+    const taskList = await Task.find({}).where('company').equals(req.cookies.companyId);  
     res.status(200).json({
       status: 'success',
       data: {
