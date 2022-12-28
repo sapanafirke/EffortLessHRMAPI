@@ -2,7 +2,7 @@ var express = require('express');
 const User =  require('./../models/permissions/userModel');
 const authController =  require('../controllers/authController');
 const recruitmentController = require('../controllers/recruitmentController');
-
+const commonController =  require('../controllers/commonController');
 var authRouter = express.Router();
 
 
@@ -179,12 +179,164 @@ authRouter.delete('/user/delete/:id',recruitmentController.deleteSkill);
 //#endregion
 
 //#region Permission
-
-authRouter.get('/permission/:id',recruitmentController.getSkill);
-authRouter.get('/permission/All',recruitmentController.getAllSkills);
-authRouter.post('/permission/create',recruitmentController.createSkill);
-authRouter.post('/permission/update/:id',recruitmentController.updateSkill);
-authRouter.delete('/permission/delete/:id',recruitmentController.deleteSkill);
+/**
+ * @swagger
+ * /api/v1/auth/permission/{id}:
+ *  get:
+ *      tags:
+ *          - Permission Management
+ *      summary: "Get Permission Based On Id"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Permission ID
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *                
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+authRouter.get('/permission/:id',authController.protect,commonController.getPermission);
+/**
+ * @swagger
+ * /api/v1/auth/permissions:
+ *  get:
+ *      tags:
+ *          - Permission Management
+ *      summary: "Get all Permission"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]        
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+authRouter.get('/permissions',authController.protect,commonController.getPermissionList);
+/**
+ * @swagger
+ * /api/v1/auth/permission/create:
+ *  post:
+ *      tags:
+ *          - Permission Management
+ *      summary: "Create Permission"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          permissionName:
+ *                              type: string
+ *                          permissionDetails:
+ *                              type: string
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Permission added successfully"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+authRouter.post('/permission/create',authController.protect,commonController.savePermission);
+/**
+ * @swagger
+ * /api/v1/auth//permission/update/{id}:
+ *  post:
+ *      tags:
+ *          - Permission Management
+ *      summary: "Update Permission based on PermissionId"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Permission ID
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *           
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          permissionName:
+ *                              type: string
+ *                          permissionDetails:
+ *                              type: string
+ *                          
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+authRouter.post('/permission/update/:id',authController.protect,commonController.updatePermission);
+/**
+ * @swagger
+ * /api/v1/auth//permission/delete/{id}:
+ *  delete:
+ *      tags:
+ *          - Permission Management
+ *      summary: "Delete Permission Based on Id"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Permission ID
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *                
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+authRouter.delete('/permission/delete/:id',authController.protect,commonController.deletePermission);
 
 //#endregion
 

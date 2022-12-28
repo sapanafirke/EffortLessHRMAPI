@@ -67,7 +67,30 @@ const RolePerms = require('../models/rolePermsModel');
       }
     }); 
   });
-
+  exports.deletePermission = catchAsync(async (req, res, next) => {  
+    const document = await Permission.findByIdAndDelete(req.params.id);
+    if (!document) {
+      return next(new AppError('No document found with that ID', 404));
+    }
+    res.status(204).json({
+      status: 'success',
+      data: null
+    });
+  });
+  
+  exports.updatePermission = factory.updateOne(Permission);
+  
+  exports.getPermission = catchAsync(async (req, res, next) => {       
+    const permission = await Permission.find({}).where('_id').equals(req.params.id);   
+    if (!permission) {
+      return next(new AppError('No permission found', 403));
+    }  
+    res.status(200).json({
+      status: 'success',
+      data: permission
+    });  
+   });
+  
   // Get RolePermission List
   exports.getRolePermsList = catchAsync(async (req, res, next) => {    
     const rolePermsList = await RolePerms.find({}).all();  

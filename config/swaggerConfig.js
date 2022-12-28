@@ -1,6 +1,5 @@
-
 const host ='localhost:8080';
-
+//Swagger Defination
 const swaggerDefinition = {
     openapi: '3.0.0',
     info: {
@@ -8,7 +7,7 @@ const swaggerDefinition = {
         description: '',
         version: '1.0.0',
         contact: {
-            email: 'dotnetexpertde'
+            email: 'dotnetexpertdev@gmail.com'
         }
     },
     components: {
@@ -19,11 +18,8 @@ const swaggerDefinition = {
                 bearerFormat: 'JWT',
             }
         }
-    }
-    
-    
+    }       
 };
-
 module.exports = {
     swaggerDefinition,
     host,
