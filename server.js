@@ -20,7 +20,7 @@ dotenv.config({ path: './config.env' });
 const app = require('./app');
 const swaggerSpec = (swaggerJsDoc(swaggerConfig));
 
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/api/v1/", routes);
        
