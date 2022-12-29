@@ -18,9 +18,9 @@ var permissionModelSchema = new Schema({
     toObject: { virtuals: true } // Use virtuals when outputing as Object
   },
    { collection: 'Permission' }); 
-  permissionModelSchema.virtual('rolePerms', {
-    ref: 'RolePerms',
-    foreignField: 'permission', // tour field in review model pointing to this model
+  permissionModelSchema.virtual('rolePermission', {
+    ref: 'RolePermission',
+    foreignField: 'permissionId', // tour field in review model pointing to this model
     localField: '_id' // id of current model
   });
   module.exports = mongoose.model('Permission', permissionModelSchema);

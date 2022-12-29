@@ -399,7 +399,7 @@ exports.addSubordinate = catchAsync(async (req, res, next) => {
  });
  //#region Role Permissions
  exports.getRolePermission = catchAsync(async (req, res, next) => {
-  const rolePermission = await RolePermission.find({}).where('rolePermissionId').equals(req.params.id);  
+  const rolePermission = await RolePermission.find({}).where('_id').equals(req.params.id);  
   
   if (!rolePermission) {
     return next(new AppError('No Role Permission found', 403));
@@ -421,28 +421,33 @@ exports.getAllRolePermissions = catchAsync(async (req, res, next) => {
 
 exports.createRolePermission = catchAsync(async (req, res, next) => {  
   console.log('createRolePermission called');
-  const rolePermission = await RolePermission.find({}).where('rolePermissionId').equals(req.body.Id);  
+  const rolePermissionexists = await RolePermission.find({}).where('permissionId').equals(req.body.permissionId).where('roleId').equals(req.body.roleId);  
   
-  if (rolePermission.length>0) {
+  if (rolePermissionexists.length>0) {
     return next(new AppError('Role Permission already exists.', 403));
   }
   else{    
     const rolePermission = await RolePermission.create({
-      rolePermissionId:req.body.rolePermissionId,
       roleId:req.body.roleId,
       permissionId : req.body.permissionId,
       company : req.cookies.companyId
     });
+    res.status(201).json({
+      status: 'success',
+      data: rolePermission
+    }); 
   }
-  res.status(201).json({
-    status: 'success',
-    data: rolePermission
-  });    
+    
 });
 
 exports.updateRolePermission = catchAsync(async (req, res, next) => {
-  console.log(req.body.id);
-  const rolePermission = await RolePermission.findByIdAndUpdate(req.body.id, req.body, {
+  const rolePermissionexists = await RolePermission.find({}).where('permissionId').equals(req.body.permissionId).where('roleId').equals(req.body.roleId);  
+  
+  if (rolePermissionexists.length>0) {
+    return next(new AppError('Role Permission already exists.', 403));
+  }
+  else{ 
+  const rolePermission = await RolePermission.findByIdAndUpdate(req.params.id, req.body, {
     new: true, // If not found - add new
     runValidators: true // Validate data
   });
@@ -452,7 +457,8 @@ exports.updateRolePermission = catchAsync(async (req, res, next) => {
   res.status(201).json({
     status: 'success',
     data: rolePermission
-  });    
+  }); 
+}   
 });
 
 exports.deleteRolePermission = catchAsync(async (req, res, next) => {  

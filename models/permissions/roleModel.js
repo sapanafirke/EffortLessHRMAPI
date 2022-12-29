@@ -42,5 +42,9 @@ var roleModelSchema = new Schema({
     toObject: { virtuals: true } // Use virtuals when outputing as Object
   },
   {collection: 'Role' });      
-  
+  roleModelSchema.virtual('rolePermission', {
+    ref: 'RolePermission',
+    foreignField: 'role', // tour field in review model pointing to this model
+    localField: '_id' // id of current model
+  });
   module.exports = mongoose.model('Role', roleModelSchema);

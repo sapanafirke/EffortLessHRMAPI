@@ -266,7 +266,7 @@ authRouter.get('/permissions',authController.protect,commonController.getPermiss
 authRouter.post('/permission/create',authController.protect,commonController.savePermission);
 /**
  * @swagger
- * /api/v1/auth//permission/update/{id}:
+ * /api/v1/auth/permission/update/{id}:
  *  post:
  *      tags:
  *          - Permission Management
@@ -350,12 +350,164 @@ authRouter.delete('/userRole/delete/:id',recruitmentController.deleteRole);
 //#endregion
 
 //#region Role Permission
-
-authRouter.get('/rolePermission/:id',authController.getRolePermission);
-authRouter.get('/rolePermissions',authController.getAllRolePermissions);
-authRouter.post('/rolePermission/create',authController.createRolePermission);
-authRouter.post('/rolePermission/update',authController.updateRolePermission);
-authRouter.delete('/rolePermission/delete/:id',authController.deleteRolePermission);
+/**
+ * @swagger
+ * /api/v1/auth/rolePermission/{id}:
+ *  get:
+ *      tags:
+ *          - Role Permission Management
+ *      summary: "Get Role Permission Based On Role Permission Id"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Role Permission ID
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *                
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+authRouter.get('/rolePermission/:id',authController.protect,authController.getRolePermission);
+/**
+ * @swagger
+ * /api/v1/auth/rolePermissions:
+ *  get:
+ *      tags:
+ *          - Role Permission Management
+ *      summary: "Get all Permission"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]        
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+authRouter.get('/rolePermissions',authController.protect,authController.getAllRolePermissions);
+/**
+ * @swagger
+ * /api/v1/auth/rolePermission/create:
+ *  post:
+ *      tags:
+ *          - Role Permission Management
+ *      summary: "Create Role Permission"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          roleId:
+ *                              type: string
+ *                          permissionId:
+ *                              type: string
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Role Permission added successfully"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+authRouter.post('/rolePermission/create',authController.protect,authController.createRolePermission);
+/**
+ * @swagger
+ * /api/v1/auth/rolePermission/update/{id}:
+ *  post:
+ *      tags:
+ *          - Role Permission Management
+ *      summary: "Update Role Permission based on RolePermissionId"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Role Permission ID
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *           
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          roleId:
+ *                              type: string
+ *                          permissionId:
+ *                              type: string
+ *                          
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+authRouter.post('/rolePermission/update/:id',authController.protect,authController.updateRolePermission);
+/**
+ * @swagger
+ * /api/v1/auth/rolePermission/delete/{id}:
+ *  delete:
+ *      tags:
+ *          - Role Permission Management
+ *      summary: "Delete Role Permission Based on Id"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Role Permission ID
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *                
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+authRouter.delete('/rolePermission/delete/:id',authController.protect,authController.deleteRolePermission);
 
 //#endregion
 

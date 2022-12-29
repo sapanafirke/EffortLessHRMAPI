@@ -82,6 +82,11 @@ var companyModelSchema = new Schema({
     foreignField: 'company', // tour field in review model pointing to this model
     localField: '_id' // id of current model
   });
+  companyModelSchema.virtual('rolePermission', {
+    ref: 'RolePermission',
+    foreignField: 'company', // tour field in review model pointing to this model
+    localField: '_id' // id of current model
+  });
   companyModelSchema.virtual('project', {
     ref: 'Company',
     foreignField: 'company', // tour field in review model pointing to this model
