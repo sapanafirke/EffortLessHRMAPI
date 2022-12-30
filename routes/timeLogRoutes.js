@@ -154,7 +154,37 @@ router.post('/getLogsWithImages',authController.protect,timeLogController.getLog
  *                          type: object
  *
  */
-  router.post('/getCurrentWeekTotalTime',authController.protect,timeLogController.getCurrentWeekTotalTime);
-  
+router.post('/getCurrentWeekTotalTime',authController.protect,timeLogController.getCurrentWeekTotalTime);
+
+/**
+ * @swagger
+ * /api/v1/timelogs/{id}:
+ *  delete:
+ *      tags:
+ *          - Timelog Management
+ *      summary: "Delete Timelog based on TimeLogId"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: TimeLog Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+ router.delete('/:id',authController.protect,timeLogController.deleteLog);
 
 module.exports = router;
