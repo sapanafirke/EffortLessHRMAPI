@@ -107,6 +107,24 @@ exports.getLogsWithImages = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.deleteLog = catchAsync(async (req, res, next) => {
+  const timeLogsExists = await TimeLog.findById(req.params.id);    
+  if(timeLogsExists)
+  {
+    var url=timeLogsExists.filePath;    
+    containerClient.getBlockBlobClient(url).deleteIfExists();
+    const blockBlobClient = containerClient.getBlockBlobClient(url);
+    await blockBlobClient.deleteIfExists();
+    const document = await TimeLog.findByIdAndDelete(req.params.id);
+    if (!document) {
+      return next(new AppError('No document found with that ID', 404));
+    }
+    res.status(204).json({
+      status: 'success',
+      data: null
+    });
+  }
+});
 // Convert stream to text
 async function streamToText(readable) {
   readable.setEncoding('utf8');
