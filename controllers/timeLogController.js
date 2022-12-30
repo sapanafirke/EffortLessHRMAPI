@@ -26,20 +26,20 @@ exports.addLog = catchAsync(async (req, res, next) => {
   console.log("\nUploading to Azure storage as blob:\n\t", blobName);
   // Upload data to the blob
   var FileString = req.body.fileString;
-  //const buffer = new Buffer.from(FileString, 'base64');
-  const uploadBlobResponse = await blockBlobClient.upload(FileString,FileString.length);
+  const buffer = new Buffer.from(FileString, 'base64');
+  const uploadBlobResponse = await blockBlobClient.upload(buffer,buffer.length);
+  const url=process.env.CONTAINER_URL_BASE_URL+ process.env.CONTAINER_NAME+"/"+blobName; 
   console.log(`Blob was uploaded successfully. requestId: ${uploadBlobResponse.requestId}, url: ${uploadBlobResponse}`);
-  
   const newTimeLog = await TimeLog.create({
     user: req.body.user,
-    task:req.body.task, 
+    task:req.body.task,
     date :req.body.date,
     startTime: req.body.startTime,
     endTime:req.body.endTime,
     filePath:blobName,
     keysPressed:req.body.keysPressed,
     clicks:req.body.clicks,
-    url:uploadBlobResponse.url
+    url:url
   });  
   console.log('time log created');
   res.status(200).json({
@@ -82,24 +82,28 @@ exports.getLog = catchAsync(async (req, res, next) => {
 
 exports.getLogsWithImages = catchAsync(async (req, res, next) => {
   //let date = `${req.body.date}.000+00:00`;
+  console.log("called");
+
   const timeLogs = await TimeLog.find({}).where('user').equals(req.body.user).where('date').equals(req.body.date);    
-  let response =[];
-  for (const timeLog of timeLogs) {
-    const blobName = timeLog.filePath;
-    const blobClient = containerClient.getBlobClient(blobName);    
-    try{
-    const downloadBlockBlobResponse = await blobClient.download(0);        
-    const fileString =await streamToText(downloadBlockBlobResponse.readableStreamBody)
-    timeLog.fileString= fileString;
-    response.push(timeLog);    
-    }
-    catch(err){      
-    }
-  } 
+  //let response =[];
+  //for (const timeLog of timeLogs) {
+  //  const blobName = timeLog.filePath;
+    
+  // const blobClient = containerClient.getBlobClient(blobName);    
+  //  try{
+  //  const downloadBlockBlobResponse = await blobClient.download(0); 
+  //  console.log(downloadBlockBlobResponse.url);
+  //  const fileString =await streamToText(downloadBlockBlobResponse.readableStreamBody)   
+  //  timeLog.fileString= fileString;
+  //  response.push(timeLog);    
+  //  }
+  //  catch(err){      
+  //  }
+  //  } 
 
   res.status(200).json({
     status: 'success',
-    data: response
+    data: timeLogs
   });
 });
 
