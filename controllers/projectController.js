@@ -1,6 +1,7 @@
 const Project = require('../models/projectModel');
 const catchAsync = require('../utils/catchAsync');
-
+const ProjectUser = require('../models/projectUserModel');
+const AppError = require('../utils/appError');
 exports.deleteProject = catchAsync(async (req, res, next) => {
   const document = await Project.findByIdAndDelete(req.params.id);
   if (!document) {
@@ -71,6 +72,84 @@ res.status(200).json({
       status: 'success',
       data: {
         newProject: newProject
+      }
+    });  
+  });
+ exports.addProjectUser = catchAsync(async (req, res, next) => { 
+    // Upload Capture image on block blob client 
+   for(var i = 0; i < req.body.projectUsers.length; i++) {
+      const projectUsersexists = await ProjectUser.find({}).where('project').equals(req.body.projectId).where('user').equals(req.body.projectUsers[i].user);  
+      
+      if (projectUsersexists.length>0) {
+        return next(new AppError('Project User already exists.', 403));
+      }
+      else{ 
+      const newProjectUsersrItem = await ProjectUser.create({
+        project:req.body.projectId,
+        user:req.body.projectUsers[i].user,
+        company:req.cookies.companyId,
+        status:"Active",
+        createdOn: new Date(),
+        updatedOn: new Date(),
+        createdBy: req.cookies.userId,
+        updatedBy: req.cookies.userId
+      });    
+    }  
+    const newProjectUserList = await ProjectUser.find({}).where('project').equals(req.body.projectId);  
+    res.status(200).json({
+      status: 'success',
+      data: {      
+        ProjectUserList:newProjectUserList
+      }
+    });
+  
+  }
+  });
+ exports.updateProjectUser =  catchAsync(async (req, res, next) => {
+  const projectUser = await ProjectUser.findById(req.params.id);  
+  console.log(projectUser);
+  if (projectUser.length>0) {
+  const projectUsersexists = await ProjectUser.find({}).where('project').equals(projectUser.project).where('user').equals(req.body.user);  
+      console.log(projectUsersexists);
+      if (projectUsersexists.length>0) {
+        return next(new AppError('Project User already exists.', 403));
+      }
+      else{ 
+    const document = await ProjectUser.findByIdAndUpdate(req.params.id, req.body, {
+      new: true, // If not found - add new
+      runValidators: true // Validate data
+    });
+    if (!document) {
+      return next(new AppError('No document found with that ID', 404));
+    }
+    res.status(201).json({
+      status: 'success',
+      data: {
+        data: document
+      }
+    });
+  }
+  }
+  });
+  exports.deleteProjectUser = catchAsync(async (req, res, next) => {
+    console.log("hii");
+    const document = await ProjectUser.findByIdAndDelete(req.params.id);
+    if (!document) {
+      return next(new AppError('No document found with that ID', 404));
+    }
+    res.status(204).json({
+      status: 'success',
+      data: null
+    });
+  });
+  exports.getProjectUsers  = catchAsync(async (req, res, next) => {    
+  
+    const newProjectUserList = await ProjectUser.find({}).where('project').equals(req.params.id);  
+    
+    res.status(200).json({
+      status: 'success',
+      data: {
+        projectUserList:newProjectUserList
       }
     });  
   });

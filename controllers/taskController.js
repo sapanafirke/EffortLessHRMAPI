@@ -26,6 +26,12 @@ exports.deleteTask = catchAsync(async (req, res, next) => {
 });
 
 exports.updateTask =  catchAsync(async (req, res, next) => {
+  const taskUsersexists = await TaskUser.find({}).where('_id').equals(req.params.id).where('user').equals(req.body.user);  
+  
+  if (taskUsersexists.length>0) {
+    return next(new AppError('Task User already exists.', 403));
+  }
+  else{ 
   const document = await Task.findByIdAndUpdate(req.params.id, req.body, {
     new: true, // If not found - add new
     runValidators: true // Validate data
@@ -39,6 +45,7 @@ exports.updateTask =  catchAsync(async (req, res, next) => {
       data: document
     }
   });
+}
 });
 
 exports.getTask  = catchAsync(async (req, res, next) => {    
@@ -216,6 +223,12 @@ exports.addTask = catchAsync(async (req, res, next) => {
 exports.addTaskUser = catchAsync(async (req, res, next) => { 
   // Upload Capture image on block blob client 
  for(var i = 0; i < req.body.taskUsers.length; i++) {
+  const taskUsersexists = await TaskUser.find({}).where('task').equals(req.body.taskId).where('user').equals(req.body.taskUsers[i].user);  
+  
+  if (taskUsersexists.length>0) {
+    return next(new AppError('Task User already exists.', 403));
+  }
+  else{ 
     const newTaskUserItem = await TaskUser.create({
       task:req.body.taskId,
       user:req.body.taskUsers[i].user,
@@ -226,6 +239,7 @@ exports.addTaskUser = catchAsync(async (req, res, next) => {
       createdBy: req.cookies.userId,
       updatedBy: req.cookies.userId
     });    
+  }
   }  
   const newTaskUserList = await TaskUser.find({}).where('task').equals(req.body.taskId);  
   res.status(200).json({

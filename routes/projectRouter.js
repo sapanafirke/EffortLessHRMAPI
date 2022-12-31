@@ -182,6 +182,143 @@ router.patch('/:id',authController.protect,projectController.updateProject);
  *
  */
 router.delete('/:id',authController.protect,projectController.deleteProject);
-
+/**
+ * @swagger
+ * /api/v1/project/newprojectuser:
+ *  post:
+ *      tags:
+ *          - Project Management
+ *      summary: "Apply New User to Task"    
+ *      security: [{
+ *         bearerAuth: []
+ *     }]    
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          projectId:
+ *                              type: string
+ *                          projectUsers:
+ *                              type: array
+ *                              items:
+ *                                type: string
+ *                                example: {"user"}
+ *                          
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+router.post('/newprojectuser',authController.protect,projectController.addProjectUser);
+/**
+ * @swagger
+ * /api/v1/project/update/projectuser/{id}:
+ *  patch:
+ *      tags:
+ *          - Project Management
+ *      summary: "Update Project User based on ProjectUserId"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Project User Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *           
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          user:
+ *                              type: string  
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+router.patch('/update/projectuser/:id',authController.protect,projectController.updateProjectUser);
+/**
+  * @swagger
+  * /api/v1/project/projectuser/{id}:
+  *  delete:
+  *      tags:
+  *          - Project Management
+  *      summary: "Delete Project User Based on ProjectUserId"
+  *      security: [{
+  *         bearerAuth: []
+  *     }]
+  *      parameters:
+  *       - name: id
+  *         in: path
+  *         description: Project User Id
+  *         required: true
+  *         schema:
+  *           type: string
+  *           format: int64
+  *                
+  *      produces:
+  *          - application/json
+  *      responses:
+  *          200:
+  *              description: "Success"
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          type: object
+  *
+  */
+router.route('/projectuser/:id').delete(authController.protect,projectController.deleteProjectUser);
+ 
+/**
+ * @swagger
+ * /api/v1/project/getprojectuserslist/{id}:
+ *  get:
+ *      tags:
+ *          - Project Management
+ *      summary: "Get Project Users based on ProjectId"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Project ID
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *                
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+ router.get('/getprojectuserslist/:id',authController.protect,projectController.getProjectUsers);
 
 module.exports = router;

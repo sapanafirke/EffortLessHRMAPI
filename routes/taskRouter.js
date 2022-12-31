@@ -225,8 +225,11 @@ router.route('/:id').patch(authController.protect,taskController.updateTask);
  *                      properties:
  *                          taskId:
  *                              type: string
- *                          user:
- *                              type: string
+ *                          taskUsers:
+ *                              type: array
+ *                              items:
+ *                                type: string
+ *                                example: {"user"}
  *                          
  *      produces:
  *          - application/json
