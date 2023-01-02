@@ -226,7 +226,7 @@ router.patch(
 /**
  * @swagger
  * /api/v1/users/me:
- *  get:
+ *  post:
  *      tags:
  *          - User Management
  *      summary: "Get User By Id"   
@@ -252,7 +252,7 @@ router.patch(
  *                          type: object
  *
  */
-router.get('/me',authController.protect,userController.getUser);
+router.post('/me',authController.protect,userController.getUser);
 /**
  * @swagger
  * /api/v1/users/updateMe:
