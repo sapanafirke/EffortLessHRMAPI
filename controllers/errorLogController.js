@@ -14,7 +14,7 @@ const ErrorLog = require('../models/errorLogModel');
     });  
   });
   exports.getErrorLog = catchAsync(async (req, res, next) => {    
-    const errorLogList = await ErrorLog.find({}).where('_id').equals(req.params.id); 
+    const errorLogList = await ErrorLog.find({}).where('_id').equals(req.params.id).where('company').equals(req.cookies.companyId); 
     res.status(200).json({
       status: 'success',
       data: {
