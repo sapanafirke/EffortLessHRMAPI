@@ -52,7 +52,23 @@ res.status(200).json({
       }
     });  
   });
+ exports.getProjectListByUser  = catchAsync(async (req, res, next) => {    
+  var projectList=[];
 
+    const newProjectUserList = await ProjectUser.find({}).where('user').equals(req.body.userId);  
+    if(newProjectUserList)
+      {
+       for(var i = 0; i < newProjectUserList.length; i++) {
+           projectList.push(newProjectUserList[i].project);
+         }  
+      }
+      res.status(200).json({
+      status: 'success',
+      data: {
+        projectList:projectList
+      }
+    });   
+  });
  exports.addProject = catchAsync(async (req, res, next) => {  
     const newProject = await Project.create({
       projectName: req.body.projectName,
@@ -78,6 +94,7 @@ res.status(200).json({
  exports.addProjectUser = catchAsync(async (req, res, next) => { 
     // Upload Capture image on block blob client 
    for(var i = 0; i < req.body.projectUsers.length; i++) {
+    console.log("11");
       const projectUsersexists = await ProjectUser.find({}).where('project').equals(req.body.projectId).where('user').equals(req.body.projectUsers[i].user);  
       
       if (projectUsersexists.length>0) {
@@ -95,22 +112,21 @@ res.status(200).json({
         updatedBy: req.cookies.userId
       });    
     }  
-    const newProjectUserList = await ProjectUser.find({}).where('project').equals(req.body.projectId);  
-    res.status(200).json({
-      status: 'success',
-      data: {      
-        ProjectUserList:newProjectUserList
-      }
-    });
+   
   
   }
+  const newProjectUserList = await ProjectUser.find({}).where('project').equals(req.body.projectId);  
+  res.status(200).json({
+    status: 'success',
+    data: {      
+      ProjectUserList:newProjectUserList
+    }
+  });
   });
  exports.updateProjectUser =  catchAsync(async (req, res, next) => {
   const projectUser = await ProjectUser.findById(req.params.id);  
-  console.log(projectUser);
-  if (projectUser.length>0) {
+  if (projectUser) {
   const projectUsersexists = await ProjectUser.find({}).where('project').equals(projectUser.project).where('user').equals(req.body.user);  
-      console.log(projectUsersexists);
       if (projectUsersexists.length>0) {
         return next(new AppError('Project User already exists.', 403));
       }

@@ -490,5 +490,36 @@ router.patch('/update/taskattachemnt/:id',authController.protect,taskController.
  */
  router.route('/taskattachment/:id').delete(authController.protect,taskController.deleteTaskAttachment);
 
+ /**
+ * @swagger
+ * /api/v1/task/tasklistbyuser:
+ *  post:
+ *      tags:
+ *          - Task Management
+ *      summary: "Get Task List By UserId"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *           
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          userId:
+ *                              type: string  
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+  router.post('/tasklistbyuser',authController.protect,taskController.getTaskListByUser);
 
 module.exports = router;

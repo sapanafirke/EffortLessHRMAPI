@@ -321,4 +321,35 @@ router.route('/projectuser/:id').delete(authController.protect,projectController
  */
  router.get('/getprojectuserslist/:id',authController.protect,projectController.getProjectUsers);
 
+ /**
+ * @swagger
+ * /api/v1/project/projectlistbyuser:
+ *  post:
+ *      tags:
+ *          - Project Management
+ *      summary: "Get Project List By UserId"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *           
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          userId:
+ *                              type: string  
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+router.post('/projectlistbyuser',authController.protect,projectController.getProjectListByUser);
 module.exports = router;

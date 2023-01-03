@@ -85,7 +85,23 @@ exports.getTaskAttachments  = catchAsync(async (req, res, next) => {
       }
     });  
 });
+exports.getTaskListByUser  = catchAsync(async (req, res, next) => {    
+  var taskList=[];
 
+    const newTaskUserList = await TaskUser.find({}).where('user').equals(req.body.userId);  
+    if(newTaskUserList)
+      {
+       for(var i = 0; i < newTaskUserList.length; i++) {
+           taskList.push(newTaskUserList[i].task);
+         }  
+      }
+      res.status(200).json({
+      status: 'success',
+      data: {
+        taskList:taskList
+      }
+    });   
+  });
 exports.getTaskUser  = catchAsync(async (req, res, next) => {    
     const newTaskUser = await TaskUser.find({}).where('_id').equals(req.params.id);      
     res.status(200).json({
