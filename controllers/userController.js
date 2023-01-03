@@ -53,7 +53,7 @@ exports.updateUser =  catchAsync(async (req, res, next) => {
     });
   });
 
-exports.getUser = catchAsync(async (req, res, next) => {   
+exports.getUser = catchAsync(async (req, res, next) => {       
   const users = await User.findById(req.body.id);   
   res.status(200).json({
     status: 'success',
