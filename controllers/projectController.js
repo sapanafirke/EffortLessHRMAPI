@@ -79,8 +79,8 @@ res.status(200).json({
       createdOn: new Date(Date.now()),
       updatedOn: new Date(Date.now()),
       company:req.cookies.companyId,
-      createdBy: req.cookies.user,
-      updatedBy: req.cookies.user,
+      createdBy: req.cookies.userId,
+      updatedBy: req.cookies.userId,
       status:"Active"
     });  
     console.log('project created');

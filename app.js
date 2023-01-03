@@ -5,6 +5,7 @@ var itemRouter = require('./routes/item');
 var tourRouter = require('./routes/tourRoutes');
 var userRouter = require('./routes/userRoutes');
 var timeLogRouter = require('./routes/timeLogRoutes');
+var errorLogRouter = require('./routes/errorLogRouter');
 var commonRouter = require('./routes/commonRouter');
 var companyRouter = require('./routes/companyRouter');
 var projectRouter = require('./routes/projectRouter');
@@ -46,6 +47,7 @@ app.use((req, res, next) => {
   app.use('/api/v1/users', userRouter);
   app.use('/api/v1/tours', tourRouter);
   app.use('/api/v1/timeLogs', timeLogRouter);
+  app.use('/api/v1/errorlogs', errorLogRouter);
   app.use('/api/v1/holidayCalendar', holidayCalendarRouter);
   app.use('/api/v1/company', companyRouter);
   app.use('/api/v1/project', projectRouter);
