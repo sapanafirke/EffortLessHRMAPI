@@ -40,12 +40,8 @@ res.status(200).json({
 });
  // Get Country List
  exports.getProjectList = catchAsync(async (req, res, next) => {        
-  console.log('getProjectList call');  
-  const projectList = await Project.find({}).all();  
-
-  console.log(projectList);  
-    
-    res.status(200).json({
+  const projectList = await Project.find({}).where('company').equals(req.cookies.companyId);  
+  res.status(200).json({
       status: 'success',
       data: {
         projectList: projectList
@@ -83,8 +79,7 @@ res.status(200).json({
       updatedBy: req.cookies.userId,
       status:"Active"
     });  
-    console.log('project created');
-    res.status(200).json({
+     res.status(200).json({
       status: 'success',
       data: {
         newProject: newProject
@@ -94,8 +89,7 @@ res.status(200).json({
  exports.addProjectUser = catchAsync(async (req, res, next) => { 
     // Upload Capture image on block blob client 
    for(var i = 0; i < req.body.projectUsers.length; i++) {
-    console.log("11");
-      const projectUsersexists = await ProjectUser.find({}).where('project').equals(req.body.projectId).where('user').equals(req.body.projectUsers[i].user);  
+   const projectUsersexists = await ProjectUser.find({}).where('project').equals(req.body.projectId).where('user').equals(req.body.projectUsers[i].user);  
       
       if (projectUsersexists.length>0) {
         return next(new AppError('Project User already exists.', 403));
@@ -148,7 +142,6 @@ res.status(200).json({
   }
   });
   exports.deleteProjectUser = catchAsync(async (req, res, next) => {
-    console.log("hii");
     const document = await ProjectUser.findByIdAndDelete(req.params.id);
     if (!document) {
       return next(new AppError('No document found with that ID', 404));
