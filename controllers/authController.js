@@ -12,6 +12,8 @@ const userSubordinate = require('../models/userSubordinateModel');
 const { distinct } = require('../models/permissions/userModel');
 const RolePermission = require('../models/permissions/rolePermissionModel');
 const factory = require('./handlerFactory');
+const TimeLog = require('../models/timeLog');
+const { timeLog } = require('console');
 const signToken = async (id) => {
    return jwt.sign({ id },process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
@@ -66,6 +68,8 @@ exports.signup = catchAsync(async(req, res, next) => {
   createAndSendToken(newUser, 201, res);
 });
 exports.CreateUser = catchAsync(async(req, res, next) => {    
+  console.log(req.cookies.userId);
+  console.log(req.cookies.companyId);
   const newUser = await User.create({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -78,9 +82,9 @@ exports.CreateUser = catchAsync(async(req, res, next) => {
     status:"Active",
     createdOn: new Date(),
     updatedOn: new Date(),
-    createdBy: req.cookies.user,
-    updatedBy: req.cookies.user,
-    company:req.req.cookies.companyId
+    createdBy: req.cookies.userId,
+    updatedBy: req.cookies.userId,
+    company:req.cookies.companyId
   }); 
   // 3) Send it to user's email
   const resetURL = `${req.protocol}://${process.env.WEBSITE_DOMAIN}/updateuser/${newUser._id}`;
@@ -259,7 +263,63 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // 4) Log the user in, send JWT
   createAndSendToken(user, 200, res);
 });
-
+exports.sendLog=catchAsync(async (req, res, next) => {
+  console.log("Sending Email Log every night at 12 AM");
+  let filter = { status: 'Active' };
+  // Thanks to merging params in routers      
+  // Generate query based on request params
+  const userList = await User.find({}).where("email").equals("apptesting157@gmail.com");  
+   
+  if(userList)
+  {
+    for(var i = 0; i < userList.length; i++) {
+     console.log(userList[i].email);
+     var html="<table style='width:1200px;'><tr><td colspan='18'><h3>Welcome , This is trial Email </h3><p>That was easy!</p></td></tr>";
+     html=html+"<tr><td colspan='6'>6.00</td>";
+     html=html+"<td colspan='6'>7.00</td>";
+     html=html+"<td colspan='6'>8.00</td>";
+     html=html+"<td colspan='6'>9.00</td>";
+     html=html+"<td colspan='6'>10.00</td>";
+     html=html+"<td colspan='6'>11.00</td>";
+     html=html+"<td colspan='6'>12.00</td>";
+     html=html+"</tr>";
+     html=html+"<tr><td></td><td></td><td></td><td></td><td></td><td></td>";
+      html=html+"<td></td><td></td><td></td><td></td><td></td><td></td>";
+      html=html+"<td></td><td></td><td></td><td></td><td></td><td></td>";
+      html=html+"<td></td><td></td><td></td><td></td><td></td><td></td>";
+      html=html+"<td></td><td></td><td></td><td></td><td></td><td></td>";
+      html=html+"<td></td><td></td><td></td><td></td><td></td><td></td>";
+      html=html+"<td></td><td></td><td></td><td></td><td></td><td></td>";
+      html=html+"</tr>";
+      html=html+"</table>";
+      console.log("hii");
+     try {
+      await sendEmail({
+        email: userList[i].email,
+        subject: 'Tracker Log',
+        html: html
+      });
+      res.status(200).json({
+        status: 'success',
+        message: 'Email Sent!'
+      });
+    } catch (err) {
+      console.log(err);
+    }
+      const timeLogs = await TimeLog.find({}).where('user').equals(userList[i].email).where('date').equals("2023-01-04");       
+      if(timeLogs)
+       {
+         for(var j = 0; j < timeLogs.length; j++) {
+          var slot=timeLogs[j].startTime;
+         // console.log(slot);
+         }
+       }
+    }
+  }
+ // const timeLogs = await TimeLog.find({}).where('user').equals("sapana@arsteg.com").where('date').equals('2023-01-04');    
+  
+ 
+});
 exports.updatePassword = catchAsync(async (req, res, next) => {
 
   // 1) Get user from collection
