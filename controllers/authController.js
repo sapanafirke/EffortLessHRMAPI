@@ -67,9 +67,7 @@ exports.signup = catchAsync(async(req, res, next) => {
   }); 
   createAndSendToken(newUser, 201, res);
 });
-exports.CreateUser = catchAsync(async(req, res, next) => {    
-  console.log(req.cookies.userId);
-  console.log(req.cookies.companyId);
+exports.CreateUser = catchAsync(async(req, res, next) => {      
   const newUser = await User.create({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -84,7 +82,7 @@ exports.CreateUser = catchAsync(async(req, res, next) => {
     updatedOn: new Date(),
     createdBy: req.cookies.userId,
     updatedBy: req.cookies.userId,
-    company:req.cookies.companyId
+    company: req.cookies.companyId
   }); 
   // 3) Send it to user's email
   const resetURL = `${req.protocol}://${process.env.WEBSITE_DOMAIN}/updateuser/${newUser._id}`;
