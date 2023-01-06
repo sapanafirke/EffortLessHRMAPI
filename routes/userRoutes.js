@@ -288,7 +288,7 @@ router.post('/me',authController.protect,userController.getUser);
 router.patch('/updateMe/',authController.protect, userController.updateMe);
 /**
  * @swagger
- * /api/v1/users/deleteMe:
+ * /api/v1/users/deleteuser/{id}:
  *  delete:
  *      tags:
  *          - User Management
@@ -296,15 +296,14 @@ router.patch('/updateMe/',authController.protect, userController.updateMe);
  *      security: [{
  *         bearerAuth: []
  *     }]
- *      requestBody:
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
- *                      properties:
- *                          id:
- *                              type: string
- *                          
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: User Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
  *      produces:
  *          - application/json
  *      responses:
@@ -316,7 +315,7 @@ router.patch('/updateMe/',authController.protect, userController.updateMe);
  *                          type: object
  *
  */
-router.delete('/deleteMe',userController.deleteMe);
+router.delete('/deleteuser/:id',userController.deleteMe);
 
 // Only admins are able to use routes below
 //router.use(authController.restrictTo('admin'));
