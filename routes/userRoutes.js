@@ -255,23 +255,45 @@ router.patch(
 router.post('/me',authController.protect,userController.getUser);
 /**
  * @swagger
- * /api/v1/users/updateMe:
+ * /api/v1/users/updateuser/{id}:
  *  patch:
  *      tags:
  *          - User Management
  *      summary: "Update User"
  *      security: [{
  *         bearerAuth: []
- *     }]  
+ *     }]
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: User Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
  *      requestBody:
  *          content:
  *              application/json:
  *                  schema:
  *                      type: object
  *                      properties:
- *                          id:
- *                              type: string
  *                          firstName:
+ *                              type: string
+ *                          lastName:
+ *                              type: string
+ *                          jobTitle:
+ *                              type: string
+ *                          address:
+ *                              type: string
+ *                          city:
+ *                              type: string
+ *                          state:
+ *                              type: string
+ *                          pincode:
+ *                              type: string
+ *                          phone:
+ *                              type: string
+ *                          extraDetails:
  *                              type: string
  *                          
  *      produces:
@@ -285,7 +307,7 @@ router.post('/me',authController.protect,userController.getUser);
  *                          type: object
  *
  */
-router.patch('/updateMe/',authController.protect, userController.updateMe);
+router.patch('/updateuser/:id',authController.protect, userController.updateUser);
 /**
  * @swagger
  * /api/v1/users/deleteuser/{id}:

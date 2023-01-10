@@ -84,7 +84,7 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
-exports.updateMe = catchAsync(async (req, res, next) => {
+exports.updateUser = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data
   if (req.body.password || req.body.passwordConfirm)
     return next(
@@ -97,7 +97,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   const filteredBody = filterObj(req.body, 'name', 'email');
 
   // 3) Update user document
-  const updatedUser = await User.findByIdAndUpdate(req.body.id, req.body, {
+  const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
     new: true, // Reutrn updated object instead of old one
     runValidators: true
   });
