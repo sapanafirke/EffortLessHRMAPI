@@ -166,6 +166,7 @@ exports.addTask = catchAsync(async (req, res, next) => {
     isSubTask: false,
     priority:req.body.priority,
     company:req.cookies.companyId,
+    project:req.body.project,
     status:"Active",
     createdOn: new Date(),
     updatedOn: new Date(),
