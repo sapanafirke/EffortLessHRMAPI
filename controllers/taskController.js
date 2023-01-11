@@ -333,3 +333,12 @@ exports.getTaskList = catchAsync(async (req, res, next) => {
       }
     });  
 });
+exports.getTaskListByProject = catchAsync(async (req, res, next) => {    
+  const taskList = await Task.find({}).where('company').equals(req.cookies.companyId).where('project').equals(req.params.projectId);  
+  res.status(200).json({
+    status: 'success',
+    data: {
+      taskList: taskList
+    }
+  });  
+});
