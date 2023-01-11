@@ -26,12 +26,7 @@ exports.deleteTask = catchAsync(async (req, res, next) => {
 });
 
 exports.updateTask =  catchAsync(async (req, res, next) => {
-  const taskUsersexists = await TaskUser.find({}).where('_id').equals(req.params.id).where('user').equals(req.body.user);  
-  
-  if (taskUsersexists.length>0) {
-    return next(new AppError('Task User already exists.', 403));
-  }
-  else{ 
+
   const document = await Task.findByIdAndUpdate(req.params.id, req.body, {
     new: true, // If not found - add new
     runValidators: true // Validate data
@@ -45,8 +40,8 @@ exports.updateTask =  catchAsync(async (req, res, next) => {
       data: document
     }
   });
-}
 });
+
 
 exports.getTask  = catchAsync(async (req, res, next) => {    
 const task = await Task.findById(req.params.id); 
@@ -112,7 +107,13 @@ exports.getTaskUser  = catchAsync(async (req, res, next) => {
     });  
 });
 exports.updateTaskUser =  catchAsync(async (req, res, next) => {
-  const document = await TaskUser.findByIdAndUpdate(req.params.id, req.body, {
+  const taskUsersexists = await TaskUser.find({}).where('_id').equals(req.params.id).where('user').equals(req.body.user);  
+  
+  if (taskUsersexists.length>0) {
+    return next(new AppError('Task User already exists.', 403));
+  }
+  else{ 
+    const document = await TaskUser.findByIdAndUpdate(req.params.id, req.body, {
     new: true, // If not found - add new
     runValidators: true // Validate data
   });
@@ -125,6 +126,7 @@ exports.updateTaskUser =  catchAsync(async (req, res, next) => {
       data: document
     }
   });
+}
 });
 exports.getTaskAttachment  = catchAsync(async (req, res, next) => {    
       const newTaskAttachment = await TaskAttachments.find({}).where('_id').equals(req.params.id);  
