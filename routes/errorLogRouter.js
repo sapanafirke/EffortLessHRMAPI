@@ -26,8 +26,38 @@ const router = express.Router();
  *
  */
 
-router.get('/errorloglist',authController.protect,errorLogController.getErrorLogList);
+router.get('/errorloglist',authController.protect,errorLogController.getErrorLog);
+/**
+ * @swagger
+ * /api/v1/errorlogs/errorloglist/{userId}:
+ *  get:
+ *      tags:
+ *          - Error Log Management
+ *      summary: "Get all Error Log"
+ *      security: [{
+ *         bearerAuth: []
+ *     }] 
+ *      parameters:
+ *       - name: userId
+ *         in: path
+ *         description: User ID
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
 
+router.get('/errorloglist/:userId',authController.protect,errorLogController.getErrorLogListByUser);
 /**
  * @swagger
  * /api/v1/errorlogs/new:
