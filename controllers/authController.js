@@ -6,6 +6,7 @@ const Company = require('../models/companyModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
+const sendEmailLog = require('../utils/emailLog');
 const Role = require('../models/permissions/roleModel');
 const { request } = require('http');
 const userSubordinate = require('../models/userSubordinateModel');
@@ -263,7 +264,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 });
 exports.sendLog=catchAsync(async (req, res, next) => {
   console.log("Sending Email Log every night at 12 AM");
-  let filter = { status: 'Active' };
+ 
   // Thanks to merging params in routers      
   // Generate query based on request params
   const userList = await User.find({}).where("email").equals("apptesting157@gmail.com");  
@@ -271,36 +272,26 @@ exports.sendLog=catchAsync(async (req, res, next) => {
   if(userList)
   {
     for(var i = 0; i < userList.length; i++) {
-     console.log(userList[i].email);
-     var html="<table style='width:1200px;'><tr><td colspan='18'><h3>Welcome , This is trial Email </h3><p>That was easy!</p></td></tr>";
-     html=html+"<tr><td colspan='6'>6.00</td>";
-     html=html+"<td colspan='6'>7.00</td>";
-     html=html+"<td colspan='6'>8.00</td>";
-     html=html+"<td colspan='6'>9.00</td>";
-     html=html+"<td colspan='6'>10.00</td>";
-     html=html+"<td colspan='6'>11.00</td>";
-     html=html+"<td colspan='6'>12.00</td>";
-     html=html+"</tr>";
-     html=html+"<tr><td></td><td></td><td></td><td></td><td></td><td></td>";
-      html=html+"<td></td><td></td><td></td><td></td><td></td><td></td>";
-      html=html+"<td></td><td></td><td></td><td></td><td></td><td></td>";
-      html=html+"<td></td><td></td><td></td><td></td><td></td><td></td>";
-      html=html+"<td></td><td></td><td></td><td></td><td></td><td></td>";
-      html=html+"<td></td><td></td><td></td><td></td><td></td><td></td>";
-      html=html+"<td></td><td></td><td></td><td></td><td></td><td></td>";
-      html=html+"</tr>";
-      html=html+"</table>";
-      console.log("hii");
+     console.log(userList[i].email);     
+     console.log("hii12345");
      try {
-      await sendEmail({
-        email: userList[i].email,
-        subject: 'Tracker Log',
-        html: html
-      });
-      res.status(200).json({
-        status: 'success',
-        message: 'Email Sent!'
-      });
+      
+        sendEmailLog({
+          email: userList[i].email,
+          subject: 'Tracker Log',
+        data: {
+        name: 'Json World',
+        message: 'Hello there!'
+        },
+        htmlPath: "home.pug"
+        }).then(() => {
+        return res.send('Email has been sent!');
+        }).catch((error) => {
+        return res.send('There was an error while sending the email');
+        })
+       
+     
+    
     } catch (err) {
       console.log(err);
     }
@@ -413,17 +404,17 @@ exports.getRoles = catchAsync(async (req, res, next) => {
  
 exports.addSubordinate = catchAsync(async (req, res, next) => {    
   
-  const roles = await userSubordinate.find({}).where('userId').equals(req.body.userId).where('subordinateUserId').equals(req.body.subordinateUserId);  
+  const userSubordinates = await userSubordinate.find({}).where('userId').equals(req.body.userId).where('subordinateUserId').equals(req.body.subordinateUserId);  
   
-  if (roles.length>0) {
+  if (userSubordinates.length>0) {
     return next(new AppError('User subordinate already exists.', 403));
   }
   else{    
     const subordinate = await userSubordinate.create({
       userId:req.body.userId,
       subordinateUserId:req.body.subordinateUserId,
-      modifiedOn : req.body.modifiedOn,
-      modifiedBy : req.body.modifiedBy
+      modifiedOn : new Date(Date.now()),
+      modifiedBy :  req.cookies.userId
     }); 
 
     res.status(201).json({

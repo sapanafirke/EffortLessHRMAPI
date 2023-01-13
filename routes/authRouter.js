@@ -165,9 +165,108 @@ authRouter
  *
  */
   authRouter.route('/roles').get(authController.protect,authController.getRoles);
-  authRouter.route('/roles/addSubordinate').post(authController.addSubordinate);
-  authRouter.route('/roles/getSubordinates/:id').get(authController.getSubordinates);
-  authRouter.route('/roles/deleteSubordinate/:userId/:subordinateUserId').delete(authController.deleteSubordinates);
+/**
+ * @swagger
+ * /api/v1/auth/roles/addSubordinate:
+ *  post:
+ *      tags:
+ *          - Team Member Management
+ *      summary: "Create Team Member"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          userId:
+ *                              type: string
+ *                          subordinateUserId:
+ *                              type: string
+ *    
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Team Member added successfully"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+  authRouter.route('/roles/addSubordinate').post(authController.protect,authController.addSubordinate);
+  /**
+ * @swagger
+ * /api/v1/auth/roles/getSubordinates/{id}:
+ *  get:
+ *      tags:
+ *          - Team Member Management
+ *      summary: "Get team member Based On UserId"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: User Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *                
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+  authRouter.route('/roles/getSubordinates/:id').get(authController.protect,authController.getSubordinates);
+/**
+ * @swagger
+ * /api/v1/auth/roles/deleteSubordinate/{userId}/{subordinateUserId}:
+ *  delete:
+ *      tags:
+ *          - Team Member Management
+ *      summary: "Delete Team Member"
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *       - name: userId
+ *         in: path
+ *         description: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *       - name: subordinateUserId
+ *         in: path
+ *         description: subordinateUserId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *                
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+  authRouter.route('/roles/deleteSubordinate/:userId/:subordinateUserId').delete(authController.protect,authController.deleteSubordinates);
   
 //#region User
 authRouter.get('/user/:id',recruitmentController.getSkill);
