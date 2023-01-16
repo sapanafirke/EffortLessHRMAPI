@@ -13,11 +13,11 @@ var userSubordinateModelSchema = new Schema({
     },
     modifiedOn: {
       type: Date,
-      required: true      
+     // required: true      
     },
     modifiedBy: {
         type: String,
-        required: true      
+       // required: true      
       },
   },
   {

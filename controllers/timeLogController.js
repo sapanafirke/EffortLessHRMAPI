@@ -108,10 +108,11 @@ exports.getLogsWithImages = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteLog = catchAsync(async (req, res, next) => {
-  const timeLogsExists = await TimeLog.findById(req.params.id);    
+  for(var i = 0; i < req.body.logs.length; i++) {
+  const timeLogsExists = await TimeLog.findById(req.body.logs[i].logId);    
   if(timeLogsExists)
   {
-    var url=timeLogsExists.filePath;    
+    var url = timeLogsExists.filePath;    
     containerClient.getBlockBlobClient(url).deleteIfExists();
     const blockBlobClient = containerClient.getBlockBlobClient(url);
     await blockBlobClient.deleteIfExists();
@@ -124,6 +125,7 @@ exports.deleteLog = catchAsync(async (req, res, next) => {
       data: null
     });
   }
+}
 });
 // Convert stream to text
 async function streamToText(readable) {

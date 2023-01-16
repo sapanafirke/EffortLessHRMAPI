@@ -47,4 +47,9 @@ var roleModelSchema = new Schema({
     foreignField: 'role', // tour field in review model pointing to this model
     localField: '_id' // id of current model
   });
+  roleModelSchema.virtual('user', {
+    ref: 'User',
+    foreignField: 'role', // tour field in review model pointing to this model
+    localField: '_id' // id of current model
+  });
   module.exports = mongoose.model('Role', roleModelSchema);
