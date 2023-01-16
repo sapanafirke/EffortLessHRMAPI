@@ -52,6 +52,10 @@ var taskModelSchema = new Schema({
     ref: 'Company'//,
     //required: [true, 'User must belong to a User']
   },
+  project: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Project'
+  },
   TaskUser:[],
   status:
   {
@@ -75,6 +79,9 @@ var taskModelSchema = new Schema({
     }).populate({
       path: 'updatedBy',
       select: 'firstName'
+    }).populate({
+      path: 'project',
+      select: 'projectName'
     });
     next();
   });
