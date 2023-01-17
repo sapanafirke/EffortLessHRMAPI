@@ -1,44 +1,54 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var timeLogSchema = new Schema({ 
+var timeLogSchema = new Schema({
   user: {
     type: String,
     required: true
   },
   task: {
-    type: String,
+    type: mongoose.Schema.ObjectId,
+    ref: 'Task',
+    required: [true, 'Task must belong to a project']
+  },
+  project: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Project',
     required: true
-  },  
+  },
   startTime: {
     type: Date,
-    required: true    
+    required: true
   },
   date: {
     type: Date,
-    required: true    
+    required: true
   },
   endTime: {
     type: Date,
-    required: true    
+    required: true
   },
-  filePath:{
+  filePath: {
     type: String,
     required: true
   },
-  fileString:{
+  fileString: {
     type: String,
     required: false
   },
-  keysPressed:{
+  keysPressed: {
     type: Number,
     required: false
   },
-  clicks:{
+  clicks: {
     type: Number,
     required: false
   },
-  url:{
+  scrolls: {
+    type: Number,
+    required: false
+  },
+  url: {
     type: String,
     required: false
   }

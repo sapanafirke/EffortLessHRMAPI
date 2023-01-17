@@ -34,58 +34,60 @@ const router = express.Router();
  *                          type: object
  *
  */
-router.post('/getTimeLogs',authController.protect,timeLogController.getTimeLogs);
+router.post('/getTimeLogs', authController.protect, timeLogController.getTimeLogs);
 
- router.get('/',authController.protect,timeLogController.getLog);
+router.get('/', authController.protect, timeLogController.getLog);
 
- /**
- * @swagger
- * /api/v1/timelogs:
- *  post:
- *      tags:
- *          - Timelog Management
- *      summary: "Add TimeLog"   
- *      security: [{
- *         bearerAuth: []
- *     }]        
- *      requestBody:
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
- *                      properties:
- *                          user:
- *                              type: string
- *                          task:
- *                              type: string
- *                          startTime:
- *                              type: string
- *                          endTime:
- *                              type: string
- *                          keysPressed:
- *                              type: string
- *                          clicks:
- *                              type: string
- *                          filePath:
- *                              type: string
- *                          fileString:
- *                              type: string 
- *                          date:
- *                              type: string
- *                              format: date
- *      produces:
- *          - application/json
- *      responses:
- *          200:
- *              description: "Success"
- *              content:
- *                  application/json:
- *                      schema:
- *                          type: object
- *
- */
-router.post('/',authController.protect,timeLogController.addLog);  
- 
+/**
+* @swagger
+* /api/v1/timelogs:
+*  post:
+*      tags:
+*          - Timelog Management
+*      summary: "Add TimeLog"   
+*      security: [{
+*         bearerAuth: []
+*     }]        
+*      requestBody:
+*          content:
+*              application/json:
+*                  schema:
+*                      type: object
+*                      properties:
+*                          user:
+*                              type: string
+*                          task:
+*                              type: string
+*                          startTime:
+*                              type: string
+*                          endTime:
+*                              type: string
+*                          keysPressed:
+*                              type: string
+*                          clicks:
+*                              type: string
+*                          scrolls:
+*                              type: string
+*                          filePath:
+*                              type: string
+*                          fileString:
+*                              type: string 
+*                          date:
+*                              type: string
+*                              format: date
+*      produces:
+*          - application/json
+*      responses:
+*          200:
+*              description: "Success"
+*              content:
+*                  application/json:
+*                      schema:
+*                          type: object
+*
+*/
+router.post('/', authController.protect, timeLogController.addLog);
+
 /**
  * @swagger
  * /api/v1/timelogs/getLogsWithImages:
@@ -118,7 +120,7 @@ router.post('/',authController.protect,timeLogController.addLog);
  *                          type: object
  *
  */
-router.post('/getLogsWithImages',authController.protect,timeLogController.getLogsWithImages);  
+router.post('/getLogsWithImages', authController.protect, timeLogController.getLogsWithImages);
 /**
  * @swagger
  * /api/v1/timelogs/getCurrentWeekTotalTime:
@@ -154,7 +156,7 @@ router.post('/getLogsWithImages',authController.protect,timeLogController.getLog
  *                          type: object
  *
  */
-router.post('/getCurrentWeekTotalTime',authController.protect,timeLogController.getCurrentWeekTotalTime);
+router.post('/getCurrentWeekTotalTime', authController.protect, timeLogController.getCurrentWeekTotalTime);
 
 /**
  * @swagger
@@ -188,6 +190,6 @@ router.post('/getCurrentWeekTotalTime',authController.protect,timeLogController.
  *                          type: object
  *
  */
- router.delete('/',authController.protect,timeLogController.deleteLog);
+router.delete('/', authController.protect, timeLogController.deleteLog);
 
 module.exports = router;
