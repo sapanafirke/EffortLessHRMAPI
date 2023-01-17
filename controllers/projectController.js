@@ -74,7 +74,7 @@ res.status(200).json({
       estimatedTime:req.body.estimatedTime,
       createdOn: new Date(Date.now()),
       updatedOn: new Date(Date.now()),
-      company:req.cookies.companyId,
+      company: req.cookies.companyId,
       createdBy: req.cookies.userId,
       updatedBy: req.cookies.userId,
       status:"Active"

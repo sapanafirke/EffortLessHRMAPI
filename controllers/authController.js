@@ -6,7 +6,7 @@ const Company = require('../models/companyModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
-const sendEmailLog = require('../utils/email');
+const sendEmailLog = require('../email/emailLog');
 const Role = require('../models/permissions/roleModel');
 const { request } = require('http');
 const userSubordinate = require('../models/userSubordinateModel');
@@ -273,36 +273,33 @@ exports.sendLog=catchAsync(async (req, res, next) => {
   {
     for(var i = 0; i < userList.length; i++) {
      console.log(userList[i].email);     
-     console.log("hii12345");
+   
      try {
-      
-        sendEmailLog({
+      const timeLogs = await TimeLog.find({}).where('user').equals(userList[i].email).where('date').equals("2023-01-04");       
+      console.log(timeLogs);
+       await sendEmailLog({
           email: userList[i].email,
           subject: 'Tracker Log',
         data: {
         name: 'Json World',
-        message: 'Hello there!'
+        message: 'Hello there!',
+        logs:timeLogs
         },
         htmlPath: "home.pug"
         }).then(() => {
-        return res.send('Email has been sent!');
+        console.log('Email has been sent!');
         }).catch((error) => {
-        return res.send('There was an error while sending the email');
-        })
-       
-     
-    
-    } catch (err) {
-      console.log(err);
+       console.log(error);
+        })  
+    } catch (err) {   
+      return next(
+        new AppError(
+          'There was an error sending the email. Try again later.',
+          500
+        )
+      )
     }
-      const timeLogs = await TimeLog.find({}).where('user').equals(userList[i].email).where('date').equals("2023-01-04");       
-      if(timeLogs)
-       {
-         for(var j = 0; j < timeLogs.length; j++) {
-          var slot=timeLogs[j].startTime;
-         // console.log(slot);
-         }
-       }
+     
     }
   }
  // const timeLogs = await TimeLog.find({}).where('user').equals("sapana@arsteg.com").where('date').equals('2023-01-04');    

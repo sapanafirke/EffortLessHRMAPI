@@ -19,7 +19,7 @@ var recruitmentRouter = require('./routes/recruitmentRouter');
 var app = express();
 const cookieParser = require("cookie-parser");
 //app.use(express.json({ lmit: '5000mb' }));
-
+const path = require('path');
 app.use(express.json({ extended: false, limit: '500mb' }))
 app.use(express.urlencoded({ limit: '500mb', extended: false, parameterLimit: 500000 }))
 
@@ -29,6 +29,8 @@ console.log('max limit set');
 app.use(cors());
 
 app.options('*',cors());
+app.set("view engine", "pug");
+app.set("email", path.join(__dirname, "email"));
 
 // Each request will contain requested time
 app.use((req, res, next) => {    
