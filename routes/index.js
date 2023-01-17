@@ -37,7 +37,7 @@ routes.get('/', (req, res, next) => {
      message:"http://www.tutorialspoint.com"
   });
 });*/
-
+/*
 var task = cron.schedule('* * * * *', () =>  {
 authController.sendLog();
   }, {
@@ -45,6 +45,6 @@ authController.sendLog();
    // timezone: "America/Sao_Paulo"
   });
   
-  task.start();  
+  task.start();*/  
 
 module.exports = routes;
