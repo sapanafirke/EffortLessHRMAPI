@@ -110,13 +110,14 @@ exports.getLogsWithImages = catchAsync(async (req, res, next) => {
 exports.deleteLog = catchAsync(async (req, res, next) => {
   for(var i = 0; i < req.body.logs.length; i++) {
   const timeLogsExists = await TimeLog.findById(req.body.logs[i].logId);    
+  console.log(timeLogsExists);
   if(timeLogsExists)
   {
     var url = timeLogsExists.filePath;    
     containerClient.getBlockBlobClient(url).deleteIfExists();
     const blockBlobClient = containerClient.getBlockBlobClient(url);
     await blockBlobClient.deleteIfExists();
-    const document = await TimeLog.findByIdAndDelete(req.params.id);
+    const document = await TimeLog.findByIdAndDelete(req.body.logs[i].logId);
     if (!document) {
       return next(new AppError('No document found with that ID', 404));
     }
