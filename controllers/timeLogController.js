@@ -33,12 +33,14 @@ exports.addLog = catchAsync(async (req, res, next) => {
   const newTimeLog = await TimeLog.create({
     user: req.body.user,
     task:req.body.task,
+    project:req.body.project,
     date :req.body.date,
     startTime: req.body.startTime,
     endTime:req.body.endTime,
     filePath:blobName,
     keysPressed:req.body.keysPressed,
     clicks:req.body.clicks,
+    scrolls:req.body.scrolls,
     url:url
   });  
   console.log('time log created');
