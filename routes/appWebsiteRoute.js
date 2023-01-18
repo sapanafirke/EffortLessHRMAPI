@@ -19,10 +19,33 @@ module.exports = router;
  *              application/json:
  *                  schema:
  *                      type: object
- *                      properties:
- *                          name:
+  *                      properties:
+ *                          appWebsite:
  *                              type: string
- *    
+ *                          ModuleName:
+ *                              type: string
+ *                          ApplicationTitle:
+ *                              type: string
+ *                          TimeSpent:
+ *                              type: string
+ *                          date:
+ *                              type: string
+ *                          type:
+ *                              type: string
+ *                          projectReference:
+ *                              type: string
+ *                          userReference:
+ *                              type: string
+ *                          mouseClicks:
+ *                              type: string
+ *                          keyboardStrokes:
+ *                              type: string
+ *                          scrollingNumber:
+ *                              type: string
+ *                          inactive:
+ *                              type: string
+ *                          total:
+ *                              type: string
  *      produces:
  *          - application/json
  *      responses:
@@ -107,7 +130,31 @@ router.get('/get/:id', appWebsiteController.getById);
  *                  schema:
  *                      type: object
  *                      properties:
- *                          name:
+ *                          appWebsite:
+ *                              type: string
+ *                          ModuleName:
+ *                              type: string
+ *                          ApplicationTitle:
+ *                              type: string
+ *                          TimeSpent:
+ *                              type: string
+ *                          date:
+ *                              type: string
+ *                          type:
+ *                              type: string
+ *                          projectReference:
+ *                              type: string
+ *                          userReference:
+ *                              type: string
+ *                          mouseClicks:
+ *                              type: string
+ *                          keyboardStrokes:
+ *                              type: string
+ *                          scrollingNumber:
+ *                              type: string
+ *                          inactive:
+ *                              type: string
+ *                          total:
  *                              type: string
  *      parameters:
  *       - name: id

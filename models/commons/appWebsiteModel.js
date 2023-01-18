@@ -8,10 +8,24 @@ const appWebsiteSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    ModuleName: {
+        type: String,
+        required: true
+    },
+    ApplicationTitle: {
+        type: String,
+        required: true
+    },
+    TimeSpent: {
+        type: Number,
+        required: true
+    },
+
     date: {
         type: Date,
         required: true
     },
+
     type: {
         type: String,
         required: true
