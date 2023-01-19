@@ -262,12 +262,44 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // 4) Log the user in, send JWT
   createAndSendToken(user, 200, res);
 });
-exports.sendLog=catchAsync(async (req, res, next) => {
+exports.sendLog = catchAsync(async (req, res, next) => {
   console.log("Sending Email Log every night at 12 AM");
  
+
   // Thanks to merging params in routers      
   // Generate query based on request params
-  const userList = await User.find({}).where("email").equals("apptesting157@gmail.com");  
+  const managerIds = await userSubordinate.find({}).distinct("userId");  
+  if(managerIds)
+      {
+          for(var i = 0; i < managerIds.length; i++) 
+          {
+            const managerTeamsIds = await userSubordinate.find({}).distinct("subordinateUserId").where('userId').equals(managerIds[i]);      
+            if(managerTeamsIds)
+            {
+              /*
+              for(var j = 0; j < managerTeamsIds.length; j++) 
+              {       
+                const userSubordinates = await userSubordinate.find({}).where('subordinateUserId').equals(managerTeamsIds[j]._id);  
+                if(userSubordinates)
+                {
+                for(var k = 0; k < userSubordinates.length; k++) 
+                  {
+                  const timeLogs = await TimeLog.find({}).where('user').equals(userSubordinates[k].subordinateUserId.email).where('date').equals("2023-01-16");       
+               
+                   }
+                }
+                
+              }
+              */
+            }           
+          }
+          
+      }
+  console.log("hello");
+  const userListmy = await User.find({}).where("status").equals("Active");  
+  console.log(userListmy);
+ 
+  const userList = await User.find({}).where("email").equals("sapana@arsteg.com");  
    
   if(userList)
   {
@@ -276,14 +308,18 @@ exports.sendLog=catchAsync(async (req, res, next) => {
    
      try {
       const timeLogs = await TimeLog.find({}).where('user').equals(userList[i].email).where('date').equals("2023-01-04");       
-      console.log(timeLogs);
+      for (const timeLog of timeLogs) {       
+          timeLog.startTime = timeLog.startTime.getHours();        
+          } 
+       console.log(timeLogs);
        await sendEmailLog({
           email: userList[i].email,
           subject: 'Tracker Log',
         data: {
-        name: 'Json World',
-        message: 'Hello there!',
-        logs:timeLogs
+        name: userList[i].firstName+" "+userList[i].lastName,
+        total: '0.00',
+        logs:timeLogs,
+        managerName:userList[i].firstName+" "+userList[i].lastName
         },
         htmlPath: "home.pug"
         }).then(() => {
@@ -303,7 +339,7 @@ exports.sendLog=catchAsync(async (req, res, next) => {
     }
   }
  // const timeLogs = await TimeLog.find({}).where('user').equals("sapana@arsteg.com").where('date').equals('2023-01-04');    
-  
+
  
 });
 exports.updatePassword = catchAsync(async (req, res, next) => {

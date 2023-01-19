@@ -1,11 +1,46 @@
 doctype html
+link
 head
+style
+             include  ../email/email.css
 body
 div
 p
-b Hi #{name}
-div
+h1 Team of #{managerName}
+- const divColors = { "color": "black", "background-color": "white" }
+
+div(style=divColors) Hello My test
+- const tableClass = { "border": "solid", "border-color": "black" }
+- const tdClass = { "border": "1px solid", "border-color": "black" ,"width":"1%"}
+- const tdHeadClass = { "border": "1px solid", "border-color": "black","width":"6%"}
+- const trClass = { "border": "solid", "border-color": "black" }
+- const users = [ `John`, `Jane`, `Jefferson`,  `Ramirez` ]
 table
-    tr     
-      td 12345
-p #{message}
+tr 
+td(style=tdHeadClass colspan="6")
+td(style=tdHeadClass colspan="6") 5.00
+td(style=tdHeadClass colspan="6") 6.00
+td(style=tdHeadClass colspan="6") 7.00
+td(style=tdHeadClass colspan="6") 8.00
+td(style=tdHeadClass colspan="6") 9.00
+td(style=tdHeadClass colspan="6") 10.00
+td(style=tdHeadClass colspan="6") 11.00
+td(style=tdHeadClass colspan="6") 12.00
+td(style=tdHeadClass colspan="6") 1.00
+td(style=tdHeadClass colspan="6") 2.00
+td(style=tdHeadClass colspan="6") 3.00
+td(style=tdHeadClass colspan="6") 4.00
+td(style=tdHeadClass colspan="6") 5.00
+td(style=tdHeadClass colspan="6") 6.00
+td(style=tdHeadClass colspan="6") 7.00
+td(style=tdHeadClass colspan="6") 8.00
+td(style=tdHeadClass colspan="6") 9.00
+td(style=tdHeadClass colspan="6") 10.00
+td(style=tdHeadClass colspan="6") 11.00
+td(style=tdHeadClass colspan="6") 12.00
+td(style=tdHeadClass colspan="6") Total
+ each user in users
+    tr 
+    td(style=tdClass) #{user}
+    each val in logs 
+      td.item(style=tdClass)= val.startTime
