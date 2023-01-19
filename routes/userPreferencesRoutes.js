@@ -9,7 +9,7 @@ module.exports = router;
  * /api/v1/userPreferences/getAll:
  *  get:
  *      tags:
- *          - GetUserPreferences
+ *          - User Preferences Management
  *      summary: "Get All User Preferences"   
  *      produces:
  *          - application/json
@@ -28,7 +28,7 @@ router.get('/getAll', userPreferencesController.getAllUserPreference);
  * /api/v1/userPreferences/get/{id}:
  *  get:
  *      tags:
- *          - GetUserPreferences
+ *          - User Preferences Management
  *      summary: "Get User Preference by ID"  
  *      parameters:
  *       - name: id
@@ -56,7 +56,7 @@ router.get('/get/:id', userPreferencesController.getUserPreference);
  * /api/v1/userPreferences/create:
  *  post:
  *      tags:
- *          - CreateUserPreference
+ *          - User Preferences Management
  *      summary: "Create User Preferences"
  * 
  *      requestBody:
@@ -86,7 +86,7 @@ router.post('/create', userPreferencesController.createUserPreference);
  * /api/v1/userPreferences/delete/{id}:
  *  delete:
  *      tags:
- *          - DeleteUserPreferences
+ *          - User Preferences Management
  *      summary: "Delete User Preference by ID"  
  *      parameters:
  *       - name: id
@@ -114,7 +114,7 @@ router.delete('/delete/:id', userPreferencesController.deleteUserPreference);
  * /api/v1/userPreferences/update/{id}:
  *  patch:
  *      tags:
- *          - UpdateUserPreference
+ *          - User Preferences Management
  *      summary: "Update User Preferences"
  * 
  *      requestBody:

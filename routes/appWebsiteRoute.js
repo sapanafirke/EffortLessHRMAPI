@@ -12,7 +12,7 @@ module.exports = router;
  * /api/v1/appWebsite/create:
  *  post:
  *      tags:
- *          - appWebsite
+ *          - App Website Management
  *      summary: "Create App Website Data"   
  *      requestBody:
  *          content:
@@ -65,7 +65,7 @@ router.post('/create', appWebsiteController.addNew);
  * /api/v1/appWebsite/delete/{id}:
  *  delete:
  *      tags:
- *          - appWebsite
+ *          - App Website Management
  *      summary: "Delete by ID"  
  *      parameters:
  *       - name: id
@@ -92,7 +92,7 @@ router.delete('/delete/:id', appWebsiteController.delete);
  * /api/v1/appWebsite/get/{id}:
  *  get:
  *      tags:
- *          - appWebsite
+ *          - App Website Management
  *      summary: "Get ID"  
  *      parameters:
  *       - name: id
@@ -121,7 +121,7 @@ router.get('/get/:id', appWebsiteController.getById);
  * /api/v1/appWebsite/update/{id}:
  *  patch:
  *      tags:
- *          - appWebsite
+ *          - App Website Management
  *      summary: "Update"
  * 
  *      requestBody:
