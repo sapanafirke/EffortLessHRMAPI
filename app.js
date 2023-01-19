@@ -11,8 +11,10 @@ var companyRouter = require('./routes/companyRouter');
 var projectRouter = require('./routes/projectRouter');
 var holidayCalendarRouter = require('./routes/holidayCalendarRouter');
 var taskRouter = require('./routes/taskRouter');
+var userPreferences = require('./routes/userPreferencesRoutes');
+var appWebsite = require('./routes/appWebsiteRoute');
 const compression = require('compression');
-const cors =  require('cors');
+const cors = require('cors');
 var authRouter = require('./routes/authRouter');
 const AppError = require('./utils/appError');
 var recruitmentRouter = require('./routes/recruitmentRouter');
@@ -28,36 +30,38 @@ console.log('max limit set');
 //app.use(compression);
 app.use(cors());
 
-app.options('*',cors());
+app.options('*', cors());
 app.set("view engine", "pug");
 app.set("email", path.join(__dirname, "email"));
 
 // Each request will contain requested time
-app.use((req, res, next) => {    
-  
+app.use((req, res, next) => {
+
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");    
- 
-  console.log('received the request');  
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+  console.log('received the request');
   next(); // run next middleware in stack
-  });  
+});
 
 // cookie parser middleware
-  app.use(cookieParser());
-  // Use api routes
-  app.use('/api/v1/auth', authRouter);
-  app.use('/api/v1/users', userRouter);
-  app.use('/api/v1/tours', tourRouter);
-  app.use('/api/v1/timeLogs', timeLogRouter);
-  app.use('/api/v1/errorlogs', errorLogRouter);
-  app.use('/api/v1/holidayCalendar', holidayCalendarRouter);
-  app.use('/api/v1/company', companyRouter);
-  app.use('/api/v1/project', projectRouter);
-  app.use('/api/v1/task', taskRouter);
-  app.use('/api/v1/recruitment', recruitmentRouter);
-  app.use('/api/v1/recruitment', recruitmentRouter);
-  
+app.use(cookieParser());
+// Use api routes
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/timeLogs', timeLogRouter);
+app.use('/api/v1/errorlogs', errorLogRouter);
+app.use('/api/v1/holidayCalendar', holidayCalendarRouter);
+app.use('/api/v1/company', companyRouter);
+app.use('/api/v1/project', projectRouter);
+app.use('/api/v1/task', taskRouter);
+app.use('/api/v1/recruitment', recruitmentRouter);
+app.use('/api/v1/recruitment', recruitmentRouter);
+app.use('/api/v1/userPreferences', userPreferences);
+app.use('/api/v1/appWebsite', appWebsite);
 
-  // api route for common API like Country , Role , Permission , RolePermission
-  app.use('/api/v1/common', commonRouter);
+
+// api route for common API like Country , Role , Permission , RolePermission
+app.use('/api/v1/common', commonRouter);
 module.exports = app;
