@@ -74,7 +74,11 @@ const timeLogsAll = [];
             const timeLog = await TimeLog.findOne({user:timeLogs[i],date:"2023-01-19"});
           if(timeLog) 
           {
-            timeLogsAll.push(timeLog);
+            const newLiogInUSer={};
+            newLiogInUSer.user=timeLog.user;
+            newLiogInUSer.project=timeLog.project.projectName;
+            newLiogInUSer.task=timeLog.task.taskName;
+            timeLogsAll.push(newLiogInUSer);
           }
         }
   res.status(200).json({
