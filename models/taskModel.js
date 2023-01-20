@@ -95,5 +95,9 @@ var taskModelSchema = new Schema({
     foreignField: 'task', // tour field in review model pointing to this model
     localField: '_id' // id of current model
   });
-
+  taskModelSchema.virtual('timeLog', {
+    ref: 'TimeLog',
+    foreignField: 'task', // tour field in review model pointing to this model
+    localField: '_id' // id of current model
+  });
 module.exports = mongoose.model('Task', taskModelSchema);

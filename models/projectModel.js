@@ -67,6 +67,11 @@ var projectModelSchema = new Schema({
     });
     next();
   });
+  projectModelSchema.virtual('timeLog', {
+    ref: 'TimeLog',
+    foreignField: 'project', // tour field in review model pointing to this model
+    localField: '_id' // id of current model
+  });
   projectModelSchema.virtual('project', {
     ref: 'Project',
     foreignField: 'project', // tour field in review model pointing to this model

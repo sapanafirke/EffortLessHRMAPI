@@ -54,4 +54,14 @@ var timeLogSchema = new Schema({
   }
 
 }, { collection: 'TimeLog' });
+timeLogSchema.pre(/^find/,async function(next) {
+  this.populate({
+    path: 'task',
+    select: 'taskName'
+  }).populate({
+    path: 'project',
+    select: 'projectName'
+  });
+  next();
+});
 module.exports = mongoose.model('TimeLog', timeLogSchema);

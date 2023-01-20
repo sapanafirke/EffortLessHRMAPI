@@ -2,6 +2,7 @@ const express = require('express');
 const timeLogController = require('../controllers/timeLogController');
 const authController = require('../controllers/authController');
 const router = express.Router();
+
 /**
  * @swagger
  * /api/v1/timelogs/getTimeLogs:
@@ -36,6 +37,28 @@ const router = express.Router();
  */
 router.post('/getTimeLogs', authController.protect, timeLogController.getTimeLogs);
 
+/**
+ * @swagger
+ * /api/v1/timelogs/getLogInUsers:
+ *  post:
+ *      tags:
+ *          - Timelog Management
+ *      summary: "Get TimeLog"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }] 
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+ router.post('/getLogInUsers', authController.protect, timeLogController.getLogInUser);
 router.get('/', authController.protect, timeLogController.getLog);
 
 /**

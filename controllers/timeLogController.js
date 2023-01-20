@@ -63,6 +63,26 @@ exports.getTimeLogs = catchAsync(async (req, res, next) => {
   });  
 });
 
+exports.getLogInUser = catchAsync(async (req, res, next) => {
+  console.log(req.cookies.companyId);
+  //let date = `${req.body.date}.000+00:00`;
+//console.log("getTimeLogs, date:" + date);
+const timeLogsAll = [];
+  const timeLogs = await TimeLog.find({}).distinct('user').where('date').equals("2023-01-19");
+  for(var i = 0; i < timeLogs.length; i++) 
+          {
+            const timeLog = await TimeLog.findOne({user:timeLogs[i],date:"2023-01-19"});
+          if(timeLog) 
+          {
+            timeLogsAll.push(timeLog);
+          }
+        }
+  res.status(200).json({
+    status: 'success',
+    data: timeLogsAll
+  });  
+});
+
 exports.getCurrentWeekTotalTime = catchAsync(async (req, res, next) => {      
   const timeLogs = await TimeLog.find({}).where('user').equals(req.body.user).find({
     "date" : {"$gte": req.body.startDate,"$lte": req.body.endDate}});
