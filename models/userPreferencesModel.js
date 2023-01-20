@@ -20,6 +20,12 @@ var userPreferencesSchema = new Schema({
         required: true
     }
 });
-
+userPreferencesSchema.pre(/^find/,async function(next) {
+    this.populate({
+      path: 'company',
+      select: 'companyName'
+    });
+    next();
+  });
 userPreferences = mongoose.model('userPreferences', userPreferencesSchema);
 module.exports = userPreferences;

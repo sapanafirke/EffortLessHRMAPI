@@ -46,7 +46,29 @@ router.post('/getTimeLogs', authController.protect, timeLogController.getTimeLog
  *      summary: "Get TimeLog"   
  *      security: [{
  *         bearerAuth: []
- *     }] 
+ *     }]    
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                         users:
+ *                              type: array
+ *                              items:
+ *                                type: string
+ *                                example: ""
+ *                         projects:
+ *                              type: array
+ *                              items:
+ *                                type: object
+ *                                example: ""
+ *                         tasks:
+  *                              type: array
+ *                              items:
+ *                                type: object
+ *                                example: ""
+ *     
  *      produces:
  *          - application/json
  *      responses:

@@ -68,18 +68,51 @@ exports.getLogInUser = catchAsync(async (req, res, next) => {
   //let date = `${req.body.date}.000+00:00`;
 //console.log("getTimeLogs, date:" + date);
 const timeLogsAll = [];
-  const timeLogs = await TimeLog.find({}).distinct('user').where('date').equals("2023-01-19");
-  for(var i = 0; i < timeLogs.length; i++) 
+var timeLogs;
+
+if(req.body.users!='' && req.body.projects!='' && req.body.tasks!='')
+  {
+  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'project': { $in: req.body.projects },'task': { $in: req.body.tasks } }).distinct('user').where('date').equals("2023-01-19");    
+  }
+  else if(req.body.users!='' && req.body.tasks!='')
+  {
+  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'task': { $in: req.body.tasks } }).distinct('user').where('date').equals("2023-01-19");    
+  }
+  else if(req.body.users!='' && req.body.projects!='')
+  {
+  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'project': { $in: req.body.projects } }).distinct('user').where('date').equals("2023-01-19");    
+  }
+  else if(req.body.tasks!='' && req.body.projects!='')
+  {
+  timeLogs=await TimeLog.find({ 'project': { $in: req.body.projects } }).distinct('user').where('date').equals("2023-01-19");    
+  }
+  else if(req.body.projects!='')
+  {
+  timeLogs=await TimeLog.find({ 'project': { $in: req.body.projects } }).distinct('user').where('date').equals("2023-01-19");    
+  }  
+  else if(req.body.tasks!='')
+  {
+  timeLogs=await TimeLog.find({ 'task': { $in: req.body.tasks } }).distinct('user').where('date').equals("2023-01-19");    
+  }
+  else if(req.body.users!='')
+  {
+  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users } }).distinct('user').where('date').equals("2023-01-19");    
+  }
+  else{
+      timeLogs = await TimeLog.find({}).distinct('user').where('date').equals("2023-01-19");
+   }
+    for(var i = 0; i < timeLogs.length; i++) 
           {
-            const timeLog = await TimeLog.findOne({user:timeLogs[i],date:"2023-01-19"});
+          const timeLog = await TimeLog.findOne({user:timeLogs[i],date:"2023-01-19"});
           if(timeLog) 
           {
-            const newLiogInUSer={};
-            newLiogInUSer.user=timeLog.user;
-            newLiogInUSer.project=timeLog.project.projectName;
-            newLiogInUSer.task=timeLog.task.taskName;
-            timeLogsAll.push(newLiogInUSer);
+            const newLogInUSer = {};
+            newLogInUSer.user= timeLog.user;
+            newLogInUSer.project = timeLog.project.projectName;
+            newLogInUSer.task = timeLog.task.taskName;
+            timeLogsAll.push(newLogInUSer);
           }
+  
         }
   res.status(200).json({
     status: 'success',
