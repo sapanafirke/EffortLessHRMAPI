@@ -125,8 +125,7 @@ router.route('/:id').get(authController.protect,taskController.getTask);
  *                          taskUsers:
  *                              type: array
  *                              items:
- *                                type: string
- *                                example: ["str1", "str2", "str3"]
+ *                                type: string 
  *                          taskAttachments:
  *                              type: array
  *                              items:
