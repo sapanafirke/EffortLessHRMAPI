@@ -178,14 +178,17 @@ exports.deleteLog = catchAsync(async (req, res, next) => {
     await blockBlobClient.deleteIfExists();
     const document = await TimeLog.findByIdAndDelete(req.body.logs[i].logId);
     if (!document) {
-      return next(new AppError('No document found with that ID', 404));
-    }
-    res.status(204).json({
-      status: 'success',
-      data: null
-    });
+      console.log('No document found with that ID');
+    }    
+  }
+  else{
+    console.log('No document found with that ID');
   }
 }
+res.status(204).json({
+  status: 'success',
+  data: null
+});
 });
 // Convert stream to text
 async function streamToText(readable) {
