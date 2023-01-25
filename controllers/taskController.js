@@ -178,7 +178,7 @@ exports.addTask = catchAsync(async (req, res, next) => {
   for(var i = 0; i < req.body.taskUsers.length; i++) {
     const newTaskUserItem = await TaskUser.create({
       task:newTask._id,
-      user:req.body.taskUsers[i].user,
+      user:req.body.taskUsers[i],
       company:req.cookies.companyId,
       status:"Active",
       createdOn: new Date(),
