@@ -28,6 +28,7 @@ var projectModelSchema = new Schema({
     type: Date,
     required: true    
   },  
+  ProjectUser:[],
   createdBy: {
     type: mongoose.Schema.ObjectId,
     ref: 'User'//,

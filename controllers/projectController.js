@@ -31,6 +31,18 @@ exports.updateProject =  catchAsync(async (req, res, next) => {
 
 exports.getProject  = catchAsync(async (req, res, next) => {    
 const project = await Project.findById(req.params.id); 
+if(project)
+      {       
+       const projectUsers = await ProjectUser.find({}).where('project').equals(project._id);       
+          if(projectUsers) 
+          {
+            project.ProjectUser=projectUsers;
+          }
+          else{
+            project.ProjectUser=null;
+          }
+       
+      }
 res.status(200).json({
   status: 'success',
   data: {
@@ -41,6 +53,19 @@ res.status(200).json({
  // Get Country List
  exports.getProjectList = catchAsync(async (req, res, next) => {        
   const projectList = await Project.find({}).where('company').equals(req.cookies.companyId);  
+  if(projectList)
+      {
+       for(var i = 0; i < projectList.length; i++) {
+       const projectUsers = await ProjectUser.find({}).where('project').equals(projectList[i]._id);  
+       if(projectUsers) 
+          {
+            projectList[i].ProjectUser=projectUsers;
+          }
+          else{
+            projectList[i].ProjectUser=null;
+          }
+       }
+      }
   res.status(200).json({
       status: 'success',
       data: {
