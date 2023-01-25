@@ -1,4 +1,5 @@
 const TimeLog = require('../models/timeLog');
+const CurrentUserDevice = require('../models/currentUserDeviceModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError.js');
 const { v1: uuidv1} = require('uuid');
@@ -18,8 +19,39 @@ const blobServiceClient = BlobServiceClient.fromConnectionString(
 const containerClient = blobServiceClient.getContainerClient(process.env.CONTAINER_NAME);
 
 exports.addLog = catchAsync(async (req, res, next) => { 
+ const currentUserActive = await CurrentUserDevice.findOne({}).where('userId').equals(req.cookies.userId).where('companyId').equals(req.cookies.companyId);  
+ if (currentUserActive) {
+      if(req.body.machineId!=currentUserActive.machineId)
+         {
+            if(req.body.makeThisDeviceActive==true)
+            {
+              currentUserActive.machineId = req.body.machineId;
+              await currentUserActive.save();
+            }
+            else
+            {
+                        res.status(200).json({
+                        status: 'success',
+                        data: {
+                          MakeThisDeviceActive: false,
+                          message: "User is logged in on another device, Do you want to make it active?"
+                        }
+                      }); 
+            }
+          }
+  }
+  else
+  { 
+          const newCurrentUserDevice = await CurrentUserDevice.create({
+            machineId: req.body.machineId,
+            company:req.cookies.companyId,
+            status:"Active",
+            createdOn: new Date(),
+            userId: req.cookies.userId      
+          });               
+    }
 
-  // Upload Capture image on block blob client
+    // Upload Capture image on block blob client
   const blobName = "Capture" + uuidv1() + `${req.body.filePath}`;
   // Get a block blob client
   const blockBlobClient = containerClient.getBlockBlobClient(blobName);
@@ -50,6 +82,7 @@ exports.addLog = catchAsync(async (req, res, next) => {
       timeLog: newTimeLog
     }
   });  
+
 });
 
 exports.getTimeLogs = catchAsync(async (req, res, next) => {
