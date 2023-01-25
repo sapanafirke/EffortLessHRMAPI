@@ -120,6 +120,11 @@ router.get('/', authController.protect, timeLogController.getLog);
 *                          date:
 *                              type: string
 *                              format: date
+*                          machineId:
+*                               type: string
+*                          makeThisDeviceActive:
+*                               type: boolean
+*                               default: false
 *      produces:
 *          - application/json
 *      responses:
