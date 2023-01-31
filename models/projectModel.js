@@ -61,10 +61,10 @@ var projectModelSchema = new Schema({
       select: 'companyName'
     }).populate({
       path: 'createdBy',
-      select: 'firstName'
+      select: 'firstName lastName'
     }).populate({
       path: 'updatedBy',
-      select: 'firstName'
+      select: 'firstName lastName'
     });
     next();
   });
