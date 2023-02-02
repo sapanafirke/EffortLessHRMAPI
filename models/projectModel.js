@@ -73,8 +73,8 @@ var projectModelSchema = new Schema({
     foreignField: 'project', // tour field in review model pointing to this model
     localField: '_id' // id of current model
   });
-  projectModelSchema.virtual('project', {
-    ref: 'Project',
+  projectModelSchema.virtual('projectuser', {
+    ref: 'ProjectUser',
     foreignField: 'project', // tour field in review model pointing to this model
     localField: '_id' // id of current model
   });

@@ -60,7 +60,7 @@ var taskModelSchema = new Schema({
   status:
   {
     type: String
-  }
+  } 
   },
   {
     toJSON: { virtuals: true }, // Use virtuals when outputing as JSON
@@ -75,10 +75,10 @@ var taskModelSchema = new Schema({
       select: 'companyName'
     }).populate({
       path: 'createdBy',
-      select: 'firstName'
+      select: 'firstName lastName'
     }).populate({
       path: 'updatedBy',
-      select: 'firstName'
+      select: 'firstName lastName'
     }).populate({
       path: 'project',
       select: 'projectName'

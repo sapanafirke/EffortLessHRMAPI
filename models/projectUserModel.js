@@ -59,7 +59,7 @@ var projectUsersModelSchema = new Schema({
       select: 'firstName lastName'
     }).populate({
       path: 'project',
-      select: 'projectName notes'
+      select: 'projectName notes startDate endDate estimatedTime status'
     }).populate({
       path: 'user',
       select: 'firstName lastName'
