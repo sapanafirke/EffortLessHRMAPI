@@ -326,7 +326,19 @@ exports.deleteTaskAttachment = catchAsync(async (req, res, next) => {
  // Get Country List
 exports.getTaskList = catchAsync(async (req, res, next) => {    
     const taskList = await Task.find({}).where('company').equals(req.cookies.companyId);  
-    res.status(200).json({
+    if(taskList)
+    {
+     for(var i = 0; i < taskList.length; i++) {
+     const taskUser = await TaskUser.find({}).where('task').equals(taskList[i]._id);  
+     if(taskUser) 
+        {
+          taskList[i].TaskUsers=taskUser;
+        }
+        else{
+          taskList[i].TaskUsers=null;
+        }
+     }
+    } res.status(200).json({
       status: 'success',
       data: {
         taskList: taskList

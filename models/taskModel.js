@@ -56,7 +56,7 @@ var taskModelSchema = new Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Project'
   },
-  TaskUser:[],
+  TaskUsers:[],
   status:
   {
     type: String
