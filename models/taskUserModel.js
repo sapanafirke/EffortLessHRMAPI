@@ -53,16 +53,16 @@ var taskUsersModelSchema = new Schema({
       select: 'companyName'
     }).populate({
       path: 'createdBy',
-      select: 'firstName'
+      select: 'firstName lastName'
     }).populate({
       path: 'updatedBy',
-      select: 'firstName'
+      select: 'firstName lastName'
     }).populate({
       path: 'task',
       select: 'taskName'
     }).populate({
       path: 'user',
-      select: 'firstName'
+      select: 'firstName lastName'
     });
     next();
   });
