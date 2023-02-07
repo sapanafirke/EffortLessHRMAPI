@@ -59,7 +59,7 @@ var taskUsersModelSchema = new Schema({
       select: 'firstName lastName'
     }).populate({
       path: 'task',
-      select: 'taskName'
+      select: 'taskName startDate endDate description comment priority status'
     }).populate({
       path: 'user',
       select: 'firstName lastName'
