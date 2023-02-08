@@ -4,6 +4,8 @@ const ProjectUser = require('../models/projectUserModel');
 const AppError = require('../utils/appError');
 exports.deleteProject = catchAsync(async (req, res, next) => {
   const document = await Project.findByIdAndDelete(req.params.id);
+  const newProjectUserList = await ProjectUser.findOneAndDelete({}).where('project').equals(req.params.id);  
+
   if (!document) {
     return next(new AppError('No document found with that ID', 404));
   }
