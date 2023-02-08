@@ -12,7 +12,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 // initialize nodemailer
 var html= pug.renderFile(__dirname+'/../email/'+'home.pug' , { managerName:options.data.managerName,name: options.data.name, total: options.data.total,logs:options.data.logs});
 const msg = {
-    from: 'testingemail112021@gmail.com',
+    from: 'effortlesshrm2023@gmail.com',
     to: 'apptesting157@gmail.com',
     subject: options.subject,
     html: html
