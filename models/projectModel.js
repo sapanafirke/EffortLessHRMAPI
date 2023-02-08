@@ -41,8 +41,8 @@ var projectModelSchema = new Schema({
   },
   company: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Company'//,
-    //required: [true, 'User must belong to a User']
+    ref: 'Company',
+    required: [true, 'Company must belong to a Company']
   },
   status:
   {
