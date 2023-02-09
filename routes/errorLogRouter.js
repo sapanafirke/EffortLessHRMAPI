@@ -26,7 +26,7 @@ const router = express.Router();
  *
  */
 
-router.get('/errorloglist',authController.protect,errorLogController.getErrorLog);
+router.get('/errorloglist',authController.protect,errorLogController.getErrorLogList);
 /**
  * @swagger
  * /api/v1/errorlogs/errorloglist/{userId}:

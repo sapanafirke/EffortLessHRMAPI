@@ -5,7 +5,7 @@ const APIFeatures = require('../utils/apiFeatures');
 
 exports.getAllUsers=catchAsync(async (req, res, next) => {
     // To allow for nested GET revicews on tour (hack)
-    let filter = { status: 'Active' };
+    let filter = { status: 'Active', company : req.cookies.companyId };
     // Thanks to merging params in routers      
     // Generate query based on request params
     const features = new APIFeatures(User.find(filter), req.query)

@@ -76,7 +76,7 @@ var companyModelSchema = new Schema({
     });
     next();
   });
-  companyModelSchema.virtual('user', {
+  companyModelSchema.virtual('errorLog', {
     ref: 'ErrorLog',
     foreignField: 'company', // tour field in review model pointing to this model
     localField: '_id' // id of current model
