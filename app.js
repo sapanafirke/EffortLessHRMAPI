@@ -13,6 +13,7 @@ var holidayCalendarRouter = require('./routes/holidayCalendarRouter');
 var taskRouter = require('./routes/taskRouter');
 var userPreferences = require('./routes/userPreferencesRoutes');
 var appWebsite = require('./routes/appWebsiteRoute');
+var reportRouter = require('./routes/reportRouter');
 const compression = require('compression');
 const cors = require('cors');
 var authRouter = require('./routes/authRouter');
@@ -60,7 +61,7 @@ app.use('/api/v1/recruitment', recruitmentRouter);
 app.use('/api/v1/recruitment', recruitmentRouter);
 app.use('/api/v1/userPreferences', userPreferences);
 app.use('/api/v1/appWebsite', appWebsite);
-
+app.use('/api/v1/report', reportRouter);
 
 // api route for common API like Country , Role , Permission , RolePermission
 app.use('/api/v1/common', commonRouter);

@@ -8,11 +8,11 @@ app.set('email', __dirname + '/email');
 app.set('view engine', 'pug');
 const sendEmailLog = async options => {
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)  
-
+console.log("test12345");
 // initialize nodemailer
 var html= pug.renderFile(__dirname+'/../email/'+'home.pug' , { managerName:options.data.managerName,name: options.data.name, total: options.data.total,logs:options.data.logs});
 const msg = {
-    from: 'effortlesshrm2023@gmail.com',
+    from: 'testingemail112021@gmail.com',
     to: 'apptesting157@gmail.com',
     subject: options.subject,
     html: html
