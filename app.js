@@ -31,8 +31,9 @@ app.use(express.urlencoded({ limit: '500mb', extended: false, parameterLimit: 50
 console.log('max limit set');
 
 //app.use(compression);
-app.use(cors({
-  origin: "http://localhost:4200", // "true" will copy the domain of the request back
+app.use(cors(
+  {
+    origin: "http://localhost:4200", // "true" will copy the domain of the request back
                 // to the reply. If you need more control than this
                 // use a function.
 
@@ -41,9 +42,10 @@ app.use(cors({
                      // or Authorization header. Otherwise the
                      // browser will block the response.
 
-  methods: 'POST,GET,PUT,OPTIONS,DELETE' // Make sure you're not blocking
+  methods: 'POST,GET,PUT,OPTIONS,DELETE, PATCH' // Make sure you're not blocking
                                          // pre-flight OPTIONS requests
-}));
+  }
+));
 
 app.options('*', cors());
 app.set("view engine", "pug");
@@ -52,7 +54,8 @@ app.set("email", path.join(__dirname, "email"));
 // Each request will contain requested time
 app.use((req, res, next) => {
 
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin","http://localhost:4200");
+  
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
   console.log('received the request');
