@@ -347,15 +347,15 @@ router.delete('/deleteuser/:id',userController.deleteMe);
  *  get:
  *      tags:
  *          - User Management
- *      summary: "Get all User"   
+ *      summary: "Get All Users"   
  *      security: [{
  *         bearerAuth: []
  *     }]
- *    parameters:
- *       - name: id
- *         in: path
- *         description: User Id
- *         required: true
+ *      parameters:
+ *        - name: id
+ *          in: path
+ *          description: User Id
+ *          required: true 
  *      produces:
  *          - application/json
  *      responses:
