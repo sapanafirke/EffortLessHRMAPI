@@ -351,6 +351,11 @@ router.delete('/deleteuser/:id',userController.deleteMe);
  *      security: [{
  *         bearerAuth: []
  *     }]
+ *    parameters:
+ *       - name: id
+ *         in: path
+ *         description: User Id
+ *         required: true
  *      produces:
  *          - application/json
  *      responses:
@@ -364,6 +369,61 @@ router.delete('/deleteuser/:id',userController.deleteMe);
  */
 router.get('/',authController.protect, userController.getAllUsers);
 
+/**
+ * @swagger
+ * /api/v1/users/getUserManagers:
+ *  get:
+ *      tags:
+ *          - User Management
+ *      summary: "Get Managers By UserId"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *        - name: id
+ *          in: path
+ *          description: User Id
+ *          required: true 
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+router.route('/getUserManagers/:id').get(userController.getUserManagers);
+
+/**
+ * @swagger
+ * /api/v1/users/getUserProjects:
+ *  get:
+ *      tags:
+ *          - User Management
+ *      summary: "Get Projects By UserId"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *        - name: id
+ *          in: path
+ *          description: User Id
+ *          required: true 
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+router.route('/getUserProjects/:id').get(authController.protect,userController.getUserProjects);
 
 router
   .route('/:id')

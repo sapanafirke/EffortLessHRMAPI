@@ -23,6 +23,8 @@ var app = express();
 const cookieParser = require("cookie-parser");
 //app.use(express.json({ lmit: '5000mb' }));
 const path = require('path');
+var manualTimeRouter = require('./routes/manualTimeRouter');
+
 app.use(express.json({ extended: false, limit: '500mb' }))
 app.use(express.urlencoded({ limit: '500mb', extended: false, parameterLimit: 500000 }))
 
@@ -77,4 +79,5 @@ app.use('/api/v1/report', reportRouter);
 
 // api route for common API like Country , Role , Permission , RolePermission
 app.use('/api/v1/common', commonRouter);
+app.use('/api/v1/manualTime', manualTimeRouter);
 module.exports = app;
