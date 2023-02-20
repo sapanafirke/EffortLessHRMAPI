@@ -29,7 +29,19 @@ app.use(express.urlencoded({ limit: '500mb', extended: false, parameterLimit: 50
 console.log('max limit set');
 
 //app.use(compression);
-app.use(cors());
+app.use(cors({
+  origin: true, // "true" will copy the domain of the request back
+                // to the reply. If you need more control than this
+                // use a function.
+
+  credentials: true, // This MUST be "true" if your endpoint is
+                     // authenticated via either a session cookie
+                     // or Authorization header. Otherwise the
+                     // browser will block the response.
+
+  methods: 'POST,GET,PUT,OPTIONS,DELETE' // Make sure you're not blocking
+                                         // pre-flight OPTIONS requests
+}));
 
 app.options('*', cors());
 app.set("view engine", "pug");
