@@ -85,7 +85,7 @@ exports.updateManualTimeRequest = catchAsync(async (req, res, next) => {
       return next(new AppError(`Project is required.`, 404));
     }
     
-    const updateUserPreference = await manualTimeRequest.findByIdAndUpdate(req.params.id, req.body, {
+    const updateUserPreference = await manualTimeRequest.findByIdAndUpdate(req.body.id, req.body, {
       new: false,
       runValidators: true
   });
@@ -112,4 +112,15 @@ exports.getManualTimeRequestsByUser = catchAsync(async (req, res, next) => {
             status: 'success',
             body: result
         });          
-        });  
+        });
+  
+  exports.getManualTimeRequestsForApprovalByUser = catchAsync(async (req, res, next) => {      
+    const manualTimeRequests = await manualTimeRequest.find({}).where('manager').equals(req.params.id);
+    for(let i=0;i<manualTimeRequests.length;i++){ 
+      manualTimeRequests[i].project = await Project.findById(manualTimeRequests[i].project);      
+    }
+    res.status(200).json({
+        status: 'success',
+        data: manualTimeRequests
+      });  
+    });

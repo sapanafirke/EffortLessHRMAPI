@@ -153,5 +153,36 @@ router.get('/getManualTimeRequests/:id', authController.protect, manualTimeContr
   *
   */
 router.route('/manualTimeRequest/:id').delete(authController.protect, manualTimeController.deleteManualTimeRequest);
- 
+
+/**
+ * @swagger
+ * /api/v1/manualTime/getManualTimeRequestsForApproval/{id}:
+ *  get:
+ *      tags:
+ *          - Manual Time
+ *      summary: "Get Manual Time Requests For Approval by user Id"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: User ID
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+router.get('/getManualTimeRequestsForApproval/:id', authController.protect, manualTimeController.getManualTimeRequestsForApprovalByUser);
+
 module.exports = router;
