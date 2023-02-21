@@ -367,3 +367,42 @@ exports.getTaskListByProject = catchAsync(async (req, res, next) => {
     }
   });  
 });
+
+
+exports.getTaskList = catchAsync(async (req, res, next) => {    
+  const taskList = await Task.find({}).where('company').equals(req.cookies.companyId);  
+  if(taskList)
+  {
+   for(var i = 0; i < taskList.length; i++) {
+   const taskUser = await TaskUser.find({}).where('task').equals(taskList[i]._id);  
+   if(taskUser) 
+      {
+        taskList[i].TaskUsers=taskUser;
+      }
+      else{
+        taskList[i].TaskUsers=null;
+      }
+   }
+  } res.status(200).json({
+    status: 'success',
+    data: {
+      taskList: taskList
+    }
+  });  
+});
+
+exports.getUserTaskListByProject = catchAsync(async (req, res, next) => {
+let results = [];
+const taskUsers =  await TaskUser.find({}).where('user').equals(req.body.userId).select('task');
+for(let i=0; i<taskUsers.length;i++){
+  if(taskUsers[i].project.id==req.body.projectId){
+    results.push(taskUsers[i]);
+}
+}
+ res.status(200).json({
+  status: 'success',
+  data: {
+    taskList: taskUsers
+  }
+});  
+});

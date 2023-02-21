@@ -8,7 +8,7 @@ exports.addProductivity = catchAsync(async (req, res, next) => {
     icon: req.body.icon,
     key: req.body.key,
     name: req.body.name,
-    IsProductive: req.body.IsProductive,
+    isProductive: req.body.isProductive,
     company: req.cookies.companyId,
     createdOn: new Date(),
     updatedOn: new Date(),

@@ -609,4 +609,38 @@ router.patch('/update/taskattachemnt/:id',authController.protect,taskController.
  */
   router.post('/tasklistbyuser',authController.protect,taskController.getTaskListByUser);
 
+  /**
+ * @swagger
+ * /api/v1/task/getUserTaskListByProject:
+ *  post:
+ *      tags:
+ *          - Task Management
+ *      summary: "Get Task List By Project and UserId"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *           
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          userId:
+ *                              type: string  
+ *                          projectId:
+ *                              type: string  
+*      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+  router.post('/getUserTaskListByProject',authController.protect,taskController.getUserTaskListByProject);
+
 module.exports = router;
