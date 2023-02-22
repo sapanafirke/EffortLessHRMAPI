@@ -393,16 +393,17 @@ exports.getTaskList = catchAsync(async (req, res, next) => {
 
 exports.getUserTaskListByProject = catchAsync(async (req, res, next) => {
 let results = [];
-const taskUsers =  await TaskUser.find({}).where('user').equals(req.body.userId).select('task');
-for(let i=0; i<taskUsers.length;i++){
-  if(taskUsers[i].project.id==req.body.projectId){
-    results.push(taskUsers[i]);
-}
-}
+let taskUsers =  await TaskUser.find({"user":req.body.userId});// .where('user':);//.equals().select('task').where('project').equals(req.body.projectId);// ({project:{id:{$eq:req.body.projectId}}});
+
+taskUsers.forEach(element => {
+  if(element.task?.project?.id==req.body.projectId)  {
+    results.push({id:element.task.id, name:element.task.taskName});
+  }
+});
+
+//taskUsers = taskUsers.filter(e=>e.project.id==req.body.projectId);
  res.status(200).json({
   status: 'success',
-  data: {
-    taskList: taskUsers
-  }
+  data: results
 });  
 });
