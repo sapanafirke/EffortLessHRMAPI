@@ -80,11 +80,6 @@ router.post('/getactivity', authController.protect, reportController.getActivity
  *                              items:
  *                                type: object
  *                                example: ""
- *                         tasks:
-  *                              type: array
- *                              items:
- *                                type: object
- *                                example: ""
  *                         fromdate:
  *                              type: string
  *                              format: date

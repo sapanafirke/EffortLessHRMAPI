@@ -7,8 +7,8 @@ routes.get('/', (req, res, next) => {
   res.render('welcome');
 })
 
-
 /*
+
 var task = cron.schedule('* * * * *', () =>  {
 authController.sendLog();
   }, {

@@ -31,11 +31,13 @@ const appWebsiteSchema = new mongoose.Schema({
         required: true
     },
     projectReference: {
-        type: String,
+        type: mongoose.Schema.ObjectId,
+        ref: 'Project',
         required: true
     },
     userReference: {
-        type: String,
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
         required: true
     },
     mouseClicks: {
@@ -59,5 +61,14 @@ const appWebsiteSchema = new mongoose.Schema({
         required: true
     }
 })
-
+appWebsiteSchema.pre(/^find/,async function(next) {
+    this.populate({
+      path: 'userReference',
+      select: 'firstName lastName'
+    }).populate({
+      path: 'projectReference',
+      select: 'projectName'
+    });
+    next();
+  });
 module.exports = mongoose.model("appWebsiteModel", appWebsiteSchema);
