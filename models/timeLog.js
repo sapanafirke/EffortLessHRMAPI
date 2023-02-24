@@ -29,8 +29,7 @@ var timeLogSchema = new Schema({
     required: true
   },
   filePath: {
-    type: String,
-    required: true
+    type: String    
   },
   fileString: {
     type: String,

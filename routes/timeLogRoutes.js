@@ -242,4 +242,51 @@ router.post('/getCurrentWeekTotalTime', authController.protect, timeLogControlle
  */
 router.delete('/', authController.protect, timeLogController.deleteLog);
 
+/**
+* @swagger
+* /api/v1/timelogs/addTimeLog:
+*  post:
+*      tags:
+*          - Timelog Management
+*      summary: "Add Manual TimeLog"   
+*      security: [{
+*         bearerAuth: []
+*     }]        
+*      requestBody:
+*          content:
+*              application/json:
+*                  schema:
+*                      type: object
+*                      properties:
+*                          user:
+*                              type: string
+*                          task:
+*                              type: string
+*                          projectId:
+*                              type: string 
+*                          startTime:
+*                              type: string
+*                          endTime:
+*                              type: string
+*                          date:
+*                              type: string
+*                              format: date
+*                          machineId:
+*                               type: string
+*                          makeThisDeviceActive:
+*                               type: boolean
+*                               default: false
+*      produces:
+*          - application/json
+*      responses:
+*          200:
+*              description: "Success"
+*              content:
+*                  application/json:
+*                      schema:
+*                          type: object
+*
+*/
+router.post('/addTimeLog', authController.protect, timeLogController.addManualTime);
+
 module.exports = router;
