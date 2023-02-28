@@ -223,6 +223,38 @@ res.status(204).json({
   data: null
 });
 });
+
+exports.addManualTime = catchAsync(async (req, res, next) => {    
+  let startTime = moment(req.body.startTime).toDate();
+  const endTime = moment(req.body.endTime).toDate();  
+  let recordCount=0;  
+  let result=[];
+  while( startTime<endTime){   
+    var newLog = {
+      user: req.body.user,
+      task:req.body.task,
+      project:req.body.projectId,
+      date :req.body.date,
+      startTime: startTime,
+      endTime:moment(startTime).add(10, 'm').toDate(),     
+      keysPressed:0,
+      clicks:0,
+      scrolls:0,
+      filePath:"",     
+    }
+    //let result = await TimeLog.create();
+    result.push(newLog);
+    recordCount++;  
+    startTime = moment(startTime).add(10, 'm').toDate();      
+  }  
+   res.status(200).json({
+     status: 'success',
+     data: {
+       timeLog: result
+     }
+   });
+ });
+ 
 // Convert stream to text
 async function streamToText(readable) {
   readable.setEncoding('utf8');

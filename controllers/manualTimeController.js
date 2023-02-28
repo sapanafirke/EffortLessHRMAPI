@@ -27,6 +27,7 @@ exports.addManualTimeRequest = catchAsync(async (req, res, next) => {
     return next(new AppError(`To Date is required.`, 404));
   }  
   const manager = await User.findById(req.body.manager);
+    
   if (!manager) {
     return next(new AppError(`There is no manager with id ${user}}.`, 404));
   }
@@ -54,11 +55,18 @@ exports.addManualTimeRequest = catchAsync(async (req, res, next) => {
     }
   );
 
+  const requestApprovalLink = `${process.env.WEBSITE_DOMAIN}/ManualTimeRequestApproval`;  
+  console.log(requestApprovalLink);
+  const managerName = `${manager.firstName} ${manager.lastName}`;
+  const userName = `${user.firstName} ${user.lastName}`;
+  const emailSubject=`Manual Time Request By ${userName}`;
+  const emailMessage=`Hi ${managerName}, \n ${userName} has requested you to approve a manual time request.\n Please click the following link to approve or reject this request.\n ${requestApprovalLink} \nThank you `;
+
   if(mtRequest){
     await sendEmail({
-      email: "dotnetexpertdev@gmail.com",
-      subject: 'Manual Time Request',
-      message:"No message"
+      email: manager.email,
+      subject: emailSubject,
+      message: emailMessage
     });
   }
   res.status(200).json({
@@ -124,3 +132,11 @@ exports.getManualTimeRequestsByUser = catchAsync(async (req, res, next) => {
         data: manualTimeRequests
       });  
     });
+    
+    exports.getManualTimeApprovedRequests = catchAsync(async (req, res, next) => {      
+      const approvedRequests = await manualTimeRequest.find({"user":req.params.userId,"project":req.params.projectId,"manager":req.params.managerId,"status":"approved"});      
+      res.status(200).json({
+          status: 'success',
+          data: approvedRequests
+        });  
+      });
