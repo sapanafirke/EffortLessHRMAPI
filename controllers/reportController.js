@@ -1,6 +1,7 @@
 const Project = require('../models/projectModel');
 const catchAsync = require('../utils/catchAsync');
 const ProjectUser = require('../models/projectUserModel');
+const Productivity = require('./../models/productivityModel');
 const AppError = require('../utils/appError');
 const TimeLog = require('../models/timeLog');
 const AppWebsite = require('./../models/commons/appWebsiteModel');
@@ -118,6 +119,70 @@ if(req.body.users!='' && req.body.projects!='' && req.body.tasks!='')
   });  
 });
 
+exports.getProductivityByMember = catchAsync(async (req, res, next) => {
+  //let date = `${req.body.date}.000+00:00`;
+  //console.log("getTimeLogs, date:" + date);
+  var appWebsiteSummary={};
+  var appwebsiteDetails=[];
+  let filter;
+  filter={'userReference': req.body.user,
+          'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
+  const appWebsites = await AppWebsite.find(filter);   
+  let mouseClicks=0,keyboardStrokes=0,scrollingNumber=0,totalTimeSpent=0,TimeSpentProductive=0,TimeSpentNonProductive=0;
+  if(appWebsites.length>0)    
+    { 
+      for(var i = 0; i < appWebsites.length; i++) 
+         {                
+            mouseClicks=mouseClicks+appWebsites[i].mouseClicks;
+            keyboardStrokes=keyboardStrokes+appWebsites[i].keyboardStrokes;
+            scrollingNumber=scrollingNumber+appWebsites[i].scrollingNumber;                  
+         }
+      totalTimeSpent = appWebsites.length*10;  
+    appWebsiteSummary.mouseClicks=mouseClicks;
+    appWebsiteSummary.keyboardStrokes=keyboardStrokes;
+    appWebsiteSummary.scrollingNumber=scrollingNumber;                 
+    appWebsiteSummary.TimeSpent= totalTimeSpent; 
+    const appWebsitename = await AppWebsite.find(filter).distinct('appWebsite');                               
+    if(appWebsitename.length>0) 
+      {
+        for(var c = 0; c < appWebsitename.length; c++) 
+            { 
+              filterforcount = {'appWebsite':appWebsitename[c],'userReference': req.body.user,'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};  
+              let TimeSpent=0,appWebsite={};
+              filterforproductivity = {'name':appWebsitename[c]};  
+              const appIsProductive = await Productivity.find(filterforproductivity);  
+              appWebsite.isProductive=appIsProductive[0].isProductive;
+              const appWebsitecount = await AppWebsite.find(filterforcount);  
+              if(appWebsitecount.length>0) 
+                {
+                  for(var j = 0; j < appWebsitecount.length; j++) 
+                     { 
+                        TimeSpent=TimeSpent+appWebsitecount[j].TimeSpent;
+                     }
+                }
+              if(appWebsite.isProductive==true)
+              {
+                 TimeSpentProductive=TimeSpentProductive+TimeSpent;
+              }
+              else
+              {
+                TimeSpentNonProductive=TimeSpentNonProductive+TimeSpent;
+              }
+              appWebsite.TimeSpent=TimeSpent;
+              appWebsite.name=appWebsitename[c];             
+              appwebsiteDetails.push(appWebsite);
+           }
+     }
+         
+   appWebsiteSummary.appwebsiteDetails=appwebsiteDetails;
+   appWebsiteSummary.TimeSpentProductive=TimeSpentProductive;
+   appWebsiteSummary.TimeSpentNonProductive=TimeSpentNonProductive;
+  }
+   res.status(200).json({
+      status: 'success',
+      data: appWebsiteSummary
+    });  
+  });
 exports.getAppWebsite = catchAsync(async (req, res, next) => {
   //let date = `${req.body.date}.000+00:00`;
   //console.log("getTimeLogs, date:" + date);

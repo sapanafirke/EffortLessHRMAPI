@@ -53,7 +53,43 @@ const router = express.Router();
  *
  */
 router.post('/getactivity', authController.protect, reportController.getActivity);
-
+/**
+ * @swagger
+ * /api/v1/report/getproductivitybymember:
+ *  post:
+ *      tags:
+ *          - Report Management
+ *      summary: "Get Activity"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]    
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                         users:
+ *                              type: string                             
+ *                         fromdate:
+ *                              type: string
+ *                              format: date
+ *                         todate:
+ *                              type: string
+ *                              format: date
+ *     
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+ router.post('/getproductivitybymember', authController.protect, reportController.getProductivityByMember);
 /**
  * @swagger
  * /api/v1/report/getappwebsite:
