@@ -69,7 +69,7 @@ router.post('/getactivity', authController.protect, reportController.getActivity
  *                  schema:
  *                      type: object
  *                      properties:
- *                         users:
+ *                         user:
  *                              type: string                             
  *                         fromdate:
  *                              type: string
