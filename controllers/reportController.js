@@ -125,7 +125,7 @@ exports.getProductivityByMember = catchAsync(async (req, res, next) => {
   var appWebsiteSummary={};
   var appwebsiteDetails=[];
   let filter;
-  filter={'userReference': req.body.user
+  filter={'userReference': req.body.user,'date' : {$gte: req.body.fromdate,$lte: req.body.todate}
           };
   const appWebsites = await AppWebsite.find({}).where('userReference').equals(req.body.user);  
   let mouseClicks=0,keyboardStrokes=0,scrollingNumber=0,totalTimeSpent=0,TimeSpentProductive=0,TimeSpentNonProductive=0;
@@ -183,6 +183,100 @@ exports.getProductivityByMember = catchAsync(async (req, res, next) => {
       data: appWebsiteSummary
     });  
   });
+
+exports.getProductivity = catchAsync(async (req, res, next) => {
+    //let date = `${req.body.date}.000+00:00`;
+    //console.log("getTimeLogs, date:" + date);
+   
+    var appwebsiteDetails=[];
+    var appwebsiteproductivity=[];
+    let filter;
+    if(req.body.users.length>0)
+    {
+      filter = { 'userReference': { $in: req.body.users } , 'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
+    }
+    else{
+        filter={
+          'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
+     }
+    
+ var appwebsiteusers = await AppWebsite.find(filter).distinct('userReference') 
+ if(appwebsiteusers)
+ {
+            for(var u = 0; u < appwebsiteusers.length; u++) 
+            {    
+              var appWebsiteSummary={};
+    const appWebsites = await AppWebsite.find({}).where('userReference').equals(appwebsiteusers[u]._id);  
+    let mouseClicks=0,keyboardStrokes=0,scrollingNumber=0,totalTimeSpent=0,TimeSpentProductive=0,TimeSpentNonProductive=0;
+    if(appWebsites.length>0)    
+      { 
+        for(var i = 0; i < appWebsites.length; i++) 
+           {                
+              mouseClicks=mouseClicks+appWebsites[i].mouseClicks;
+              keyboardStrokes=keyboardStrokes+appWebsites[i].keyboardStrokes;
+              scrollingNumber=scrollingNumber+appWebsites[i].scrollingNumber;                  
+           }
+      totalTimeSpent = appWebsites.length*10;        
+      appWebsiteSummary.user=appWebsites[0].userReference.firstName+" "+appWebsites[0].userReference.lastName;
+      appWebsiteSummary.mouseClicks=mouseClicks;
+      appWebsiteSummary.keyboardStrokes=keyboardStrokes;
+      appWebsiteSummary.scrollingNumber=scrollingNumber;                 
+      appWebsiteSummary.TimeSpent= totalTimeSpent; 
+      const appWebsitename = await AppWebsite.find(filter).distinct('appWebsite');                               
+      if(appWebsitename.length>0) 
+        {
+          for(var c = 0; c < appWebsitename.length; c++) 
+              { 
+                filterforcount = {'appWebsite':appWebsitename[c],'userReference':appwebsiteusers[u]._id,'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};  
+                let TimeSpent=0;
+                var appWebsite={};
+                filterforproductivity = {'name':appWebsitename[c]};  
+                const appIsProductive = await Productivity.find(filterforproductivity);  
+                if(appIsProductive.length>0)
+                { 
+                    appWebsite.isProductive=appIsProductive[0].isProductive;
+                } 
+                else
+                {
+                    appWebsite.isProductive="false";
+                }
+                const appWebsitecount = await AppWebsite.find(filterforcount);  
+                if(appWebsitecount)
+                {
+                if(appWebsitecount.length>0) 
+                  {
+                    for(var j = 0; j < appWebsitecount.length; j++) 
+                       { 
+                          TimeSpent=TimeSpent+appWebsitecount[j].TimeSpent;
+                       }
+                  }
+                }
+                if(appWebsite.isProductive==true)
+                {
+                   TimeSpentProductive=TimeSpentProductive+TimeSpent;
+                }
+                else
+                {
+                  TimeSpentNonProductive=TimeSpentNonProductive+TimeSpent;
+                }
+                appWebsite.TimeSpent=TimeSpent;
+                appWebsite.name=appWebsitename[c];             
+                appwebsiteDetails.push(appWebsite);
+             }
+       }
+           
+     appWebsiteSummary.appwebsiteDetails=appwebsiteDetails;
+     appWebsiteSummary.TimeSpentProductive=TimeSpentProductive;
+     appWebsiteSummary.TimeSpentNonProductive=TimeSpentNonProductive;     
+     appwebsiteproductivity.push(appWebsiteSummary);
+    }
+  }
+}
+     res.status(200).json({
+        status: 'success',
+        data: appwebsiteproductivity
+      });  
+    });
 exports.getAppWebsite = catchAsync(async (req, res, next) => {
   //let date = `${req.body.date}.000+00:00`;
   //console.log("getTimeLogs, date:" + date);
