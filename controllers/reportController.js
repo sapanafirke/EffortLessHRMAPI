@@ -125,9 +125,9 @@ exports.getProductivityByMember = catchAsync(async (req, res, next) => {
   var appWebsiteSummary={};
   var appwebsiteDetails=[];
   let filter;
-  filter={'userReference': req.body.user,
-          'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
-  const appWebsites = await AppWebsite.find(filter);   
+  filter={'userReference': req.body.user
+          };
+  const appWebsites = await AppWebsite.find({}).where('userReference').equals(req.body.user);  
   let mouseClicks=0,keyboardStrokes=0,scrollingNumber=0,totalTimeSpent=0,TimeSpentProductive=0,TimeSpentNonProductive=0;
   if(appWebsites.length>0)    
     { 
@@ -190,15 +190,15 @@ exports.getAppWebsite = catchAsync(async (req, res, next) => {
   var timeLogs;
   let filter;
     
-  if(req.body.users!='' && req.body.projects!='')
+  if(req.body.users.length>0 && req.body.projects.length>0)
     {
       filter = { 'userReference': { $in: req.body.users },'projectReference': { $in: req.body.projects } , 'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
     }
-    else if(req.body.projects!='')
+    else if(req.body.projects.length>0)
     {
       filter = { 'projectReference': { $in: req.body.projects } , 'date' : {$gte: req.body.fromdate,$lte: req.body.todate}}; 
     }  
-    else if(req.body.users!='')
+    else if(req.body.users.length>0)
     {
       filter = { 'userReference': { $in: req.body.users } , 'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
     }
@@ -206,8 +206,9 @@ exports.getAppWebsite = catchAsync(async (req, res, next) => {
         filter={
           'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
      }
-    
+    console.log(filter);
      appWebsiteusers = await AppWebsite.find(filter).distinct('userReference') 
+
      for(var i = 0; i < appWebsiteusers.length; i++) 
      {          
         let filterProject;
@@ -220,13 +221,13 @@ exports.getAppWebsite = catchAsync(async (req, res, next) => {
           filterProject = {'userReference': appWebsiteusers[i],'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};  
       
         }   
-        const appWebsiteprojects = await AppWebsite.find(filterProject).distinct('projectReference');        
+        const appWebsiteprojects = await AppWebsite.find(filterProject).distinct('projectReference');      
        if(appWebsiteprojects.length>0) 
            {
                 for(var k = 0; k < appWebsiteprojects.length; k++) 
                 {  
                  
-                  filternames = {'userReference': appWebsiteusers[i],'projectReference':appWebsiteprojects[k]._id, 'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};  
+                  filternames = {'userReference': appWebsiteusers[i]._id,'projectReference':appWebsiteprojects[k]._id, 'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};  
                   const appWebsitename = await AppWebsite.find(filternames).distinct('appWebsite'); 
                             
                   if(appWebsitename.length>0) 
