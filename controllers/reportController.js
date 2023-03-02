@@ -5,6 +5,8 @@ const Productivity = require('./../models/productivityModel');
 const AppError = require('../utils/appError');
 const TimeLog = require('../models/timeLog');
 const AppWebsite = require('./../models/commons/appWebsiteModel');
+const Leave = require('../models/leaveModel');
+
 exports.getActivity = catchAsync(async (req, res, next) => {
 //let date = `${req.body.date}.000+00:00`;
 //console.log("getTimeLogs, date:" + date);
@@ -182,7 +184,7 @@ exports.getProductivityByMember = catchAsync(async (req, res, next) => {
       status: 'success',
       data: appWebsiteSummary
     });  
-  });
+});
 
 exports.getProductivity = catchAsync(async (req, res, next) => {
     //let date = `${req.body.date}.000+00:00`;
@@ -276,7 +278,7 @@ exports.getProductivity = catchAsync(async (req, res, next) => {
         status: 'success',
         data: appwebsiteproductivity
       });  
-    });
+});
 exports.getAppWebsite = catchAsync(async (req, res, next) => {
   //let date = `${req.body.date}.000+00:00`;
   //console.log("getTimeLogs, date:" + date);
@@ -315,7 +317,7 @@ exports.getAppWebsite = catchAsync(async (req, res, next) => {
           filterProject = {'userReference': appWebsiteusers[i],'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};  
       
         }   
-        const appWebsiteprojects = await AppWebsite.find(filterProject).distinct('projectReference');      
+       const appWebsiteprojects = await AppWebsite.find(filterProject).distinct('projectReference');      
        if(appWebsiteprojects.length>0) 
            {
                 for(var k = 0; k < appWebsiteprojects.length; k++) 
@@ -362,5 +364,51 @@ exports.getAppWebsite = catchAsync(async (req, res, next) => {
     res.status(200).json({
       status: 'success',
       data: appWebsiteAll
+    });  
+});
+exports.getleaves = catchAsync(async (req, res, next) => {
+
+  var leavesDetails=[];
+  if(req.body.users.length > 0)
+    {
+      filter = { 'user': { $in: req.body.users } , 'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
+    }
+    else
+    {
+        filter = {
+          'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
+    }    
+    var leaveusers = await Leave.find(filter).distinct('user');
+    console.log(leaveusers);
+    if(leaveusers)
+    {
+                for(var u = 0; u < leaveusers.length; u++)
+                { 
+                  var filterleavetypes = {'user': leaveusers[u]._id,'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};  
+                  const leavetypes = await Leave.find(filterleavetypes).distinct('LeaveType');                             
+                  if(leavetypes.length>0) 
+                      {
+                           for(var c = 0; c < leavetypes.length; c++) 
+                           { 
+                            var filterleavetypes = {'LeaveType':leavetypes[c],'user': leaveusers[u]._id,'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};  
+                            const leaves = await Leave.find(filterleavetypes);
+                              if(leaves.length>0) 
+                              {
+                                const newleavessummary = {};
+                                newleavessummary.name = leavetypes[c]; 
+                                newleavessummary.user = leaves[0].user.firstName+" "+leaves[0].user.lastName;  
+                                newleavessummary.count = leaves.length;                                 
+                                leavesDetails.push(newleavessummary);
+                              }                           
+                           }
+                     }
+
+                }
+    }
+
+
+    res.status(200).json({
+      status: 'success',
+      data: leavesDetails
     });  
   });

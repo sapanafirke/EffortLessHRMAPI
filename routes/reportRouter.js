@@ -176,4 +176,45 @@ router.post('/getactivity', authController.protect, reportController.getActivity
  *
  */
  router.post('/getappwebsite', authController.protect, reportController.getAppWebsite);
+
+ /**
+ * @swagger
+ * /api/v1/report/getleaves:
+ *  post:
+ *      tags:
+ *          - Report Management
+ *      summary: "Get Leaves"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]    
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                         users:
+ *                              type: array
+ *                              items:
+ *                                type: string
+ *                                example: ""
+ *                         fromdate:
+ *                              type: string
+ *                              format: date
+ *                         todate:
+ *                              type: string
+ *                              format: date
+ *     
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+  router.post('/getleaves', authController.protect, reportController.getleaves);
  module.exports = router;

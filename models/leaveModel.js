@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var leaveModelSchema = new Schema({  
+var leaveSchema = new Schema({  
   user:{
     type: mongoose.Schema.ObjectId,
     ref: 'User',
@@ -46,6 +46,12 @@ var leaveModelSchema = new Schema({
   toJSON: { virtuals: true }, // Use virtuals when outputing as JSON
   toObject: { virtuals: true } // Use virtuals when outputing as Object
 },
-{ collection: 'leave' });
-
-module.exports = mongoose.model('leave', leaveModelSchema);
+{ collection: 'Leave' });
+leaveSchema.pre(/^find/,async function(next) {
+  this.populate({
+    path: 'user',
+    select: 'firstName lastName'
+  });
+  next();
+});
+module.exports = mongoose.model('Leave', leaveSchema);
