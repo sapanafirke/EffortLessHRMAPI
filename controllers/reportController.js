@@ -47,22 +47,21 @@ if(req.body.users!='' && req.body.projects!='' && req.body.tasks!='')
         'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
    }
    
-   timeLogs = await TimeLog.find(filter).distinct('user') 
- 
-   for(var i = 0; i < timeLogs.length; i++) 
+   timeLogs = await TimeLog.find(filter).distinct('user'); 
+   for(var i = 0; i < timeLogs.length; i++)
    {    
-    let filterProject ={};  
+      let filterProject ={};  
       if(req.body.projects!='')
-        {
+      {
           filterProject = {'user': timeLogs[i],'project': { $in: req.body.projects }, 'date' : {$gte: req.body.fromdate,$lte: req.body.todate} }; 
-        }  
+      }  
       else
       {
         filterProject = {'user': timeLogs[i], 'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};  
       }
      const timeLog = await TimeLog.find(filterProject).distinct('project');
      
-     for(var j = 0; j < timeLog.length; j++) 
+     for(var j = 0; j < timeLog.length; j++)
      {
       let filterTask ={};
         if(req.body.tasks!='' && req.body.projects!='')
@@ -283,7 +282,6 @@ exports.getAppWebsite = catchAsync(async (req, res, next) => {
   //let date = `${req.body.date}.000+00:00`;
   //console.log("getTimeLogs, date:" + date);
   const appWebsiteAll = [];
-  var timeLogs;
   let filter;
     
   if(req.body.users.length>0 && req.body.projects.length>0)
@@ -379,7 +377,6 @@ exports.getleaves = catchAsync(async (req, res, next) => {
           'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
     }    
     var leaveusers = await Leave.find(filter).distinct('user');
-    console.log(leaveusers);
     if(leaveusers)
     {
                 for(var u = 0; u < leaveusers.length; u++)
@@ -410,5 +407,74 @@ exports.getleaves = catchAsync(async (req, res, next) => {
     res.status(200).json({
       status: 'success',
       data: leavesDetails
+    });  
+  });
+  exports.getattandance = catchAsync(async (req, res, next) => {
+    var attandanceDetails=[];
+    let filter;
+    
+      if(req.body.users.length>0)
+      {
+        filter = { 'user': { $in: req.body.users } , 'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
+      }
+      else{
+          filter={
+            'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
+       }
+       users = await TimeLog.find(filter).distinct('user') 
+       for(var i = 0; i < users.length; i++) 
+       {          
+          let filterProject;
+          if(req.body.projects.length>0)
+          {
+               filterProject = {'project': req.body.projects,'user': users[i], 'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};  
+          } 
+          else
+          {
+            filterProject = {'user': users[i],'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};  
+        
+          }   
+        
+         const projects = await TimeLog.find(filterProject).distinct('project');      
+         if(projects.length>0) 
+             {
+                  for(var k = 0; k < projects.length; k++) 
+                  {  
+                   
+                    const newLogInUSer = {};                       
+                    const allLogs = [];             
+                         
+                      const dateFrom = new Date(req.body.fromdate).getDate();
+                      const dateTo = new Date(req.body.todate).getDate();
+                      let days = dateTo - dateFrom;
+                      for(var day = 0;day < days; day++)
+                      {                 
+                        var tomorrow = new Date(new Date(req.body.fromdate).setDate(new Date(req.body.fromdate).getDate() + day));
+                        let filterAll = {'user': users[i],'project':projects[k],'date': tomorrow.toISOString().slice(0, 10)};                  
+                        const timeLogAll = await TimeLog.find(filterAll);                
+                        if(timeLogAll.length>0)    
+                        {                  
+                          const newLogDaily = {};             
+                          newLogDaily.time = timeLogAll.length*10;      
+                          newLogDaily.date = timeLogAll[0].date;
+                          newLogInUSer.user = timeLogAll[0].user;
+                          if(timeLogAll[0].project)
+                          {
+                           newLogInUSer.project = timeLogAll[0].project.projectName;
+                          }
+                          allLogs.push(newLogDaily);
+                        }
+                     
+                      }
+                      
+                      newLogInUSer.logs = allLogs;
+                      attandanceDetails.push(newLogInUSer);
+                  }
+              }
+             
+       }
+    res.status(200).json({
+      status: 'success',
+      data: attandanceDetails
     });  
   });

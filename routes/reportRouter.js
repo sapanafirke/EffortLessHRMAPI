@@ -217,4 +217,51 @@ router.post('/getactivity', authController.protect, reportController.getActivity
  *
  */
   router.post('/getleaves', authController.protect, reportController.getleaves);
+
+  
+ /**
+ * @swagger
+ * /api/v1/report/getattandance:
+ *  post:
+ *      tags:
+ *          - Report Management
+ *      summary: "Get attandance by Users,Projects & Date range"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]    
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                         users:
+ *                              type: array
+ *                              items:
+ *                                type: string
+ *                                example: ""
+ *                         projects:
+ *                              type: array
+ *                              items:
+ *                                type: object
+ *                                example: ""
+ *                         fromdate:
+ *                              type: string
+ *                              format: date
+ *                         todate:
+ *                              type: string
+ *                              format: date
+ *     
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+  router.post('/getattandance', authController.protect, reportController.getattandance);
  module.exports = router;
