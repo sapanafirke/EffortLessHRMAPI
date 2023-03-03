@@ -221,11 +221,11 @@ router.post('/getactivity', authController.protect, reportController.getActivity
   
  /**
  * @swagger
- * /api/v1/report/getattandance:
+ * /api/v1/report/gettimesheet:
  *  post:
  *      tags:
  *          - Report Management
- *      summary: "Get attandance by Users,Projects & Date range"   
+ *      summary: "Get Timesheet by Users,Projects & Date range"   
  *      security: [{
  *         bearerAuth: []
  *     }]    
@@ -263,5 +263,5 @@ router.post('/getactivity', authController.protect, reportController.getActivity
  *                          type: object
  *
  */
-  router.post('/getattandance', authController.protect, reportController.getattandance);
+  router.post('/gettimesheet', authController.protect, reportController.gettimesheet);
  module.exports = router;

@@ -409,7 +409,7 @@ exports.getleaves = catchAsync(async (req, res, next) => {
       data: leavesDetails
     });  
   });
-  exports.getattandance = catchAsync(async (req, res, next) => {
+  exports.gettimesheet = catchAsync(async (req, res, next) => {
     var attandanceDetails=[];
     let filter;
     
