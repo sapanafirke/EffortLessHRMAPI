@@ -88,7 +88,7 @@ if(req.body.users!='' && req.body.projects!='' && req.body.tasks!='')
                 const dateFrom = new Date(req.body.fromdate).getDate();
                 const dateTo = new Date(req.body.todate).getDate();
                 let days = dateTo - dateFrom;
-                for(var day = 0;day < days; day++)
+                for(var day = 0;day <= days; day++)
                 {                 
                   var tomorrow = new Date(new Date(req.body.fromdate).setDate(new Date(req.body.fromdate).getDate() + day));
                   let filterAll = {'user': timeLogs[i],'project':timeLog[j],'task':timeLogTask[k],'date': tomorrow.toISOString().slice(0, 10)};                  
@@ -129,27 +129,29 @@ exports.getProductivityByMember = catchAsync(async (req, res, next) => {
   filter={'userReference': req.body.user,'date' : {$gte: req.body.fromdate,$lte: req.body.todate}
           };
   const appWebsites = await AppWebsite.find({}).where('userReference').equals(req.body.user);  
-  let mouseClicks=0,keyboardStrokes=0,scrollingNumber=0,totalTimeSpent=0,TimeSpentProductive=0,TimeSpentNonProductive=0;
+  let mouseClicks=0,keyboardStrokes=0,scrollingNumber=0,totalTimeSpent=0,timeSpentProductive=0,timeSpentNonProductive=0,inactive=0;
   if(appWebsites.length>0)    
     { 
       for(var i = 0; i < appWebsites.length; i++) 
          {                
             mouseClicks=mouseClicks+appWebsites[i].mouseClicks;
             keyboardStrokes=keyboardStrokes+appWebsites[i].keyboardStrokes;
-            scrollingNumber=scrollingNumber+appWebsites[i].scrollingNumber;                  
+            scrollingNumber=scrollingNumber+appWebsites[i].scrollingNumber; 
+            inactive=inactive+appWebsites[i].inactive;                  
          }
       totalTimeSpent = appWebsites.length*10;  
     appWebsiteSummary.mouseClicks=mouseClicks;
     appWebsiteSummary.keyboardStrokes=keyboardStrokes;
     appWebsiteSummary.scrollingNumber=scrollingNumber;                 
-    appWebsiteSummary.TimeSpent= totalTimeSpent; 
+    appWebsiteSummary.timeSpent= totalTimeSpent; 
+    appWebsiteSummary.inactive=inactive;
     const appWebsitename = await AppWebsite.find(filter).distinct('appWebsite');                               
     if(appWebsitename.length>0) 
       {
         for(var c = 0; c < appWebsitename.length; c++) 
             { 
               filterforcount = {'appWebsite':appWebsitename[c],'userReference': req.body.user,'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};  
-              let TimeSpent=0,appWebsite={};
+              let timeSpent=0,appWebsite={};
               filterforproductivity = {'name':appWebsitename[c]};  
               const appIsProductive = await Productivity.find(filterforproductivity);  
               appWebsite.isProductive=appIsProductive[0].isProductive;
@@ -158,26 +160,26 @@ exports.getProductivityByMember = catchAsync(async (req, res, next) => {
                 {
                   for(var j = 0; j < appWebsitecount.length; j++) 
                      { 
-                        TimeSpent=TimeSpent+appWebsitecount[j].TimeSpent;
+                        timeSpent=timeSpent+appWebsitecount[j].TimeSpent;
                      }
                 }
               if(appWebsite.isProductive==true)
               {
-                 TimeSpentProductive=TimeSpentProductive+TimeSpent;
+                timeSpentProductive=timeSpentProductive+timeSpent;
               }
               else
               {
-                TimeSpentNonProductive=TimeSpentNonProductive+TimeSpent;
+                timeSpentNonProductive=timeSpentNonProductive+timeSpent;
               }
-              appWebsite.TimeSpent=TimeSpent;
+              appWebsite.timeSpent=timeSpent;
               appWebsite.name=appWebsitename[c];             
               appwebsiteDetails.push(appWebsite);
            }
      }
          
    appWebsiteSummary.appwebsiteDetails=appwebsiteDetails;
-   appWebsiteSummary.TimeSpentProductive=TimeSpentProductive;
-   appWebsiteSummary.TimeSpentNonProductive=TimeSpentNonProductive;
+   appWebsiteSummary.TimeSpentProductive=timeSpentProductive;
+   appWebsiteSummary.TimeSpentNonProductive=timeSpentNonProductive;
   }
    res.status(200).json({
       status: 'success',
@@ -208,14 +210,15 @@ exports.getProductivity = catchAsync(async (req, res, next) => {
             {    
               var appWebsiteSummary={};
     const appWebsites = await AppWebsite.find({}).where('userReference').equals(appwebsiteusers[u]._id);  
-    let mouseClicks=0,keyboardStrokes=0,scrollingNumber=0,totalTimeSpent=0,TimeSpentProductive=0,TimeSpentNonProductive=0;
+    let mouseClicks=0,keyboardStrokes=0,scrollingNumber=0,totalTimeSpent=0,timeSpentProductive=0,timeSpentNonProductive=0,inactive=0;
     if(appWebsites.length>0)    
       { 
         for(var i = 0; i < appWebsites.length; i++) 
            {                
               mouseClicks=mouseClicks+appWebsites[i].mouseClicks;
               keyboardStrokes=keyboardStrokes+appWebsites[i].keyboardStrokes;
-              scrollingNumber=scrollingNumber+appWebsites[i].scrollingNumber;                  
+              scrollingNumber=scrollingNumber+appWebsites[i].scrollingNumber;  
+              inactive=inactive+appWebsites[i].inactive;                 
            }
       totalTimeSpent = appWebsites.length*10;        
       appWebsiteSummary.user=appWebsites[0].userReference.firstName+" "+appWebsites[0].userReference.lastName;
@@ -223,6 +226,7 @@ exports.getProductivity = catchAsync(async (req, res, next) => {
       appWebsiteSummary.keyboardStrokes=keyboardStrokes;
       appWebsiteSummary.scrollingNumber=scrollingNumber;                 
       appWebsiteSummary.TimeSpent= totalTimeSpent; 
+      appWebsiteSummary.inactive= inactive; 
       const appWebsitename = await AppWebsite.find(filter).distinct('appWebsite');                               
       if(appWebsitename.length>0) 
         {
@@ -254,11 +258,11 @@ exports.getProductivity = catchAsync(async (req, res, next) => {
                 }
                 if(appWebsite.isProductive==true)
                 {
-                   TimeSpentProductive=TimeSpentProductive+TimeSpent;
+                   timeSpentProductive=timeSpentProductive+TimeSpent;
                 }
                 else
                 {
-                  TimeSpentNonProductive=TimeSpentNonProductive+TimeSpent;
+                  timeSpentNonProductive=timeSpentNonProductive+TimeSpent;
                 }
                 appWebsite.TimeSpent=TimeSpent;
                 appWebsite.name=appWebsitename[c];             
@@ -267,8 +271,8 @@ exports.getProductivity = catchAsync(async (req, res, next) => {
        }
            
      appWebsiteSummary.appwebsiteDetails=appwebsiteDetails;
-     appWebsiteSummary.TimeSpentProductive=TimeSpentProductive;
-     appWebsiteSummary.TimeSpentNonProductive=TimeSpentNonProductive;     
+     appWebsiteSummary.timeSpentProductive=timeSpentProductive;
+     appWebsiteSummary.timeSpentNonProductive=timeSpentNonProductive;     
      appwebsiteproductivity.push(appWebsiteSummary);
     }
   }
@@ -329,7 +333,7 @@ exports.getAppWebsite = catchAsync(async (req, res, next) => {
                            for(var c = 0; c < appWebsitename.length; c++) 
                            { 
                              filterforcount = {'appWebsite':appWebsitename[c],'userReference': appWebsiteusers[i]._id,'projectReference':appWebsiteprojects[k]._id, 'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};  
-                             let mouseClicks=0,keyboardStrokes=0,scrollingNumber=0,TimeSpent=0;
+                             let mouseClicks=0,keyboardStrokes=0,scrollingNumber=0,timeSpent=0,inActive=0;
                              const appWebsitecount = await AppWebsite.find(filterforcount);  
                              if(appWebsitecount.length>0) 
                                  {
@@ -339,7 +343,8 @@ exports.getAppWebsite = catchAsync(async (req, res, next) => {
                                         mouseClicks=mouseClicks+appWebsitecount[j].mouseClicks;
                                         keyboardStrokes=keyboardStrokes+appWebsitecount[j].keyboardStrokes;
                                         scrollingNumber=scrollingNumber+appWebsitecount[j].scrollingNumber;
-                                        TimeSpent=TimeSpent+appWebsitecount[j].TimeSpent;
+                                        timeSpent=timeSpent+appWebsitecount[j].TimeSpent;
+                                        inActive=inActive+appWebsitecount[j].inactive;
 
                                       }
                                     }
@@ -350,7 +355,8 @@ exports.getAppWebsite = catchAsync(async (req, res, next) => {
                            newLogInUSer.mouseClicks=mouseClicks;
                            newLogInUSer.keyboardStrokes=keyboardStrokes;
                            newLogInUSer.scrollingNumber=scrollingNumber;
-                           newLogInUSer.TimeSpent=TimeSpent;
+                           newLogInUSer.timeSpent=timeSpent;
+                           newLogInUSer.inactive=inactive;
                            newLogInUSer.isProductive=appWebsitecount[0].isProductive;
                            appWebsiteAll.push(newLogInUSer);
                           }
