@@ -446,8 +446,8 @@ exports.getleaves = catchAsync(async (req, res, next) => {
                          
                       const dateFrom = new Date(req.body.fromdate).getDate();
                       const dateTo = new Date(req.body.todate).getDate();
-                      let days = dateTo - dateFrom;
-                      for(var day = 0;day < days; day++)
+                      let days = dateTo - dateFrom;                     
+                      for(var day = 0;day <= days; day++)
                       {                 
                         var tomorrow = new Date(new Date(req.body.fromdate).setDate(new Date(req.body.fromdate).getDate() + day));
                         let filterAll = {'user': users[i],'project':projects[k],'date': tomorrow.toISOString().slice(0, 10)};                  
