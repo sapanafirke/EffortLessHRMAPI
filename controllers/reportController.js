@@ -226,7 +226,7 @@ exports.getProductivity = catchAsync(async (req, res, next) => {
       appWebsiteSummary.keyboardStrokes=keyboardStrokes;
       appWebsiteSummary.scrollingNumber=scrollingNumber;                 
       appWebsiteSummary.TimeSpent= totalTimeSpent; 
-      appWebsiteSummary.inactive= inactive; 
+      appWebsiteSummary.inactive = inactive; 
       const appWebsitename = await AppWebsite.find(filter).distinct('appWebsite');                               
       if(appWebsitename.length>0) 
         {
@@ -356,7 +356,7 @@ exports.getAppWebsite = catchAsync(async (req, res, next) => {
                            newLogInUSer.keyboardStrokes=keyboardStrokes;
                            newLogInUSer.scrollingNumber=scrollingNumber;
                            newLogInUSer.timeSpent=timeSpent;
-                           newLogInUSer.inactive=inactive;
+                           newLogInUSer.inactive=inActive;
                            newLogInUSer.isProductive=appWebsitecount[0].isProductive;
                            appWebsiteAll.push(newLogInUSer);
                           }
