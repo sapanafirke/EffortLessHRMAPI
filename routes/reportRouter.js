@@ -89,7 +89,7 @@ router.post('/getactivity', authController.protect, reportController.getActivity
  *                          type: object
  *
  */
- router.post('/getproductivitybymember', authController.protect, reportController.getProductivityByMember);
+router.post('/getproductivitybymember', authController.protect, reportController.getProductivityByMember);
 
  /**
  * @swagger
@@ -130,7 +130,7 @@ router.post('/getactivity', authController.protect, reportController.getActivity
  *                          type: object
  *
  */
-  router.post('/getproductivity', authController.protect, reportController.getProductivity);
+router.post('/getproductivity', authController.protect, reportController.getProductivity);
 /**
  * @swagger
  * /api/v1/report/getappwebsite:
@@ -175,7 +175,7 @@ router.post('/getactivity', authController.protect, reportController.getActivity
  *                          type: object
  *
  */
- router.post('/getappwebsite', authController.protect, reportController.getAppWebsite);
+router.post('/getappwebsite', authController.protect, reportController.getAppWebsite);
 
  /**
  * @swagger
@@ -216,7 +216,7 @@ router.post('/getactivity', authController.protect, reportController.getActivity
  *                          type: object
  *
  */
-  router.post('/getleaves', authController.protect, reportController.getleaves);
+router.post('/getleaves', authController.protect, reportController.getleaves);
 
   
  /**
@@ -263,5 +263,46 @@ router.post('/getactivity', authController.protect, reportController.getActivity
  *                          type: object
  *
  */
-  router.post('/gettimesheet', authController.protect, reportController.gettimesheet);
+router.post('/gettimesheet', authController.protect, reportController.gettimesheet);
+
+/**
+ * @swagger
+ * /api/v1/report/getattandance:
+ *  post:
+ *      tags:
+ *          - Report Management
+ *      summary: "Get Attaindance by Users"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]    
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                         users:
+ *                              type: array
+ *                              items:
+ *                                type: string
+ *                                example: ""
+ *                         fromdate:
+ *                              type: string
+ *                              format: date
+ *                         todate:
+ *                              type: string
+ *                              format: date
+ *     
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+ router.post('/getattandance', authController.protect, reportController.getattandance);
  module.exports = router;
