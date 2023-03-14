@@ -516,8 +516,6 @@ exports.getleaves = catchAsync(async (req, res, next) => {
                             var manual = 0;
                             newLogInUSer.starttime = start.getUTCHours()+ ":" + start.getUTCMinutes() + ":" + start.getUTCSeconds();
                             newLogInUSer.endtime = end.getUTCHours()+ ":" + end.getUTCMinutes() + ":" + end.getUTCSeconds();
-                            newLogInUSer.manual = '0';
-                            newLogInUSer.total = timeLogAll.length * 10;
                             newLogInUSer.activity = timeLogAll[0].date;
                             var email = timeLogAll[0].user;
                             const user = await User.findOne({ email });
@@ -526,20 +524,17 @@ exports.getleaves = catchAsync(async (req, res, next) => {
                             const dateTo = new Date(req.body.todate).getDate();
                             let days = dateTo - dateFrom;
                             for(var day = 0;day <= days; day++)
-                            {            
-                                 
+                            {  
                               var tomorrow = new Date(new Date(req.body.fromdate).setDate(new Date(req.body.fromdate).getDate() + day));
                               //tomorrow.toISOString().slice(0, 10)
-                              let filterManual = { 'fromdate' : {$gte: tomorrow},'todate' : {$lte: tomorrow}};    
-    
-                              const manualTimeRequests = await manualTimeRequest.find({}).where('user').equals(user._Id).find(filterManual);
-                              console.log(manualTimeRequests); 
+                              let filterManual = { 'fromdate' : {$lte: tomorrow},'todate' : {$gte: tomorrow},'user':user._id};        
+                              const manualTimeRequests = await manualTimeRequest.find(filterManual);
                               for(let time=0;time < manualTimeRequests.length;time++){ 
-                                manual = manual + 48;
+                              manual = manual + 48;
                               }
-                            }            
-                                                    
-                           
+                              newLogInUSer.manual = manual;
+                              newLogInUSer.total = newLogInUSer.manual+newLogInUSer.time;                          
+                            }        
                      }
                     attandanceDetails.push(newLogInUSer);
         }
