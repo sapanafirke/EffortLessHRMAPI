@@ -97,7 +97,10 @@ if(req.body.users!='' && req.body.projects!='' && req.body.tasks!='')
                   if(timeLogAll.length>0)    
                   {                   
                     const newLogInUSer = {};
-                    newLogInUSer.user = timeLogAll[0].user;
+                   var email = timeLogAll[0].user;
+                    const user = await User.findOne({ email });
+                    newLogInUSer.firstName = user.firstName;  
+                    newLogInUSer.lastName = user.lastName;
                     if(timeLogAll[0].project)
                     {
                      newLogInUSer.project = timeLogAll[0].project.projectName;
@@ -222,7 +225,8 @@ exports.getProductivity = catchAsync(async (req, res, next) => {
               inactive=inactive+appWebsites[i].inactive;                 
            }
       totalTimeSpent = appWebsites.length*10;        
-      appWebsiteSummary.user=appWebsites[0].userReference.firstName+" "+appWebsites[0].userReference.lastName;
+      appWebsiteSummary.firstName = appWebsites[0].userReference.firstName;  
+      appWebsiteSummary.lastName = appWebsites[0].userReference.lastName;
       appWebsiteSummary.mouseClicks=mouseClicks;
       appWebsiteSummary.keyboardStrokes=keyboardStrokes;
       appWebsiteSummary.scrollingNumber=scrollingNumber;                 
@@ -351,7 +355,8 @@ exports.getAppWebsite = catchAsync(async (req, res, next) => {
                                     }
                                     const newLogInUSer = {};
                            newLogInUSer.name = appWebsitename[c]; 
-                           newLogInUSer.user = appWebsitecount[0].userReference.firstName;  
+                           newLogInUSer.firstName = appWebsitecount[0].userReference.firstName;  
+                           newLogInUSer.lastName = appWebsitecount[0].userReference.lastName;    
                            newLogInUSer.project = appWebsitecount[0].projectReference.projectName;   
                            newLogInUSer.mouseClicks=mouseClicks;
                            newLogInUSer.keyboardStrokes=keyboardStrokes;
@@ -400,7 +405,8 @@ exports.getleaves = catchAsync(async (req, res, next) => {
                               {
                                 const newleavessummary = {};
                                 newleavessummary.name = leavetypes[c]; 
-                                newleavessummary.user = leaves[0].user.firstName+" "+leaves[0].user.lastName;  
+                                newleavessummary.firstName = leaves[0].user.firstName;  
+                                newleavessummary.lastName = leaves[0].user.lastName;  
                                 newleavessummary.count = leaves.length;                                 
                                 leavesDetails.push(newleavessummary);
                               }                           
@@ -466,7 +472,8 @@ exports.getleaves = catchAsync(async (req, res, next) => {
                           newLogDaily.date = timeLogAll[0].date;
                           var email=timeLogAll[0].user;
                           const user = await User.findOne({ email })
-                          newLogInUSer.user = user.firstName +" "+ user.lastName;
+                          newLogInUSer.firstName = user.firstName;  
+                          newLogInUSer.lastName = user.lastName;
                           if(timeLogAll[0].project)
                           {
                            newLogInUSer.project = timeLogAll[0].project.projectName;
@@ -519,7 +526,8 @@ exports.getleaves = catchAsync(async (req, res, next) => {
                             newLogInUSer.activity = timeLogAll[0].date;
                             var email = timeLogAll[0].user;
                             const user = await User.findOne({ email });
-                            newLogInUSer.user = user.firstName +" "+ user.lastName;
+                            newLogInUSer.firstName = user.firstName;  
+                            newLogInUSer.lastName = user.lastName;
                             const dateFrom = new Date(req.body.fromdate).getDate();
                             const dateTo = new Date(req.body.todate).getDate();
                             let days = dateTo - dateFrom;
