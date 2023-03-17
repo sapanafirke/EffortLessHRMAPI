@@ -213,7 +213,9 @@ exports.getProductivity = catchAsync(async (req, res, next) => {
             for(var u = 0; u < appwebsiteusers.length; u++) 
             {    
               var appWebsiteSummary={};
-    const appWebsites = await AppWebsite.find({}).where('userReference').equals(appwebsiteusers[u]._id);  
+             var filterdate={
+                'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
+    const appWebsites = await AppWebsite.find(filterdate).where('userReference').equals(appwebsiteusers[u]._id);  
     let mouseClicks=0,keyboardStrokes=0,scrollingNumber=0,totalTimeSpent=0,timeSpentProductive=0,timeSpentNonProductive=0,inactive=0;
     if(appWebsites.length>0)    
       { 
@@ -224,7 +226,7 @@ exports.getProductivity = catchAsync(async (req, res, next) => {
               scrollingNumber=scrollingNumber+appWebsites[i].scrollingNumber;  
               inactive=inactive+appWebsites[i].inactive;                 
            }
-      totalTimeSpent = appWebsites.length*10;        
+      totalTimeSpent = appWebsites.length*10*60;        
       appWebsiteSummary.firstName = appWebsites[0].userReference.firstName;  
       appWebsiteSummary.lastName = appWebsites[0].userReference.lastName;
       appWebsiteSummary.mouseClicks=mouseClicks;
@@ -232,7 +234,7 @@ exports.getProductivity = catchAsync(async (req, res, next) => {
       appWebsiteSummary.scrollingNumber=scrollingNumber;                 
       appWebsiteSummary.TimeSpent= totalTimeSpent; 
       appWebsiteSummary.inactive = inactive; 
-      const appWebsitename = await AppWebsite.find(filter).distinct('appWebsite');                               
+      const appWebsitename = await AppWebsite.find(filterdate).where('userReference').equals(appwebsiteusers[u]._id).distinct('appWebsite');                               
       if(appWebsitename.length>0) 
         {
           for(var c = 0; c < appWebsitename.length; c++) 
@@ -276,6 +278,8 @@ exports.getProductivity = catchAsync(async (req, res, next) => {
        }
            
      appWebsiteSummary.appwebsiteDetails=appwebsiteDetails;
+     appWebsiteSummary.total = appWebsiteSummary.TimeSpent+appWebsiteSummary.inactive;   
+     appWebsiteSummary.dateOfJoining=appWebsites[0].userReference.createdOn;
      appWebsiteSummary.timeSpentProductive=timeSpentProductive;
      appWebsiteSummary.timeSpentNonProductive=timeSpentNonProductive;     
      appwebsiteproductivity.push(appWebsiteSummary);
@@ -309,7 +313,6 @@ exports.getAppWebsite = catchAsync(async (req, res, next) => {
         filter={
           'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
      }
-    console.log(filter);
      appWebsiteusers = await AppWebsite.find(filter).distinct('userReference') 
 
      for(var i = 0; i < appWebsiteusers.length; i++) 
@@ -523,7 +526,7 @@ exports.getleaves = catchAsync(async (req, res, next) => {
                             var manual = 0;
                             newLogInUSer.starttime = start.getUTCHours()+ ":" + start.getUTCMinutes() + ":" + start.getUTCSeconds();
                             newLogInUSer.endtime = end.getUTCHours()+ ":" + end.getUTCMinutes() + ":" + end.getUTCSeconds();
-                            newLogInUSer.activity = timeLogAll[0].date;
+                            newLogInUSer.activity = "";
                             var email = timeLogAll[0].user;
                             const user = await User.findOne({ email });
                             newLogInUSer.firstName = user.firstName;  

@@ -64,7 +64,7 @@ const appWebsiteSchema = new mongoose.Schema({
 appWebsiteSchema.pre(/^find/,async function(next) {
     this.populate({
       path: 'userReference',
-      select: 'firstName lastName'
+      select: 'firstName lastName createdOn'
     }).populate({
       path: 'projectReference',
       select: 'projectName'
