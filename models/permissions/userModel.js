@@ -148,6 +148,11 @@ userSchema.virtual('taskUser', {
   foreignField: 'user', // tour field in review model pointing to this model
   localField: '_id' // id of current model
 });
+userSchema.virtual('timelog', {
+  ref: 'TimeLog',
+  foreignField: 'user', // tour field in review model pointing to this model
+  localField: '_id' // id of current model
+});
 userSchema.virtual('projectUser', {
   ref: 'ProjectUsers',
   foreignField: 'user', // tour field in review model pointing to this model

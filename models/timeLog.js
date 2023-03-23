@@ -3,8 +3,9 @@ var Schema = mongoose.Schema;
 
 var timeLogSchema = new Schema({
   user: {
-    type: String,
-    required: true
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+    required: [true, 'User must belong to a user']
   },
   task: {
     type: mongoose.Schema.ObjectId,
@@ -60,6 +61,9 @@ timeLogSchema.pre(/^find/,async function(next) {
   }).populate({
     path: 'project',
     select: 'projectName'
+  }).populate({
+    path: 'user',
+    select: 'firstName lastName'
   });
   next();
 });
