@@ -9,7 +9,7 @@ const router = express.Router();
  *  post:
  *      tags:
  *          - Timelog Management
- *      summary: "Get TimeLog"   
+ *      summary: "Get TimeLog Note: please pass UserId in user"   
  *      security: [{
  *         bearerAuth: []
  *     }]        
@@ -43,7 +43,7 @@ router.post('/getTimeLogs', authController.protect, timeLogController.getTimeLog
  *  post:
  *      tags:
  *          - Timelog Management
- *      summary: "Get TimeLog"   
+ *      summary: "Get TimeLog Note: please pass UserId in user"   
  *      security: [{
  *         bearerAuth: []
  *     }]    
@@ -89,7 +89,7 @@ router.get('/', authController.protect, timeLogController.getLog);
 *  post:
 *      tags:
 *          - Timelog Management
-*      summary: "Add TimeLog"   
+*      summary: "Add TimeLog Note: please pass UserId in user"   
 *      security: [{
 *         bearerAuth: []
 *     }]        
@@ -102,6 +102,8 @@ router.get('/', authController.protect, timeLogController.getLog);
 *                          user:
 *                              type: string
 *                          task:
+*                              type: string
+*                          project:
 *                              type: string
 *                          startTime:
 *                              type: string
@@ -177,7 +179,7 @@ router.post('/getLogsWithImages', authController.protect, timeLogController.getL
  *  post:
  *      tags:
  *          - Timelog Management
- *      summary: "Get Curent Week Total Time"   
+ *      summary: "Get Curent Week Total Time Note: please pass UserId in user"   
  *      security: [{
  *         bearerAuth: []
  *     }]        
@@ -248,7 +250,7 @@ router.delete('/', authController.protect, timeLogController.deleteLog);
 *  post:
 *      tags:
 *          - Timelog Management
-*      summary: "Add Manual TimeLog"   
+*      summary: "Add Manual TimeLog Note: please pass UserId in user"   
 *      security: [{
 *         bearerAuth: []
 *     }]        

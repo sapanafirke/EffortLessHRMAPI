@@ -9,7 +9,7 @@ const router = express.Router();
  *  post:
  *      tags:
  *          - Report Management
- *      summary: "Get Activity"   
+ *      summary: "Get Activity - Please pass UserId in users"   
  *      security: [{
  *         bearerAuth: []
  *     }]    
@@ -225,7 +225,7 @@ router.post('/getleaves', authController.protect, reportController.getleaves);
  *  post:
  *      tags:
  *          - Report Management
- *      summary: "Get Timesheet by Users,Projects & Date range"   
+ *      summary: "Get Timesheet by Users,Projects & Date range - Please pass UserId in users"   
  *      security: [{
  *         bearerAuth: []
  *     }]    
@@ -271,7 +271,7 @@ router.post('/gettimesheet', authController.protect, reportController.gettimeshe
  *  post:
  *      tags:
  *          - Report Management
- *      summary: "Get Attaindance by Users"   
+ *      summary: "Get Attaindance by Users - Please pass UserId in users"   
  *      security: [{
  *         bearerAuth: []
  *     }]    

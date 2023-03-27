@@ -7,6 +7,7 @@ const { BlobServiceClient } = require('@azure/storage-blob');
 const { Stream } = require('nodemailer/lib/xoauth2');
 const  FileAPI = require('file-api');
 var moment = require('moment'); 
+const timeLog = require('../models/timeLog');
 
   // AZURE STORAGE CONNECTION DETAILS
 const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
@@ -58,8 +59,8 @@ exports.addLog = catchAsync(async (req, res, next) => {
   console.log("\nUploading to Azure storage as blob:\n\t", blobName);
   // Upload data to the blob
   var FileString = req.body.fileString;
-  const buffer = new Buffer.from(FileString, 'base64');
-  const uploadBlobResponse = await blockBlobClient.upload(buffer,buffer.length);
+ // const buffer = new Buffer.from(FileString, 'base64');
+  //const uploadBlobResponse = await blockBlobClient.upload(buffer,buffer.length);
   const url=process.env.CONTAINER_URL_BASE_URL+ process.env.CONTAINER_NAME+"/"+blobName; 
   console.log(`Blob was uploaded successfully. requestId: ${uploadBlobResponse.requestId}, url: ${uploadBlobResponse}`);
   const newTimeLog = await TimeLog.create({
@@ -89,7 +90,10 @@ exports.getTimeLogs = catchAsync(async (req, res, next) => {
   console.log(req.cookies.companyId);
   //let date = `${req.body.date}.000+00:00`;
 //console.log("getTimeLogs, date:" + date);
-  const timeLogs = await TimeLog.find({}).where('user').equals(req.body.user).where('date').equals(req.body.date);
+var tomorrow = new Date(new Date(req.body.date).setDate(new Date(req.body.date).getDate() + 1));
+  const timeLogs =  await TimeLog.find({}).where('user').equals(req.body.user).find({
+    "date" : {"$gte": req.body.date,"$lte": tomorrow}});
+ 
   res.status(200).json({
     status: 'success',
     data: timeLogs
@@ -105,38 +109,40 @@ var timeLogs;
 
 if(req.body.users!='' && req.body.projects!='' && req.body.tasks!='')
   {
-  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'project': { $in: req.body.projects },'task': { $in: req.body.tasks } }).distinct('user').where('date').equals("2023-01-19");    
+  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'project': { $in: req.body.projects },'task': { $in: req.body.tasks } }).distinct('user').where('date').equals("2023-03-22");    
   }
   else if(req.body.users!='' && req.body.tasks!='')
   {
-  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'task': { $in: req.body.tasks } }).distinct('user').where('date').equals("2023-01-19");    
+  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'task': { $in: req.body.tasks } }).distinct('user').where('date').equals("2023-03-22");    
   }
   else if(req.body.users!='' && req.body.projects!='')
   {
-  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'project': { $in: req.body.projects } }).distinct('user').where('date').equals("2023-01-19");    
+  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'project': { $in: req.body.projects } }).distinct('user').where('date').equals("2023-3-22");    
   }
   else if(req.body.tasks!='' && req.body.projects!='')
   {
-  timeLogs=await TimeLog.find({ 'project': { $in: req.body.projects } }).distinct('user').where('date').equals("2023-01-19");    
+  timeLogs=await TimeLog.find({ 'project': { $in: req.body.projects } }).distinct('user').where('date').equals("2023-03-22");    
   }
   else if(req.body.projects!='')
   {
-  timeLogs=await TimeLog.find({ 'project': { $in: req.body.projects } }).distinct('user').where('date').equals("2023-01-19");    
+  timeLogs=await TimeLog.find({ 'project': { $in: req.body.projects } }).distinct('user').where('date').equals("2023-03-22");    
   }  
   else if(req.body.tasks!='')
   {
-  timeLogs=await TimeLog.find({ 'task': { $in: req.body.tasks } }).distinct('user').where('date').equals("2023-01-19");    
+  timeLogs=await TimeLog.find({ 'task': { $in: req.body.tasks } }).distinct('user').where('date').equals("2023-03-22");    
   }
   else if(req.body.users!='')
   {
-  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users } }).distinct('user').where('date').equals("2023-01-19");    
+    console.log("hi");
+  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users } }).distinct('user').where('date').equals("2023-03-22");    
   }
   else{
-      timeLogs = await TimeLog.find({}).distinct('user').where('date').equals("2023-01-19");
+      timeLogs = await TimeLog.find({}).distinct('user').where('date').equals("2023-03-22");
    }
+   console.log(timeLogs);
     for(var i = 0; i < timeLogs.length; i++) 
           {
-          const timeLog = await TimeLog.findOne({user:timeLogs[i],date:"2023-01-19"});
+          const timeLog = await TimeLog.findOne({user:timeLogs[i],date:"2023-03-22"});
           if(timeLog) 
           {
             const newLogInUSer = {};
@@ -173,10 +179,10 @@ exports.getLog = catchAsync(async (req, res, next) => {
 });
 
 exports.getLogsWithImages = catchAsync(async (req, res, next) => {
-  //let date = `${req.body.date}.000+00:00`;
-  console.log("called");
-
-  const timeLogs = await TimeLog.find({}).where('user').equals(req.body.user).where('date').equals(req.body.date);    
+  var tomorrow = new Date(new Date(req.body.date).setDate(new Date(req.body.date).getDate() + 1));
+  const timeLogs =  await TimeLog.find({}).where('user').equals(req.body.user).find({
+    "date" : {"$gte": req.body.date,"$lte": tomorrow}});
+    
   //let response =[];
   //for (const timeLog of timeLogs) {
   //  const blobName = timeLog.filePath;
