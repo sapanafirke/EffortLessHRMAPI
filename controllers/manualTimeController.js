@@ -55,8 +55,7 @@ exports.addManualTimeRequest = catchAsync(async (req, res, next) => {
     }
   );
 
-  const requestApprovalLink = `${process.env.WEBSITE_DOMAIN}/ManualTimeRequestApproval`;  
-  console.log(requestApprovalLink);
+  const requestApprovalLink = `${process.env.WEBSITE_DOMAIN}/ManualTimeRequestApproval`;    
   const managerName = `${manager.firstName} ${manager.lastName}`;
   const userName = `${user.firstName} ${user.lastName}`;
   const emailSubject=`Manual Time Request By ${userName}`;
