@@ -59,8 +59,8 @@ exports.addLog = catchAsync(async (req, res, next) => {
   console.log("\nUploading to Azure storage as blob:\n\t", blobName);
   // Upload data to the blob
   var FileString = req.body.fileString;
- // const buffer = new Buffer.from(FileString, 'base64');
-  //const uploadBlobResponse = await blockBlobClient.upload(buffer,buffer.length);
+  const buffer = new Buffer.from(FileString, 'base64');
+  const uploadBlobResponse = await blockBlobClient.upload(buffer,buffer.length);
   const url=process.env.CONTAINER_URL_BASE_URL+ process.env.CONTAINER_NAME+"/"+blobName; 
   console.log(`Blob was uploaded successfully. requestId: ${uploadBlobResponse.requestId}, url: ${uploadBlobResponse}`);
   const newTimeLog = await TimeLog.create({
