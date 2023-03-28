@@ -35,7 +35,7 @@ console.log('max limit set');
 //app.use(compression);
 app.use(cors(
   {
-    origin: "http://localhost:4200", // "true" will copy the domain of the request back
+    origin: ["*"], // "true" will copy the domain of the request back
                 // to the reply. If you need more control than this
                 // use a function.
 
