@@ -32,10 +32,21 @@ app.use(express.urlencoded({ limit: '500mb', extended: false, parameterLimit: 50
 
 console.log('max limit set');
 
+var allowedOrigins = ['http://localhost:4200',
+                      'https://effort-less-hrm-web.vercel.app/'];
+
 //app.use(compression);
 app.use(cors(
   {
-    origin: ["*"], // "true" will copy the domain of the request back
+    "origin": function(origin, callback){     
+      if(!origin) return callback(null, true);
+      if(allowedOrigins.indexOf(origin) === -1){
+        var msg = 'The CORS policy for this site does not ' +
+                  'allow access from the specified Origin.';
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    } , // "true" will copy the domain of the request back
                 // to the reply. If you need more control than this
                 // use a function.
 
