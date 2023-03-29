@@ -195,24 +195,18 @@ exports.getProductivityByMember = catchAsync(async (req, res, next) => {
 exports.getProductivity = catchAsync(async (req, res, next) => {
  var teamIdsArray=[];
  var teamIds='';
-  const ids = await userSubordinate.find({}).where('userId').equals(req.cookies.userId);   
-  if(ids.length>0)    
-      { 
-        for(var i = 0; i < ids.length; i++) 
-           {    
-            if(teamIds.length==0){
-              teamIds="'"+ids[i]._id+"'";              
-            }     
-            else
-            {       
-            teamIds=teamIds+",'"+ids[i]._id+"'";
-            }
-           }
-  }
-  if(teamIds.length>0)    
-      {teamIds="'"+ids[i]+"'";   }
-
-  teamIdsArray.push(teamIds);  
+ const ids = await userSubordinate.find({}).distinct('subordinateUserId').where('userId').equals(req.cookies.userId);  
+ if(ids.length > 0)    
+     { 
+       for(var i = 0; i < ids.length; i++) 
+         {    
+             teamIdsArray.push(ids[i]);        
+         }
+   }
+if(teamIds==null)    
+   {
+      teamIdsArray.push(req.cookies.userId);
+   } 
     //let date = `${req.body.date}.000+00:00`;
     //console.log("getTimeLogs, date:" + date);   
     var appwebsiteDetails=[];
@@ -448,27 +442,21 @@ exports.getleaves = catchAsync(async (req, res, next) => {
 exports.gettimesheet = catchAsync(async (req, res, next) => {
     var attandanceDetails=[];
     let filter;
-    var teamIdsArray=[];
- var teamIds='';
-  const ids = await userSubordinate.find({}).where('userId').equals(req.cookies.userId);  
-  if(ids.length>0)    
-      { 
-        for(var i = 0; i < ids.length; i++) 
-           {    
-            if(teamIds.length==0){
-              teamIds="'"+ids[i]._id+"'";              
-            }     
-            else
-            {       
-            teamIds=teamIds+",'"+ids[i]._id+"'";
+    var teamIdsArray = [];
+    var teamIds;
+    const ids = await userSubordinate.find({}).distinct('subordinateUserId').where('userId').equals(req.cookies.userId);  
+    if(ids.length > 0)    
+        { 
+          for(var i = 0; i < ids.length; i++) 
+            {    
+                teamIdsArray.push(ids[i]);        
             }
-           }
-  }
-  if(teamIds.length>0)    
-      {teamIds=req.cookies.userId;   }
-
-  teamIdsArray.push(teamIds);   
-  console.log(teamIdsArray);
+      }
+  if(teamIds==null)    
+      {
+         teamIdsArray.push(req.cookies.userId);
+      } 
+ 
   if(req.body.users.length>0)
       {
         filter = { 'user': { $in: req.body.users } , 'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
@@ -500,7 +488,7 @@ exports.gettimesheet = catchAsync(async (req, res, next) => {
                     const allLogs = [];             
                       const dateFrom = new Date(req.body.fromdate).getDate();
                       const dateTo = new Date(req.body.todate).getDate();
-                      let days = dateTo - dateFrom;                     
+                      let days = dateTo - dateFrom;             
                       for(var day = 0;day <= days; day++)
                       {                 
                         var tomorrow = new Date(new Date(req.body.fromdate).setDate(new Date(req.body.fromdate).getDate() + day));
