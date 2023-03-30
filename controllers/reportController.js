@@ -577,8 +577,8 @@ exports.gettimesheet = catchAsync(async (req, res, next) => {
                             var start = new Date(timeLogAll[0].startTime);
                             var end = new Date(timeLogAll[count].startTime);
                             var manual = 0;
-                            newLogInUSer.starttime = start.getUTCHours()+ ":" + start.getUTCMinutes() + ":" + start.getUTCSeconds();
-                            newLogInUSer.endtime = end.getUTCHours()+ ":" + end.getUTCMinutes() + ":" + end.getUTCSeconds();
+                            newLogInUSer.starttime = start.getHours()+ ":" + start.getMinutes() + ":" + start.getSeconds();
+                            newLogInUSer.endtime = end.getHours()+ ":" + end.getMinutes() + ":" + end.getSeconds();
                             newLogInUSer.activity = "";                           
                             newLogInUSer.firstName = timeLogAll[0].user.firstName;  
                             newLogInUSer.lastName = timeLogAll[0].user.lastName;
