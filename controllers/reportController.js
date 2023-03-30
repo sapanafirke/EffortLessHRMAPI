@@ -15,7 +15,22 @@ exports.getActivity = catchAsync(async (req, res, next) => {
 const timeLogsAll = [];
 var timeLogs;
 let filter;
-  
+// --------
+var teamIdsArray = [];
+var teamIds;
+const ids = await userSubordinate.find({}).distinct('subordinateUserId').where('userId').equals(req.cookies.userId);  
+if(ids.length > 0)    
+    { 
+      for(var i = 0; i < ids.length; i++) 
+        {    
+            teamIdsArray.push(ids[i]);        
+        }
+  }
+if(teamIds==null)    
+  {
+     teamIdsArray.push(req.cookies.userId);
+  } 
+  // --------- end
 if(req.body.users!='' && req.body.projects!='' && req.body.tasks!='')
   {
     filter = { 'user': { $in: req.body.users },'project': { $in: req.body.projects },'task': { $in: req.body.tasks }, 'date' : {$gte: req.body.fromdate,$lte: req.body.todate}  };
@@ -45,7 +60,7 @@ if(req.body.users!='' && req.body.projects!='' && req.body.tasks!='')
     filter = { 'user': { $in: req.body.users }, 'date' : {$gte: req.body.fromdate,$lte: req.body.todate}  };
   }
   else{
-      filter={
+    filter={'user': { $in: teamIdsArray } ,
         'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
    }
    
@@ -526,15 +541,30 @@ exports.gettimesheet = catchAsync(async (req, res, next) => {
   exports.getattandance = catchAsync(async (req, res, next) => {
     var attandanceDetails=[];
     let filter;
-    
-      if(req.body.users.length>0)
+      var teamIdsArray = [];
+    var teamIds;
+    const ids = await userSubordinate.find({}).distinct('subordinateUserId').where('userId').equals(req.cookies.userId);  
+    if(ids.length > 0)    
+        { 
+          for(var i = 0; i < ids.length; i++) 
+            {    
+                teamIdsArray.push(ids[i]);        
+            }
+      }
+  if(teamIds==null)    
+      {
+         teamIdsArray.push(req.cookies.userId);
+      } 
+ 
+  if(req.body.users.length>0)
       {
         filter = { 'user': { $in: req.body.users } , 'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
       }
       else{
-          filter={
+          filter={'user': { $in: teamIdsArray } ,
             'date' : {$gte: req.body.fromdate,$lte: req.body.todate}};
        }
+
       const users = await TimeLog.find(filter).distinct('user') 
       for(var i = 0; i < users.length; i++) 
        {          
