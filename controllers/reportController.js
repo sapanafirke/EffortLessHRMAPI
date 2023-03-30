@@ -15,7 +15,6 @@ exports.getActivity = catchAsync(async (req, res, next) => {
 const timeLogsAll = [];
 var timeLogs;
 let filter;
-// --------
 var teamIdsArray = [];
 var teamIds;
 const ids = await userSubordinate.find({}).distinct('subordinateUserId').where('userId').equals(req.cookies.userId);  
@@ -30,7 +29,6 @@ if(teamIds==null)
   {
      teamIdsArray.push(req.cookies.userId);
   } 
-  // --------- end
 if(req.body.users!='' && req.body.projects!='' && req.body.tasks!='')
   {
     filter = { 'user': { $in: req.body.users },'project': { $in: req.body.projects },'task': { $in: req.body.tasks }, 'date' : {$gte: req.body.fromdate,$lte: req.body.todate}  };
