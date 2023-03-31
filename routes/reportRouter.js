@@ -265,6 +265,51 @@ router.post('/getleaves', authController.protect, reportController.getleaves);
  */
 router.post('/gettimesheet', authController.protect, reportController.gettimesheet);
 
+ /**
+ * @swagger
+ * /api/v1/report/gettimeline:
+ *  post:
+ *      tags:
+ *          - Report Management
+ *      summary: "Get TimeLine by Users,Projects & Date range - Please pass UserId in users"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]    
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                         users:
+ *                              type: array
+ *                              items:
+ *                                type: string
+ *                                example: ""
+ *                         projects:
+ *                              type: array
+ *                              items:
+ *                                type: object
+ *                                example: ""
+ *                         fromdate:
+ *                              type: string
+ *                              format: date
+ *                         todate:
+ *                              type: string
+ *                              format: date
+ *     
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+  router.post('/gettimeline', authController.protect, reportController.gettimeline);
 /**
  * @swagger
  * /api/v1/report/getattandance:
