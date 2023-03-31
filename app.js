@@ -34,7 +34,7 @@ console.log('max limit set');
 
 var allowedOrigins = ['http://localhost:4200',
 'http://localhost:8080',
-                      'https://effort-less-hrm-web.vercel.app/'];
+                      'https://effort-less-hrm-web.vercel.app'];
 
 //app.use(compression);
 app.use(cors(
