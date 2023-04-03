@@ -34,7 +34,7 @@ console.log('max limit set');
 
 var allowedOrigins = ['http://localhost:4200',
 'http://localhost:8080',
-                      'https://effort-less-hrm-web.vercel.app/'];
+                      'https://effort-less-hrm-web.vercel.app'];
 
 //app.use(compression);
 app.use(cors(
@@ -67,9 +67,15 @@ app.set("email", path.join(__dirname, "email"));
 
 // Each request will contain requested time
 app.use((req, res, next) => {
-
-  res.header("Access-Control-Allow-Origin","http://localhost:4200");
   
+  let http_origin = req.get('host');
+
+  console.log(http_origin);
+
+if (http_origin == "http://localhost:4200" || http_origin == "https://effort-less-hrm-web.vercel.app")
+{  
+  res.header("Access-Control-Allow-Origin", http_origin);
+}
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
   console.log('received the request');
