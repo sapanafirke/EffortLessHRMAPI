@@ -62,6 +62,7 @@ exports.addLog = catchAsync(async (req, res, next) => {
   const buffer = new Buffer.from(FileString, 'base64');
   const uploadBlobResponse = await blockBlobClient.upload(buffer,buffer.length);
   const url=process.env.CONTAINER_URL_BASE_URL+ process.env.CONTAINER_NAME+"/"+blobName; 
+  console.log(`process.env.CONTAINER_URL_BASE_URL ${process.env.CONTAINER_URL_BASE_URL} process.env.CONTAINER_NAME ${process.env.CONTAINER_NAME}`);
   console.log(`Blob was uploaded successfully. requestId: ${uploadBlobResponse.requestId}, url: ${uploadBlobResponse}`);
   const newTimeLog = await TimeLog.create({
     user: req.body.user,

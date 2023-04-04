@@ -33,7 +33,7 @@ app.use(express.urlencoded({ limit: '500mb', extended: false, parameterLimit: 50
 console.log('max limit set');
 
 var allowedOrigins = ['http://localhost:4200',
-'http://localhost:8080',
+'http://localhost:8080','https://effortlesshrmapi.azurewebsites.net',
                       'https://effort-less-hrm-web.vercel.app'];
 
 //app.use(compression);
