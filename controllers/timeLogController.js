@@ -107,47 +107,54 @@ exports.getLogInUser = catchAsync(async (req, res, next) => {
 //console.log("getTimeLogs, date:" + date);
 const timeLogsAll = [];
 var timeLogs;
-
+const today = moment().endOf('day');
+const date = today.toDate().toISOString().slice(0, 10);
+var tomorrow = new Date(new Date(date).setDate(new Date(date).getDate() + 0));
+let startTime = moment(req.body.startTime).toDate();
+console.log(tomorrow);
+var end = new Date(new Date(tomorrow).setDate(new Date(tomorrow).getDate() + 1));                      
 if(req.body.users!='' && req.body.projects!='' && req.body.tasks!='')
   {
-  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'project': { $in: req.body.projects },'task': { $in: req.body.tasks } }).distinct('user').where('date').equals("2023-03-22");    
+  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'project': { $in: req.body.projects },'task': { $in: req.body.tasks } ,'date' : {'$gte': tomorrow,'$lte': end}}).distinct('user');    
   }
   else if(req.body.users!='' && req.body.tasks!='')
   {
-  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'task': { $in: req.body.tasks } }).distinct('user').where('date').equals("2023-03-22");    
+  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'task': { $in: req.body.tasks } ,'date' : {'$gte': tomorrow,'$lte': end}}).distinct('user');    
   }
   else if(req.body.users!='' && req.body.projects!='')
   {
-  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'project': { $in: req.body.projects } }).distinct('user').where('date').equals("2023-3-22");    
+  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'project': { $in: req.body.projects },'date' : {'$gte': tomorrow,'$lte': end}}).distinct('user');    
   }
   else if(req.body.tasks!='' && req.body.projects!='')
   {
-  timeLogs=await TimeLog.find({ 'project': { $in: req.body.projects } }).distinct('user').where('date').equals("2023-03-22");    
+  timeLogs=await TimeLog.find({ 'project': { $in: req.body.projects } ,'date' : {'$gte': tomorrow,'$lte': end}}).distinct('user');    
   }
   else if(req.body.projects!='')
   {
-  timeLogs=await TimeLog.find({ 'project': { $in: req.body.projects } }).distinct('user').where('date').equals("2023-03-22");    
+  timeLogs=await TimeLog.find({ 'project': { $in: req.body.projects } ,'date' : {'$gte': tomorrow,'$lte': end}}).distinct('user');    
   }  
   else if(req.body.tasks!='')
   {
-  timeLogs=await TimeLog.find({ 'task': { $in: req.body.tasks } }).distinct('user').where('date').equals("2023-03-22");    
+  timeLogs=await TimeLog.find({ 'task': { $in: req.body.tasks },'date' : {'$gte': tomorrow,'$lte': end} }).distinct('user');    
   }
   else if(req.body.users!='')
   {
-    console.log("hi");
-  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users } }).distinct('user').where('date').equals("2023-03-22");    
+   
+  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'date' : {'$gte': tomorrow,'$lte': end} }).distinct('user');    
   }
   else{
-      timeLogs = await TimeLog.find({}).distinct('user').where('date').equals("2023-03-22");
+      timeLogs = await TimeLog.find({'date' : {'$gte': tomorrow,'$lte': end}}).distinct('user');
+      console.log(timeLogs);
    }
-   console.log(timeLogs);
+   
     for(var i = 0; i < timeLogs.length; i++) 
           {
-          const timeLog = await TimeLog.findOne({user:timeLogs[i],date:"2023-03-22"});
-          if(timeLog) 
+           const timeLog = await TimeLog.findOne({'user':timeLogs[i],'date' : {'$gte': tomorrow,'$lte': end}});
+          
+        if(timeLog) 
           {
             const newLogInUSer = {};
-            newLogInUSer.user= timeLog.user;
+            newLogInUSer.user = timeLog.user;
             newLogInUSer.project = timeLog.project.projectName;
             newLogInUSer.task = timeLog.task.taskName;
             timeLogsAll.push(newLogInUSer);
