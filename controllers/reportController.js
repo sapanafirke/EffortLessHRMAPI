@@ -593,17 +593,11 @@ exports.gettimeline = catchAsync(async (req, res, next) => {
                         let filterAll = {'user': users[i],'project':projects[k],'date' : {'$gte': tomorrow,'$lte': end}};                  
                         const timeLogAll = await TimeLog.find(filterAll);                
                         if(timeLogAll.length>0)    
-                        {                  
-                          const newLogDaily = {};             
-                          newLogDaily.time = timeLogAll.length*10;      
-                          newLogDaily.date = timeLogAll[0].date;                         
-                          newLogInUSer.firstName = timeLogAll[0].user.firstName;  
-                          newLogInUSer.lastName = timeLogAll[0].user.lastName;
-                          if(timeLogAll[0].project)
-                          {
-                           newLogInUSer.project = timeLogAll[0].project.projectName;
+                        {
+                          for(var k1 = 0; k1 < timeLogAll.length; k1++) 
+                          {                         
+                          allLogs.push(timeLogAll[k1]);
                           }
-                          allLogs.push(newLogDaily);
                         }
                      
                       }
