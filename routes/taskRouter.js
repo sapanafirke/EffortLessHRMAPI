@@ -122,6 +122,14 @@ router.route('/:id').get(authController.protect,taskController.getTask);
  *                              type: string
  *                          project:
  *                              type: string
+ *                          title:
+ *                              type: string 
+ *                          parentTask:
+ *                              type: string  
+ *                          estimate:
+ *                              type: number
+ *                          timeTaken:
+ *                              type: number 
  *                          taskUsers:
  *                              type: array
  *                              items:
@@ -187,6 +195,14 @@ router.post('/newtask',authController.protect,taskController.addTask);
  *                              type: string
  *                          project:
  *                              type: string
+ *                          title:
+ *                              type: string 
+ *                          parentTask:
+ *                              type: string  
+ *                          estimate:
+ *                              type: number
+ *                          timeTaken:
+ *                              type: number 
  *      produces:
  *          - application/json
  *      responses:
