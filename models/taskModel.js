@@ -8,6 +8,13 @@ var taskModelSchema = new Schema({
     required: true,
     unique: true
    },
+   title: {
+    type: String,
+    required: true    
+   },
+   description: {
+    type: String    
+   },
    startDate: {
     type: Date 
   },
@@ -56,11 +63,28 @@ var taskModelSchema = new Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Project'
   },
+  parentTask: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Task'
+  },
   TaskUsers:[],
   status:
   {
     type: String
-  } 
+  },
+  isDeleted:
+  {
+    type: Boolean
+  },
+  estimate:{
+    type: Number
+  },
+  timeTaken:{
+    type: Number
+  },
+  dueDate:{
+    type: Date
+  }, 
   },
   {
     toJSON: { virtuals: true }, // Use virtuals when outputing as JSON
