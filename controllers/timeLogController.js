@@ -88,9 +88,6 @@ exports.addLog = catchAsync(async (req, res, next) => {
 });
 
 exports.getTimeLogs = catchAsync(async (req, res, next) => {
-  console.log(req.cookies.companyId);
-  //let date = `${req.body.date}.000+00:00`;
-//console.log("getTimeLogs, date:" + date);
 var tomorrow = new Date(new Date(req.body.date).setDate(new Date(req.body.date).getDate() + 1));
   const timeLogs =  await TimeLog.find({}).where('user').equals(req.body.user).find({
     "date" : {"$gte": req.body.date,"$lte": tomorrow}});
@@ -114,8 +111,6 @@ exports.getLogInUser = catchAsync(async (req, res, next) => {
     }
  
 teamIdsArray.push(req.cookies.userId);
-  //let date = `${req.body.date}.000+00:00`;
-//console.log("getTimeLogs, date:" + date);
 const timeLogsAll = [];
 const realtime = [];
 const logs = {};  
@@ -124,7 +119,6 @@ const today = moment().endOf('day');
 const date = today.toDate().toISOString().slice(0, 10);
 var tomorrow = new Date(new Date(date).setDate(new Date(date).getDate() + 0));
 let startTime = moment(req.body.startTime).toDate();
-console.log(tomorrow);
 var end = new Date(new Date(tomorrow).setDate(new Date(tomorrow).getDate() + 1));                      
 if(req.body.users!='' && req.body.projects!='' && req.body.tasks!='')
   {
@@ -207,23 +201,6 @@ exports.getLogsWithImages = catchAsync(async (req, res, next) => {
   var tomorrow = new Date(new Date(req.body.date).setDate(new Date(req.body.date).getDate() + 1));
   const timeLogs =  await TimeLog.find({}).where('user').equals(req.body.user).find({
     "date" : {"$gte": req.body.date,"$lte": tomorrow}});
-    
-  //let response =[];
-  //for (const timeLog of timeLogs) {
-  //  const blobName = timeLog.filePath;
-    
-  // const blobClient = containerClient.getBlobClient(blobName);    
-  //  try{
-  //  const downloadBlockBlobResponse = await blobClient.download(0); 
-  //  console.log(downloadBlockBlobResponse.url);
-  //  const fileString =await streamToText(downloadBlockBlobResponse.readableStreamBody)   
-  //  timeLog.fileString= fileString;
-  //  response.push(timeLog);    
-  //  }
-  //  catch(err){      
-  //  }
-  //  } 
-
   res.status(200).json({
     status: 'success',
     data: timeLogs
@@ -232,8 +209,7 @@ exports.getLogsWithImages = catchAsync(async (req, res, next) => {
 
 exports.deleteLog = catchAsync(async (req, res, next) => {
   for(var i = 0; i < req.body.logs.length; i++) {
-  const timeLogsExists = await TimeLog.findById(req.body.logs[i].logId);    
-  console.log(timeLogsExists);
+  const timeLogsExists = await TimeLog.findById(req.body.logs[i].logId);   
   if(timeLogsExists)
   {
     var url = timeLogsExists.filePath;    
