@@ -659,4 +659,535 @@ router.patch('/update/taskattachemnt/:id',authController.protect,taskController.
  */
   router.post('/getUserTaskListByProject',authController.protect,taskController.getUserTaskListByProject);
 
+  //Task Tag functionality
+/**
+ * @swagger
+ * /api/v1/task/tag/Add:
+ *  post:
+ *      tags:
+ *          - Task Management
+ *      summary: "Create a new tag"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *           
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          title:
+ *                              type: string 
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */  
+  router.post('/Tag/Add',authController.protect,taskController.addTag);
+
+/**
+ * @swagger
+ * /api/v1/task/tag/Update:
+ *  post:
+ *      tags:
+ *          - Task Management
+ *      summary: "Create a new tag"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *           
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          title:
+ *                              type: string  
+ *                          id:
+ *                              type: string
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */  
+router.post('/Tag/Update',authController.protect,taskController.updateTag);
+// Delete a taskTag by ID
+/**
+  * @swagger
+  * /api/v1/task/Tag/{id}:
+  *  delete:
+  *      tags:
+  *          - Task Management
+  *      summary: "Delete tag"
+  *      security: [{
+  *         bearerAuth: []
+  *     }]
+  *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Task tag Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64 
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+router.delete('/Tag/:id', authController.protect, taskController.deleteTagById);
+
+// Get a single Tag by ID
+/**
+  * @swagger
+  * /api/v1/task/Tag/{id}:
+  *  get:
+  *      tags:
+  *          - Task Management
+  *      summary: "Get tag by Id"
+  *      security: [{
+  *         bearerAuth: []
+  *     }]
+  *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Task tag Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64  
+  *      produces:
+  *          - application/json
+  *      responses:
+  *          200:
+  *              description: "Success"
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          type: object
+  *
+  */
+router.get('/Tag/:id', authController.protect, taskController.getTagById);
+
+// Get Tags by TaskID
+/**
+  * @swagger
+  * /api/v1/task/Tags/{taskId}:
+  *  get:
+  *      tags:
+  *          - Task Management
+  *      summary: "Get tags by taskId"
+  *      security: [{
+  *         bearerAuth: []
+  *     }]
+  *      parameters:
+ *       - name: taskId
+ *         in: path
+ *         description: Task tag Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64  
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+router.get('/Tags/:taskId', authController.protect, taskController.getTagsByTaskId);
+
+//END of Task Tag functionality
+
+
+  //Task Tag routes
+
+// Create a new taskTag
+/**
+ * @swagger
+ * /api/v1/task/taskTag:
+ *  post:
+ *      tags:
+ *          - Task Management
+ *      summary: "Create a new task tag"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]
+ *           
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          task:
+ *                              type: string 
+ *                          tag:
+ *                              type: string  
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */  
+router.post('/TaskTag/', authController.protect, taskController.createTaskTag);
+
+// Get all taskTags
+/**
+  * @swagger
+  * /api/v1/task/taskTag:
+  *  get:
+  *      tags:
+  *          - Task Management
+  *      summary: "Get all tasktags"
+  *      security: [{
+  *         bearerAuth: []
+  *     }]  
+  *      produces:
+  *          - application/json
+  *      responses:
+  *          200:
+  *              description: "Success"
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          type: object
+  *
+  */ 
+router.get('/TaskTag/', authController.protect, taskController.getAllTaskTags);
+
+// Get a single taskTag by ID
+/**
+  * @swagger
+  * /api/v1/task/taskTag/{id}:
+  *  get:
+  *      tags:
+  *          - Task Management
+  *      summary: "Get all tasktags"
+  *      security: [{
+  *         bearerAuth: []
+  *     }]
+  *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Task tag Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64  
+  *      produces:
+  *          - application/json
+  *      responses:
+  *          200:
+  *              description: "Success"
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          type: object
+  *
+  */
+router.get('/TaskTag/:id', authController.protect, taskController.getTaskTagById);
+
+// Update a taskTag by ID
+/**
+  * @swagger
+  * /api/v1/task/taskTag/{id}:
+  *  put:
+  *      tags:
+  *          - Task Management
+  *      summary: "Update tasktag"
+  *      security: [{
+  *         bearerAuth: []
+  *     }]
+  *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Task tag Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64  
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          task:
+ *                              type: string
+ *                              format: int64
+ *                          tag:
+ *                              type: string   
+ *                              format: int64 
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+router.put('/TaskTag/:id', authController.protect, taskController.updateTaskTagById);
+
+// Delete a taskTag by ID
+/**
+  * @swagger
+  * /api/v1/task/taskTag/{id}:
+  *  delete:
+  *      tags:
+  *          - Task Management
+  *      summary: "Update tasktag"
+  *      security: [{
+  *         bearerAuth: []
+  *     }]
+  *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Task tag Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64 
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+router.delete('/TaskTag/:id', authController.protect, taskController.deleteTaskTagById);
+
+//END of Task Tag routes
+
+//Comment Routes
+
+//Create a new comment
+/**
+ * @swagger
+ * /api/v1/task/comment:
+ *  post:
+ *      tags:
+ *          - Task Management
+ *      summary: "Create a new comment"   
+ *      security: [{
+ *         bearerAuth: []
+ *     }]           
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          content:
+ *                              type: string  
+ *                          author:
+ *                              type: string
+ *                              format: int64
+ *                          task:
+ *                              type: string
+ *                              format: int64 
+ *                          commentedAt:
+ *                              type: Date
+ *                          parent:
+ *                              type: string
+ *                              format: int64 
+ *                          status:
+ *                              type: string
+ *                          commentType:
+ *                              type: string   
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */  
+router.post('/comment/', authController.protect, taskController.createComment);
+
+// Get all Comments
+/**
+  * @swagger
+  * /api/v1/task/taskTag:
+  *  get:
+  *      tags:
+  *          - Task Management
+  *      summary: "Get all tasktags"
+  *      security: [{
+  *         bearerAuth: []
+  *     }]  
+  *      produces:
+  *          - application/json
+  *      responses:
+  *          200:
+  *              description: "Success"
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          type: object
+  *
+  */ 
+router.get('/Comment/', authController.protect, taskController.getCommentsByTaskId);
+
+// Get a single taskTag by ID
+/**
+  * @swagger
+  * /api/v1/task/taskTag/{id}:
+  *  get:
+  *      tags:
+  *          - Task Management
+  *      summary: "Get all tasktags"
+  *      security: [{
+  *         bearerAuth: []
+  *     }]
+  *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Task tag Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64  
+  *      produces:
+  *          - application/json
+  *      responses:
+  *          200:
+  *              description: "Success"
+  *              content:
+  *                  application/json:
+  *                      schema:
+  *                          type: object
+  *
+  */
+router.get('/TaskTag/:id', authController.protect, taskController.getTaskTagById);
+
+// Update a comment by ID
+/**
+  * @swagger
+  * /api/v1/task/Comment/{id}:
+  *  put:
+  *      tags:
+  *          - Task Management
+  *      summary: "Update Comment"
+  *      security: [{
+  *         bearerAuth: []
+  *     }]
+  *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Task tag Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64  
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          content:
+ *                              type: string  
+ *                          author:
+ *                              type: string
+ *                              format: int64
+ *                          task:
+ *                              type: string
+ *                              format: int64 
+ *                          commentedAt:
+ *                              type: Date
+ *                          parent:
+ *                              type: string
+ *                              format: int64 
+ *                          status:
+ *                              type: string
+ *                          commentType:
+ *                              type: string
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+router.put('/Comment/:id', authController.protect, taskController.updateComment);
+
+// Delete a Comment
+/**
+  * @swagger
+  * /api/v1/task/Comment/{id}:
+  *  delete:
+  *      tags:
+  *          - Task Management
+  *      summary: "Delete a comment"
+  *      security: [{
+  *         bearerAuth: []
+  *     }]
+  *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Task tag Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64 
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+router.delete('/Comment/:id', authController.protect, taskController.getCommentById, taskController.deleteComment);
+
+  //END of Task Tag routes
+
+
 module.exports = router;

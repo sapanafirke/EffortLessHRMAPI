@@ -5,6 +5,9 @@ const catchAsync = require('../utils/catchAsync');
 const { BlobServiceClient } = require('@azure/storage-blob');
 const { v1: uuidv1} = require('uuid');
 const AppError = require('../utils/appError');
+const Tag = require('../models/task/tagModel');
+const TaskTag = require('../models/Task/taskTagModel');
+const Comment  = require('../models/Task/taskCommentModel');
 // AZURE STORAGE CONNECTION DETAILS
 const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
 if (!AZURE_STORAGE_CONNECTION_STRING) {
@@ -413,3 +416,254 @@ taskUsers.forEach(element => {
   data: results
 });  
 });
+
+//Tag management
+exports.addTag = catchAsync(async (req, res, next) => {  
+  const tagExists = await Tag.find( {"title":
+    { $regex: new RegExp("^" + req.body.title.toLowerCase(), "i") } }).where('company').equals(req.cookies.companyId);
+
+  if(tagExists.length>0){
+    res.status(403).send({ error: 'Tag already exists.' });    
+  }
+  else{
+  const newTag = await Tag.create({
+    title:req.body.title,
+    company:req.cookies.companyId,
+    createdOn: new Date(),
+    updatedOn: new Date(),
+    createdBy: req.cookies.userId,
+    updatedBy: req.cookies.userId
+  });
+   res.status(200).json({
+    status: 'success',
+    data: newTag
+  }); 
+} 
+  });
+
+  exports.updateTag = catchAsync(async (req, res, next) => {  
+    const tagExists = await Tag.find( {"_id": req.body.id}).where('company').equals(req.cookies.companyId);  
+    if(tagExists.length==0){
+      res.status(403).send({ error: `Tag doesn't exist.`});    
+    }
+    else{    
+      const newTag = await Tag.findByIdAndUpdate(req.body.id, req.body, {
+        new: true        
+      });      
+     res.status(200).json({
+      status: 'success',
+      data: newTag
+    }); 
+  } 
+    });
+  
+  exports.deleteTagById = async (req, res) => {
+      try {
+        const tag = await Tag.findByIdAndDelete(req.params.id);
+        if (!tag) {
+          return res.status(404).send();
+        }
+        res.send(tag);
+      } catch (err) {
+        res.status(500).send({ error: 'Server error' });
+      }
+};
+
+exports.getTagById = async (req, res) => {
+  try {
+    const tag = await Tag.findById(req.params.id);
+    if (!tag) {
+      return res.status(404).send();
+    }
+    res.send(tag);
+  } catch (err) {
+    res.status(500).send({ error: 'Server error' });
+  }
+};
+
+exports.getTagsByTaskId = async (req, res) => {
+  try {
+    // Find all TaskTag documents that match the taskId
+    console.log(req);
+
+    const taskTags = await TaskTag.find({ task: req.params.taskId });
+
+    // Extract the tag ids from the TaskTag documents
+    const tagIds = taskTags.map((taskTag) => taskTag.tag);
+
+    // Find all Tag documents that match the tag ids
+    const tags = await Tag.find({ _id: { $in: tagIds } });
+
+    res.send(tags);
+  } catch (err) {
+    res.status(500).send({ error: 'Server error' });
+  }
+};
+
+//end tag management
+
+
+
+//Start Task Tags
+
+exports.createTaskTag = async (req, res) => {
+  console.log(req.body);
+  try {
+    const taskTag = new TaskTag(req.body);
+    await taskTag.save();
+    res.status(201).send(taskTag);
+  } catch (err) {
+    res.status(400).send({ error: err.message });
+  }
+};
+
+exports.getAllTaskTags = async (req, res) => {
+  try {
+    const taskTags = await TaskTag.find();
+    console.log(taskTags);
+    res.send(taskTags);
+  } catch (err) {
+    res.status(500).send({ error: 'Server error' });
+  }
+};
+
+exports.getCommentsByTaskId = async (req, res) => {
+  Comment.find({ task: givenTaskId })
+  .sort('commentedAt') // sort by commentedAt ascending
+  .populate('author', 'username') // populate author username
+  .populate({
+    path: 'parent',
+    populate: { path: 'author', select: 'username' }
+  }) // recursively populate parent comments' authors' usernames
+  .exec((err, comments) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    const nestedComments = comments.reduce((acc, comment) => {
+      if (!comment.parent) {
+        acc.push(comment);
+      } else {
+        const parent = acc.find(c => c._id.equals(comment.parent._id));
+        parent.replies.push(comment);
+      }
+      return acc;
+    }, []);
+    console.log(nestedComments);
+  });
+};
+
+exports.getTaskTagById = async (req, res) => {
+  try {
+    const taskTag = await TaskTag.findById(req.params.id).populate('task').populate('tag');
+    if (!taskTag) {
+      return res.status(404).send();
+    }
+    res.send(taskTag);
+  } catch (err) {
+    res.status(500).send({ error: 'Server error' });
+  }
+};
+
+exports.updateTaskTagById = async (req, res) => {
+  try {
+    const taskTag = await TaskTag.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    }).populate('task').populate('tag');
+    if (!taskTag) {
+      return res.status(404).send();
+    }
+    res.send(taskTag);
+  } catch (err) {
+    res.status(400).send({ error: err.message });
+  }
+};
+
+exports.deleteTaskTagById = async (req, res) => {
+  try {
+    const taskTag = await TaskTag.findByIdAndDelete(req.params.id).populate('task').populate('tag');
+    if (!taskTag) {
+      return res.status(404).send();
+    }
+    res.send(taskTag);
+  } catch (err) {
+    res.status(500).send({ error: 'Server error' });
+  }
+};
+
+//END Task Tags
+
+
+//Start Comment
+
+exports.createComment = async (req, res) => {  
+  const comment = new Comment({
+    content: req.body.content,
+    auther: req.body.auther,
+    task: req.body.task,
+    commentedAt: req.body.commentedAt,
+    parent: req.body.parent,
+    status: req.body.status,
+    commentType: req.body.commentType
+  });
+
+  try {
+    const newComment = await comment.save();
+    res.status(201).json(newComment);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+exports.getAllTaskTags = async (req, res) => {
+  try {
+    const taskTags = await TaskTag.find();
+    console.log(taskTags);
+    res.send(taskTags);
+  } catch (err) {
+    res.status(500).send({ error: 'Server error' });
+  }
+};
+
+exports.getCommentById = async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.id);
+    if (!comment) {
+      return res.status(404).send();
+    }
+    res.send(comment);
+  } catch (err) {
+    res.status(500).send({ error: 'Server error' });
+  }
+};
+
+exports.updateComment = async (req, res) => {
+  if (req.body.content != null) {
+    res.comment.content = req.body.content;
+  }
+  if (req.body.status != null) {
+    res.comment.status = req.body.status;
+  }
+  if (req.body.commentType != null) {
+    res.comment.commentType = req.body.commentType;
+  }
+
+  try {
+    const updatedComment = await res.comment.save();
+    res.status(200).json(updatedComment);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+exports.deleteComment = async (req, res) => {
+  try {
+    await res.comment.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'Comment deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+//END Task Tags
