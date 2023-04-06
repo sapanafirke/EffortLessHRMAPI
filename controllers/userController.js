@@ -143,14 +143,13 @@ exports.getUsers = catchAsync(async (req, res, next) => {
 
 exports.getUserManagers = catchAsync(async (req, res, next) => {    
   let managers =[]; 
-  let subordinates = await userSubordinate.find({});    
-  for(let i=0;i<subordinates.length;i++){
-    if(subordinates[i].subordinateUserId?.id== req.params.id){
-      let manager =  await User.findOne({'_id': {$in: subordinates[i].userId}});  
+  let list = await userSubordinate.distinct('userId').find({'subordinateUserId': {$in: req.params.id}});  
+  for(let i=0;i<list.length;i++){
+      let manager =  await User.findOne({'_id': {$in: list[i].userId}});  
       if(manager){
         managers.push({id:manager.id, name:`${manager?.firstName} ${manager?.lastName}`});
     }
-  }}  
+  }
   res.status(200).json({
     status: 'success',
     data: managers
@@ -160,10 +159,9 @@ exports.getUserManagers = catchAsync(async (req, res, next) => {
 exports.getUserProjects = catchAsync(async (req, res, next) => {
   let projects =[];
   let projectUsers = await ProjectUsers.find({}).where('user').equals(req.params.id);  
-  for(let i =0; i<projectUsers.length;i++ ){    
-      let project = await Projects.findOne({}).where('_id').equals(projectUsers[i].project.id);
-      projects.push(project);
-  }    
+  for(let i =0; i<projectUsers.length;i++ ){          
+       projects.push(projectUsers[i].project);
+  }
   res.status(200).json({
     status: 'success',
     data: projects

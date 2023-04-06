@@ -371,7 +371,7 @@ router.get('/',authController.protect, userController.getAllUsers);
 
 /**
  * @swagger
- * /api/v1/users/getUserManagers:
+ * /api/v1/users/getUserManagers/{id}:
  *  get:
  *      tags:
  *          - User Management
@@ -396,22 +396,23 @@ router.get('/',authController.protect, userController.getAllUsers);
  *
  */
 router.route('/getUserManagers/:id').get(userController.getUserManagers);
-
 /**
  * @swagger
- * /api/v1/users/getUserProjects:
+ * /api/v1/users/getUserProjects/{id}:
  *  get:
  *      tags:
  *          - User Management
- *      summary: "Get Projects By UserId"   
+ *      summary: "Get all projects Based On UserId"   
  *      security: [{
  *         bearerAuth: []
  *     }]
  *      parameters:
- *        - name: id
- *          in: path
- *          description: User Id
- *          required: true 
+ *       - name: id
+ *         in: path
+ *         description: User Id
+ *         required: true
+ *         schema:
+ *           type: string
  *      produces:
  *          - application/json
  *      responses:
@@ -423,7 +424,8 @@ router.route('/getUserManagers/:id').get(userController.getUserManagers);
  *                          type: object
  *
  */
-router.route('/getUserProjects/:id').get(authController.protect,userController.getUserProjects);
+ router.get('/getUserProjects/:id',authController.protect,userController.getUserProjects);
+
 
 router
   .route('/:id')
