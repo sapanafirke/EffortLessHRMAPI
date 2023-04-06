@@ -8,7 +8,7 @@ const { Stream } = require('nodemailer/lib/xoauth2');
 const  FileAPI = require('file-api');
 var moment = require('moment'); 
 const timeLog = require('../models/timeLog');
-
+const userSubordinate = require('../models/userSubordinateModel');
   // AZURE STORAGE CONNECTION DETAILS
 const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
 if (!AZURE_STORAGE_CONNECTION_STRING) {
@@ -102,10 +102,23 @@ var tomorrow = new Date(new Date(req.body.date).setDate(new Date(req.body.date).
 });
 
 exports.getLogInUser = catchAsync(async (req, res, next) => {
-  console.log(req.cookies.companyId);
+  var teamIdsArray=[];
+  var teamIds='';
+  const ids = await userSubordinate.find({}).distinct('subordinateUserId').where('userId').equals(req.cookies.userId);  
+  if(ids.length > 0)    
+      { 
+        for(var i = 0; i < ids.length; i++) 
+          {    
+              teamIdsArray.push(ids[i]);        
+          }
+    }
+ 
+teamIdsArray.push(req.cookies.userId);
   //let date = `${req.body.date}.000+00:00`;
 //console.log("getTimeLogs, date:" + date);
 const timeLogsAll = [];
+const realtime = [];
+const logs = {};  
 var timeLogs;
 const today = moment().endOf('day');
 const date = today.toDate().toISOString().slice(0, 10);
@@ -127,25 +140,24 @@ if(req.body.users!='' && req.body.projects!='' && req.body.tasks!='')
   }
   else if(req.body.tasks!='' && req.body.projects!='')
   {
-  timeLogs=await TimeLog.find({ 'project': { $in: req.body.projects } ,'date' : {'$gte': tomorrow,'$lte': end}}).distinct('user');    
+  timeLogs=await TimeLog.find({ 'user': { $in: teamIdsArray},'project': { $in: req.body.projects } ,'date' : {'$gte': tomorrow,'$lte': end}}).distinct('user');    
   }
   else if(req.body.projects!='')
   {
-  timeLogs=await TimeLog.find({ 'project': { $in: req.body.projects } ,'date' : {'$gte': tomorrow,'$lte': end}}).distinct('user');    
+  timeLogs=await TimeLog.find({ 'user': { $in: teamIdsArray},'project': { $in: req.body.projects } ,'date' : {'$gte': tomorrow,'$lte': end}}).distinct('user');    
   }  
   else if(req.body.tasks!='')
   {
-  timeLogs=await TimeLog.find({ 'task': { $in: req.body.tasks },'date' : {'$gte': tomorrow,'$lte': end} }).distinct('user');    
+  timeLogs=await TimeLog.find({ 'user': { $in: teamIdsArray},'task': { $in: req.body.tasks },'date' : {'$gte': tomorrow,'$lte': end} }).distinct('user');    
   }
   else if(req.body.users!='')
   {
    
-  timeLogs=await TimeLog.find({ 'user': { $in: req.body.users },'date' : {'$gte': tomorrow,'$lte': end} }).distinct('user');    
+  timeLogs=await TimeLog.find({ 'user': { $in: teamIdsArray},'user': { $in: req.body.users },'date' : {'$gte': tomorrow,'$lte': end} }).distinct('user');    
   }
   else{
-      timeLogs = await TimeLog.find({'date' : {'$gte': tomorrow,'$lte': end}}).distinct('user');
-      console.log(timeLogs);
-   }
+      timeLogs = await TimeLog.find({'user': { $in: teamIdsArray},'date' : {'$gte': tomorrow,'$lte': end}}).distinct('user');
+  }
    
     for(var i = 0; i < timeLogs.length; i++) 
           {
@@ -161,9 +173,14 @@ if(req.body.users!='' && req.body.projects!='' && req.body.tasks!='')
           }
   
         }
+        logs.onlineUsers=timeLogsAll;       
+        logs.totalMember=teamIdsArray.length;
+        logs.activeMember=timeLogsAll.length;
+        logs.totalNonProductiveMember=0;
+        realtime.push(logs);
   res.status(200).json({
     status: 'success',
-    data: timeLogsAll
+    data: realtime
   });  
 });
 
