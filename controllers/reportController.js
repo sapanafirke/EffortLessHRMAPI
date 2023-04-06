@@ -578,14 +578,17 @@ exports.gettimeline = catchAsync(async (req, res, next) => {
         const projects = await TimeLog.find(filterProject).distinct('project');      
          if(projects.length>0) 
              {
+
                   for(var k = 0; k < projects.length; k++) 
                   {  
-                   
+                     
                     const newLogInUSer = {};                       
                     const allLogs = [];             
                       const dateFrom = new Date(req.body.fromdate).getDate();
                       const dateTo = new Date(req.body.todate).getDate();
-                      let days = dateTo - dateFrom;             
+                      let days = dateTo - dateFrom;     
+                      const firstTimeLog = await TimeLog.find(filterProject).sort();      
+                      newLogInUSer.StatTime=firstTimeLog[0].startTime;
                       for(var day = 0;day <= days; day++)
                       {                 
                         var tomorrow = new Date(new Date(req.body.fromdate).setDate(new Date(req.body.fromdate).getDate() + day));
