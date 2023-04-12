@@ -203,6 +203,8 @@ router.post('/newtask',authController.protect,taskController.addTask);
  *                              type: number
  *                          timeTaken:
  *                              type: number 
+ *                          status:
+ *                              type: string
  *      produces:
  *          - application/json
  *      responses:

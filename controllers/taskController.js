@@ -30,7 +30,7 @@ exports.deleteTask = catchAsync(async (req, res, next) => {
 
 exports.updateTask =  catchAsync(async (req, res, next) => {
 
-  const document = await Task.findByIdAndUpdate(req.params.id, req.body, {
+  const document = await Task.findOneAndUpdate(req.params.id, req.body, {
     new: true, // If not found - add new
     runValidators: true // Validate data
   });
