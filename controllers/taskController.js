@@ -441,15 +441,15 @@ exports.addTag = catchAsync(async (req, res, next) => {
 } 
   });
 
-  exports.updateTag = catchAsync(async (req, res, next) => {  
-    const tagExists = await Tag.find( {"_id": req.body.id}).where('company').equals(req.cookies.companyId);  
+  exports.updateTag = catchAsync(async (req, res, next) => { 
+    
+    let tagExists = await Tag.find( {"_id": req.body.id}).where('company').equals(req.cookies.companyId);  
     if(tagExists.length==0){
       res.status(403).send({ error: `Tag doesn't exist.`});    
     }
-    else{    
-      const newTag = await Tag.findByIdAndUpdate(req.body.id, req.body, {
-        new: true        
-      });      
+    else{          
+      tagExists.title=req.body.title;
+      const newTag = await Tag.updateOne( { _id: req.body._id }, { $set: { _id: req.body._id, title: req.body.title }} ).exec();            
      res.status(200).json({
       status: 'success',
       data: newTag
@@ -481,27 +481,29 @@ exports.getTagById = async (req, res) => {
   }
 };
 
-exports.getTagsByTaskId = async (req, res) => {
-  try {
+
+exports.getTagsByTaskId = catchAsync(async (req, res, next) => {    
     // Find all TaskTag documents that match the taskId    
-    const taskId = req.params.taskId;    
-    if(taskId.length<=1){      
-      const allTags = await Tag.find({ company: req.cookies.companyId });
-      res.send(allTags);
-  }
-    const taskTags = await TaskTag.find({ task: req.params.taskId });
-
-    // Extract the tag ids from the TaskTag documents
-    const tagIds = taskTags.map((taskTag) => taskTag.tag);
-
-    // Find all Tag documents that match the tag ids
-    const tags = await Tag.find({ _id: { $in: tagIds } });
-
-    res.send(tags);
-  } catch (err) {
-    res.status(500).send({ error: 'Server error' });
-  }
-};
+     const taskId = req.params.taskId;
+     if(taskId.length<=1){      
+       const allTags = await Tag.find({ company: req.cookies.companyId }).sort({ title: 1 });      
+       res.status(200).json({
+        status: 'success',
+        data: allTags
+      });       
+    }
+    else{
+      const taskTags = await TaskTag.find({ task: req.params.taskId });
+      // Extract the tag ids from the TaskTag documents
+      const tagIds = taskTags.map((taskTag) => taskTag.tag);    
+      // Find all Tag documents that match the tag ids
+      const tags = await Tag.find({ _id: { $in: tagIds}}).sort({ title: 1 });
+      res.status(200).json({
+        status: 'success',
+        data: tags
+      });
+    }   
+}); 
 
 exports.getTags = async (req, res) => {
   try {       
