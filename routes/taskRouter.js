@@ -805,8 +805,7 @@ router.get('/Tag/:id', authController.protect, taskController.getTagById);
   *      parameters:
  *       - name: taskId
  *         in: path
- *         description: Task tag Id
- *         required: true
+ *         description: Task tag Id 
  *         schema:
  *           type: string
  *           format: int64  

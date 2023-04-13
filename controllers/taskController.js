@@ -483,9 +483,12 @@ exports.getTagById = async (req, res) => {
 
 exports.getTagsByTaskId = async (req, res) => {
   try {
-    // Find all TaskTag documents that match the taskId
-    console.log(req);
-
+    // Find all TaskTag documents that match the taskId    
+    const taskId = req.params.taskId;    
+    if(taskId.length<=1){      
+      const allTags = await Tag.find({ company: req.cookies.companyId });
+      res.send(allTags);
+  }
     const taskTags = await TaskTag.find({ task: req.params.taskId });
 
     // Extract the tag ids from the TaskTag documents
@@ -493,6 +496,19 @@ exports.getTagsByTaskId = async (req, res) => {
 
     // Find all Tag documents that match the tag ids
     const tags = await Tag.find({ _id: { $in: tagIds } });
+
+    res.send(tags);
+  } catch (err) {
+    res.status(500).send({ error: 'Server error' });
+  }
+};
+
+exports.getTags = async (req, res) => {
+  try {       
+    console.log(`started getTags`);
+    console.log(`req.cookies.companyId: ${req.cookies.companyId}`);
+    // Find all Tag documents that match the tag ids
+    const tags = await Tag.find({ company: req.cookies.companyId });
 
     res.send(tags);
   } catch (err) {
