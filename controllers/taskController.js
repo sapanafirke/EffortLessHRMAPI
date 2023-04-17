@@ -31,7 +31,7 @@ exports.deleteTask = catchAsync(async (req, res, next) => {
 exports.updateTask =  catchAsync(async (req, res, next) => {
 
   const document = await Task.findOneAndUpdate(req.params.id, req.body, {
-    new: true, // If not found - add new
+    new: false, // If not found - add new
     runValidators: true // Validate data
   });
   if (!document) {
@@ -45,6 +45,25 @@ exports.updateTask =  catchAsync(async (req, res, next) => {
   });
 });
 
+exports.updateFlex =  catchAsync(async (req, res, next) => {    
+  const updates = {};  
+  Object.keys(req.body).forEach((key) => {
+    updates[key] = req.body[key];
+  })
+    
+  const task = await Task.findByIdAndUpdate(
+    req.params.id,
+    { $set: updates },
+    { new: false, runValidators: true }
+  );
+  if(!task) return res.status(404).send({ error: 'Task not found'});     
+  res.status(201).json({
+    status: 'success',
+    data: {
+      data: task
+    }
+  });
+});
 
 exports.getTask  = catchAsync(async (req, res, next) => {    
 const task = await Task.findById(req.params.id); 
