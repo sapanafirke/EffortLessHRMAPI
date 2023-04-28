@@ -634,24 +634,24 @@ exports.deleteTaskTagById = async (req, res) => {
 
 //Start Comment
 
-exports.createComment = async (req, res) => {  
+exports.createComment = catchAsync(async (req, res, next) => {    
+  const { content, author, task, commentedAt, parent, status, commentType } = req.body;
+  // create a new Comment document
   const comment = new Comment({
-    content: req.body.content,
-    auther: req.body.auther,
-    task: req.body.task,
-    commentedAt: req.body.commentedAt,
-    parent: req.body.parent,
-    status: req.body.status,
-    commentType: req.body.commentType
+    content,
+    author,
+    task,
+    commentedAt,
+    parent,
+    status,
+    commentType
   });
-
-  try {
-    const newComment = await comment.save();
-    res.status(201).json(newComment);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-};
+  const newComment = await comment.save();
+  res.status(200).json({
+    status: 'success',
+    data: newComment
+  });     
+}); 
 
 exports.getAllTaskTags = async (req, res) => {
   try {
@@ -703,4 +703,15 @@ exports.deleteComment = async (req, res) => {
   }
 };
 
+exports.getAllComments = catchAsync(async (req, res, next) => {
+  
+  console.log(`Task id ${req.params.id}`);
+  
+  let comments = await Comment.find( {"Task": req.params.id}); 
+  res.status(200).json({
+    status: 'success',
+    data: comments
+  });
+  });
+  
 //END Task Tags

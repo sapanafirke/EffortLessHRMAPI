@@ -1253,7 +1253,39 @@ router.put('/Comment/:id', authController.protect, taskController.updateComment)
  */
 router.delete('/Comment/:id', authController.protect, taskController.getCommentById, taskController.deleteComment);
 
-  //END of Task Tag routes
+// Get all the comments of a task
+/**
+  * @swagger
+  * /api/v1/task/Comments/{id}:
+  *  get:
+  *      tags:
+  *          - Task Management
+  *      summary: "Get all comments"
+  *      security: [{
+  *         bearerAuth: []
+  *     }]
+  *      parameters:
+ *       - name: id
+ *         in: path
+ *         description: Task tag Id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: int64 
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: "Success"
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *
+ */
+router.get('/Comments/:id', authController.protect, taskController.getAllComments);
+
+//END of Task Tag routes
 
 
 module.exports = router;
