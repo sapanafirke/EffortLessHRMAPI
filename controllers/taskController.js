@@ -696,8 +696,14 @@ exports.updateComment = async (req, res) => {
 
 exports.deleteComment = async (req, res) => {
   try {
-    await res.comment.findByIdAndDelete(req.params.id);
+    console.log(`delete comment with id ${req.params.id}`);
+    const result = await Comment.findByIdAndDelete(req.params.id);
+    if(result){
     res.status(200).json({ message: 'Comment deleted successfully' });
+  }
+  else{
+    res.status(404).json({ message: 'Comment not found'});
+  }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

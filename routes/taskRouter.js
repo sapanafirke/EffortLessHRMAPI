@@ -1251,7 +1251,7 @@ router.put('/Comment/:id', authController.protect, taskController.updateComment)
  *                          type: object
  *
  */
-router.delete('/Comment/:id', authController.protect, taskController.getCommentById, taskController.deleteComment);
+router.delete('/Comment/:id', authController.protect, taskController.deleteComment);
 
 // Get all the comments of a task
 /**
