@@ -290,5 +290,48 @@ router.delete('/', authController.protect, timeLogController.deleteLog);
 *
 */
 router.post('/addTimeLog', authController.protect, timeLogController.addManualTime);
+/**
+* @swagger
+* /api/v1/timelogs/timesheet/{userId}/{startDate}/{endDate}:
+*  get:
+*      tags:
+*          - Timelog Management
+*      summary: "Get timesheet for given user and date range"   
+*      parameters:
+*        - name: userId
+*          in: query
+*          description: The ID of the user whose time logs you want to retrieve
+*          required: true
+*          schema:
+*            type: string
+*        - name: startDate
+*          in: query
+*          description: The start date of the date range for which you want to retrieve time logs
+*          required: true
+*          schema:
+*            type: string
+*            format: date-time
+*        - name: endDate
+*          in: query
+*          description: The end date of the date range for which you want to retrieve time logs
+*          required: true
+*          schema:
+*            type: string
+*            format: date-time
+*      security: [{
+*         bearerAuth: []
+*     }]        
+*      produces:
+*          - application/json
+*      responses:
+*          200:
+*              description: "Success"
+*              content:
+*                  application/json:
+*                      schema:
+*                          type: object
+*
+*/
+router.get('/timesheet/:userId/:startDate/:endDate', authController.protect, timeLogController.getTimesheet);
 
 module.exports = router;

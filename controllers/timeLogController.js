@@ -18,6 +18,7 @@ const blobServiceClient = BlobServiceClient.fromConnectionString(
   AZURE_STORAGE_CONNECTION_STRING
 );
 const containerClient = blobServiceClient.getContainerClient(process.env.CONTAINER_NAME);
+const mongoose = require('mongoose');
 
 exports.addLog = catchAsync(async (req, res, next) => { 
  const currentUserActive = await CurrentUserDevice.findOne({}).where('userId').equals(req.cookies.userId).where('companyId').equals(req.cookies.companyId);  
@@ -261,6 +262,77 @@ exports.addManualTime = catchAsync(async (req, res, next) => {
      }
    });
  });
+
+ exports.getTimesheet = catchAsync(async (req, res, next) => {    
+
+  const userId = req.query.userId;
+  const startDate = req.query.startDate;
+  const endDate = req.query.endDate;
+
+  // Create a pipeline to aggregate time logs by project and date
+  const pipeline = [
+    // Match time logs for the given user and date range
+    {
+      $match: {
+        user: mongoose.Types.ObjectId(userId),
+        date: { $gte: new Date(startDate), $lte: new Date(endDate) }
+      }
+    },
+    // Group time logs by project and date, and calculate the total time spent for each day
+    {
+      $group: {
+        _id: { project: '$project', date: { $dateToString: { format: '%Y-%m-%d', date: '$date' } } },
+        timeSpent: { $sum: { $subtract: ['$endTime', '$startTime'] } }
+      }
+    },
+    // Group time logs by project, and pivot the data to create a column for each date
+    {
+      $group: {
+        _id: '$_id.project',
+        timeSpent: { $push: { date: '$_id.date', timeSpent: '$timeSpent' } }
+      }
+    },
+    // Sort projects by name
+    {
+      $sort: { _id: 1 }
+    }
+  ];
+
+  try {
+    // Execute the pipeline using the TimeLog collection
+    const results = await TimeLog.aggregate(pipeline);
+
+    // Create an array of dates within the date range
+    const dates = getDatesInRange(startDate, endDate);
+
+    // Create a matrix of time spent by project and date
+    const matrix = results.map(result => {
+      const row = [result._id];
+      dates.forEach(date => {
+        const timeSpent = result.timeSpent.find(t => t.date === date);
+        row.push(timeSpent ? timeSpent.timeSpent : 0);
+      });
+      return row;
+    });
+
+    // Create an array of column names with the project name and the dates
+    const columns = ['Project', ...dates];
+
+    // Send the response with the matrix and column names
+    
+
+    res.status(200).json({
+      status: 'success',
+      data:{ matrix, columns } 
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+   
+ });
+
  
 // Convert stream to text
 async function streamToText(readable) {
@@ -284,4 +356,15 @@ async function streamToString(readableStream) {
     });
     readableStream.on("error", reject);
   });
+}
+
+// Helper function to get an array of dates within a date range
+function getDatesInRange(startDate, endDate) {
+  const dates = [];
+  let currentDate = new Date(startDate);
+  while (currentDate <= new Date(endDate)) {
+    dates.push(currentDate.toISOString().slice(0, 10));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return dates;
 }

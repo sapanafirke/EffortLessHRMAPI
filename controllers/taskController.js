@@ -327,6 +327,7 @@ exports.addTaskAttachment = catchAsync(async (req, res, next) => {
       attachmentSize:req.body.taskAttachments[i].attachmentSize,
       filePath:blobName,
       status:"Active",
+      comment:req.body.comment,
       createdOn: new Date(),
       updatedOn: new Date(),
       createdBy: req.cookies.userId,
