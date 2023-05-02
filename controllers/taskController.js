@@ -677,22 +677,20 @@ exports.getCommentById = async (req, res) => {
 };
 
 exports.updateComment = async (req, res) => {
-  if (req.body.content != null) {
-    res.comment.content = req.body.content;
+  const document = await Comment.findByIdAndUpdate(req.params.id, req.body, {
+    new: true, // If not found - add new
+    runValidators: true // Validate data
+  });
+  if (!document) {
+    return next(new AppError('No document found with that ID', 404));
   }
-  if (req.body.status != null) {
-    res.comment.status = req.body.status;
-  }
-  if (req.body.commentType != null) {
-    res.comment.commentType = req.body.commentType;
-  }
+  res.status(201).json({
+    status: 'success',
+    data: {
+      data: document
+    }
+  });
 
-  try {
-    const updatedComment = await res.comment.save();
-    res.status(200).json(updatedComment);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
 };
 
 exports.deleteComment = async (req, res) => {
