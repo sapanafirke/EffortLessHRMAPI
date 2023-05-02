@@ -713,8 +713,8 @@ exports.deleteComment = async (req, res) => {
 exports.getAllComments = catchAsync(async (req, res, next) => {
   
   console.log(`Task id ${req.params.id}`);
-  
-  let comments = await Comment.find( {"Task": req.params.id}); 
+
+  let comments = await Comment.find({task: req.params.id}); 
   res.status(200).json({
     status: 'success',
     data: comments

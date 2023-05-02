@@ -36,4 +36,14 @@ var commentSchema = new Schema({
   toObject: { virtuals: true } // Use virtuals when outputing as Object
 },
 { collection: 'Comments' });
+commentSchema.pre(/^find/,async function(next) {
+  this.populate({
+    path: 'task',
+    select: 'title'
+  }).populate({
+    path: 'author',
+    select: 'firstName lastName'
+  });
+  next();
+});
 module.exports = mongoose.model('Comment', commentSchema);
