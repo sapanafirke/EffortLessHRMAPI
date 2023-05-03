@@ -1183,7 +1183,7 @@ router.get('/TaskTag/:id', authController.protect, taskController.getTaskTagById
   *      parameters:
  *       - name: id
  *         in: path
- *         description: Task tag Id
+ *         description: Comment Id
  *         required: true
  *         schema:
  *           type: string
@@ -1238,7 +1238,7 @@ router.put('/Comment/:id', authController.protect, taskController.updateComment)
   *      parameters:
  *       - name: id
  *         in: path
- *         description: Task tag Id
+ *         description: Comment Id
  *         required: true
  *         schema:
  *           type: string
@@ -1270,7 +1270,7 @@ router.delete('/Comment/:id', authController.protect, taskController.deleteComme
   *      parameters:
  *       - name: id
  *         in: path
- *         description: Task tag Id
+ *         description: Task Id
  *         required: true
  *         schema:
  *           type: string
