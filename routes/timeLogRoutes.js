@@ -305,19 +305,17 @@ router.post('/addTimeLog', authController.protect, timeLogController.addManualTi
 *          schema:
 *            type: string
 *        - name: startDate
-*          in: query
 *          description: The start date of the date range for which you want to retrieve time logs
 *          required: true
 *          schema:
 *            type: string
-*            format: date-time
+*            format: date
 *        - name: endDate
-*          in: query
 *          description: The end date of the date range for which you want to retrieve time logs
 *          required: true
 *          schema:
 *            type: string
-*            format: date-time
+*            format: date
 *      security: [{
 *         bearerAuth: []
 *     }]        
@@ -333,5 +331,48 @@ router.post('/addTimeLog', authController.protect, timeLogController.addManualTi
 *
 */
 router.get('/timesheet/:userId/:startDate/:endDate', authController.protect, timeLogController.getTimesheet);
+
+
+/**
+* @swagger
+* /api/v1/timelogs/timesheets/{userIds}/{startDate}/{endDate}:
+*  get:
+*      tags:
+*          - Timelog Management
+*      summary: "Get timesheets for given user ids and date range"   
+*      parameters:
+*        - name: userIds
+*          in: query
+*          description: The ID's of the users whose time logs you want to retrieve
+*          required: true
+*          schema:
+*            type: string
+*        - name: startDate
+*          description: The start date of the date range for which you want to retrieve time logs
+*          required: true
+*          schema:
+*            type: string
+*            format: date
+*        - name: endDate
+*          description: The end date of the date range for which you want to retrieve time logs
+*          required: true
+*          schema:
+*            type: string
+*            format: date
+*      security: [{
+*         bearerAuth: []
+*     }]        
+*      produces:
+*          - application/json
+*      responses:
+*          200:
+*              description: "Success"
+*              content:
+*                  application/json:
+*                      schema:
+*                          type: object
+*
+*/
+router.get('/timesheets/:userIds/:startDate/:endDate', authController.protect, timeLogController.getTimesheetByUserIds);
 
 module.exports = router;

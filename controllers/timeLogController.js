@@ -265,10 +265,11 @@ exports.addManualTime = catchAsync(async (req, res, next) => {
 
  exports.getTimesheet = catchAsync(async (req, res, next) => {    
 
-  const userId = req.query.userId;
-  const startDate = req.query.startDate;
-  const endDate = req.query.endDate;
-
+  const userId = req.params.userId;
+  const startDate = req.params.startDate;
+  const endDate = req.params.endDate;
+  
+  
   // Create a pipeline to aggregate time logs by project and date
   const pipeline = [
     // Match time logs for the given user and date range
@@ -318,8 +319,7 @@ exports.addManualTime = catchAsync(async (req, res, next) => {
     // Create an array of column names with the project name and the dates
     const columns = ['Project', ...dates];
 
-    // Send the response with the matrix and column names
-    
+    // Send the response with the matrix and column names   
 
     res.status(200).json({
       status: 'success',
@@ -329,11 +329,85 @@ exports.addManualTime = catchAsync(async (req, res, next) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
-  }
-   
+  }   
  });
 
- 
+ exports.getTimesheetByUserIds = catchAsync(async (req, res, next) => {
+
+  const userIds = req.params.userIds.split(','); // Get user IDs from query parameter
+  const startDate = new Date(req.params.startDate); // Get start date from query parameter
+  const endDate = new Date(req.params.endDate); // Get end date from query parameter
+
+  
+// Create a pipeline to aggregate time logs by project and date
+const pipeline = [
+  // Match time logs for the given users and date range
+  {
+    $match: {
+      user: { $in: userIds.map(id => mongoose.Types.ObjectId(id)) },
+      date: { $gte: new Date(startDate), $lte: new Date(endDate) }
+    }
+  },
+  // Group time logs by user, project and date, and calculate the total time spent for each day
+  {
+    $group: {
+      _id: { user: '$user', project: '$project', date: { $dateToString: { format: '%Y-%m-%d', date: '$date' } } },
+      timeSpent: { $sum: { $subtract: ['$endTime', '$startTime'] } }
+    }
+  },
+  // Group time logs by user and project, and pivot the data to create a column for each date
+  {
+    $group: {
+      _id: { user: '$_id.user', project: '$_id.project' },
+      timeSpent: { $push: { date: '$_id.date', timeSpent: '$timeSpent' } }
+    }
+  },
+  // Sort projects by name
+  {
+    $sort: { '_id.user': 1, '_id.project': 1 }
+  }
+];
+
+try {
+  // Execute the pipeline using the TimeLog collection
+  const results = await TimeLog.aggregate(pipeline);
+
+  // Create an array of dates within the date range
+  const dates = getDatesInRange(startDate, endDate);
+
+  // Create a matrix of time spent by project and date for each user
+  const matrix = {};
+  userIds.forEach(userId => {
+    matrix[userId] = results
+      .filter(result => result._id.user.toString() === userId)
+      .map(result => {
+        const row = [result._id.project];
+        dates.forEach(date => {
+          const timeSpent = result.timeSpent.find(t => t.date === date);
+          row.push(timeSpent ? timeSpent.timeSpent : 0);
+        });
+        return row;
+      });
+  });
+
+  // Create an array of column names with the project name and the dates
+  const columns = ['User','Project', ...dates];
+
+  // Send the response with the matrix and column names
+  
+  res.status(200).json({
+    status: 'success',
+    data: { matrix, columns }
+  });
+
+
+} catch (error) {
+  console.error(error);
+  res.status(500).json({ error: 'Internal server error' });
+}    
+    
+ });
+  
 // Convert stream to text
 async function streamToText(readable) {
   readable.setEncoding('utf8');
