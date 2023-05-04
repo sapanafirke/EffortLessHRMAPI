@@ -32,53 +32,43 @@ app.use(express.urlencoded({ limit: '500mb', extended: false, parameterLimit: 50
 
 console.log('max limit set');
 
-var allowedOrigins = ['http://localhost:4200',
-'http://localhost:8080','https://effortlesshrmapi.azurewebsites.net',
-                      'https://effort-less-hrm-web.vercel.app'];
-
+var allowedOrigin ="http://localhost:4200";
+if (process.env.NODE_ENV === 'development') {
+  allowedOrigin= "http://localhost:4200";
+} else if (process.env.NODE_ENV === 'production') {                        
+  allowedOrigin= "https://effort-less-hrm-web.vercel.app";
+}
 //app.use(compression);
 app.use(cors(
   {
-    "origin": function(origin, callback){     
-      if(!origin) return callback(null, true);
-      if(allowedOrigins.indexOf(origin) === -1){
-        var msg = 'The CORS policy for this site does not ' +
-                  'allow access from the specified Origin.';
-        return callback(new Error(msg), false);
-      }
-      return callback(null, true);
-    } , // "true" will copy the domain of the request back
-                // to the reply. If you need more control than this
-                // use a function.
-
-  credentials: true, // This MUST be "true" if your endpoint is
+    "origin": allowedOrigin,
+    credentials: true, // This MUST be "true" if your endpoint is
                      // authenticated via either a session cookie
                      // or Authorization header. Otherwise the
                      // browser will block the response.
-
-  methods: 'POST,GET,PUT,OPTIONS,DELETE, PATCH' // Make sure you're not blocking
-                                         // pre-flight OPTIONS requests
+  methods: 'POST,GET,PUT,OPTIONS,DELETE, PATCH' // Make sure you're not blocking 
+                                               // pre-flight OPTIONS requests
   }
 ));
-
 app.options('*', cors());
 app.set("view engine", "pug");
 app.set("email", path.join(__dirname, "email"));
 
 // Each request will contain requested time
 app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'development') {
+    res.header("Access-Control-Allow-Origin", "http://localhost:4200"); 
+    console.log('Running in development mode');
+  } else if (process.env.NODE_ENV === 'production') {
+    res.header("Access-Control-Allow-Origin", "https://effort-less-hrm-web.vercel.app"); 
+    console.log('Running in production mode');
+  } else {
+    console.log('Unknown environment');
+  }  
   
-  let http_origin = req.get('host');
-
-  console.log(http_origin);
-
-if (http_origin == "http://localhost:4200" || http_origin == "https://effort-less-hrm-web.vercel.app")
-{  
-  res.header("Access-Control-Allow-Origin", http_origin);
-}
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-
-  console.log('received the request');
+  res.header("Access-Control-Allow-Methods", "POST,GET,PUT,OPTIONS,DELETE,PATCH");
+  
   next(); // run next middleware in stack
 });
 
