@@ -335,33 +335,28 @@ router.get('/timesheet/:userId/:startDate/:endDate', authController.protect, tim
 
 /**
 * @swagger
-* /api/v1/timelogs/timesheets/{userIds}/{startDate}/{endDate}:
-*  get:
+* /api/v1/timelogs/timesheets:
+*  post:
 *      tags:
 *          - Timelog Management
 *      summary: "Get timesheets for given user ids and date range"   
-*      parameters:
-*        - name: userIds
-*          in: query
-*          description: The ID's of the users whose time logs you want to retrieve
-*          required: true
-*          schema:
-*            type: string
-*        - name: startDate
-*          description: The start date of the date range for which you want to retrieve time logs
-*          required: true
-*          schema:
-*            type: string
-*            format: date
-*        - name: endDate
-*          description: The end date of the date range for which you want to retrieve time logs
-*          required: true
-*          schema:
-*            type: string
-*            format: date
 *      security: [{
 *         bearerAuth: []
 *     }]        
+*      requestBody:
+*          content:
+*              application/json:
+*                  schema:
+*                      type: object
+*                      properties:
+*                          userIds:
+*                              type: string
+*                          startDate:
+*                              type: string
+*                              format: date
+*                          endDate:
+*                              type: string
+*                              format: date
 *      produces:
 *          - application/json
 *      responses:
@@ -373,6 +368,6 @@ router.get('/timesheet/:userId/:startDate/:endDate', authController.protect, tim
 *                          type: object
 *
 */
-router.get('/timesheets/:userIds/:startDate/:endDate', authController.protect, timeLogController.getTimesheetByUserIds);
+router.post('/timesheets', authController.protect, timeLogController.getTimesheetByUserIds);
 
 module.exports = router;

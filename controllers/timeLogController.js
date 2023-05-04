@@ -334,9 +334,9 @@ exports.addManualTime = catchAsync(async (req, res, next) => {
 
  exports.getTimesheetByUserIds = catchAsync(async (req, res, next) => {
 
-  const userIds = req.params.userIds.split(','); // Get user IDs from query parameter
-  const startDate = new Date(req.params.startDate); // Get start date from query parameter
-  const endDate = new Date(req.params.endDate); // Get end date from query parameter
+  const userIds = req.body.userIds.split(','); // Get user IDs from query parameter
+  const startDate = new Date(req.body.startDate); // Get start date from query parameter
+  const endDate = new Date(req.body.endDate); // Get end date from query parameter
 
   
 // Create a pipeline to aggregate time logs by project and date
