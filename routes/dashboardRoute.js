@@ -4,7 +4,7 @@ const dashboardController = require('../controllers/dashboardController')
 
 /**
  * @swagger
- * /api/v1/dashboard/getHoursWorked:
+ * /api/v1/dashboard/HoursWorked:
  *  get:
  *      tags:
  *          - Dashboard
@@ -36,7 +36,7 @@ const dashboardController = require('../controllers/dashboardController')
  *                          type: object
  *
  */
-router.get('/getHoursWorked', dashboardController.getHoursWorked);
+router.get('/HoursWorked', dashboardController.getHoursWorked);
 
 /**
  * @swagger
