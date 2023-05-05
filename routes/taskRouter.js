@@ -1099,7 +1099,12 @@ router.delete('/TaskTag/:id', authController.protect, taskController.deleteTaskT
  *                          status:
  *                              type: string
  *                          commentType:
- *                              type: string   
+ *                              type: string
+ *                          taskAttachments:
+ *                              type: array
+ *                              items:
+ *                                type: string
+ *                                example: {"attachmentType",attachmentName,attachmentSize,file}    
  *      produces:
  *          - application/json
  *      responses:

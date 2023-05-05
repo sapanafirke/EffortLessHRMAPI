@@ -648,6 +648,38 @@ exports.createComment = catchAsync(async (req, res, next) => {
     commentType
   });
   const newComment = await comment.save();
+  if(req.body.taskAttachments!=null)
+  {
+  for(var i = 0; i < req.body.taskAttachments.length; i++) {
+    console.log("attach");
+    const blobName = "Capture" + uuidv1() + ".png";
+  // Get a block blob client
+  const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+  console.log("\nUploading to Azure storage as blob:\n\t", blobName);
+  // Upload data to the blob
+  var FileString =  req.body.taskAttachments[i].file;
+  const buffer = new Buffer.from(FileString, 'base64');
+  const uploadBlobResponse = await blockBlobClient.upload(buffer,buffer.byteLength );
+  console.log(
+    "Blob was uploaded successfully. requestId: ",
+    uploadBlobResponse.requestId
+  );
+
+    const newTaskUserItem = await TaskAttachments.create({
+      task:newComment.taskId,
+      attachmentType:req.body.taskAttachments[i].attachmentType,
+      attachmentName:req.body.taskAttachments[i].attachmentName,
+      attachmentSize:req.body.taskAttachments[i].attachmentSize,
+      comment:newComment._id,
+      filePath:blobName,
+      status:"Active",
+      createdOn: new Date(),
+      updatedOn: new Date(),
+      createdBy: req.cookies.userId,
+      updatedBy: req.cookies.userId
+    });  
+  }
+}
   res.status(200).json({
     status: 'success',
     data: newComment
