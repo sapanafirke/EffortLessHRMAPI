@@ -33,7 +33,7 @@ var taskAttachmentsModelSchema = new Schema({
     ref: 'User'//,
   //  required: [true, 'User must belong to a User']
   },
-  commentId: {
+  comment: {
     type: mongoose.Schema.ObjectId,
     ref: 'Comment'//,
   //  required: [true, 'User must belong to a User']

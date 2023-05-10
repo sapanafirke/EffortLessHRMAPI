@@ -586,51 +586,7 @@ router.route('/taskuser/:id').delete(authController.protect,taskController.delet
  *
  */
 router.post('/new/taskattachment',authController.protect,taskController.addTaskAttachment);
-/**
- * @swagger
- * /api/v1/task/update/taskattachemnt/{id}:
- *  patch:
- *      tags:
- *          - Task Management
- *      summary: "Update Task Attachement based on TaskAttachmentId"   
- *      security: [{
- *         bearerAuth: []
- *     }]
- *      parameters:
- *       - name: id
- *         in: path
- *         description: Task Attachment Id
- *         required: true
- *         schema:
- *           type: string
- *           format: int64
- *           
- *      requestBody:
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
- *                      properties:
- *                          file:
- *                              type: string
- *                          attachmentType:
- *                              type: string  
- *                          attachmentName:
- *                              type: string  
- *                          attachmentSize:
- *                              type: string
- *      produces:
- *          - application/json
- *      responses:
- *          200:
- *              description: "Success"
- *              content:
- *                  application/json:
- *                      schema:
- *                          type: object
- *
- */
-router.patch('/update/taskattachemnt/:id',authController.protect,taskController.updateTaskAttachments);
+
  /**
  * @swagger
  * /api/v1/task/taskattachment/{id}:
@@ -1102,6 +1058,7 @@ router.delete('/TaskTag/:id', authController.protect, taskController.deleteTaskT
  *                              type: string
  *                          taskAttachments:
  *                              type: array
+ *                               
  *                              items:
  *                                type: string
  *                                example: {"attachmentType",attachmentName,attachmentSize,file}    

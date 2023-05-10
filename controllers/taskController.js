@@ -221,15 +221,15 @@ exports.addTask = catchAsync(async (req, res, next) => {
   if(req.body.taskAttachments!=null)
   {
   for(var i = 0; i < req.body.taskAttachments.length; i++) {
-    console.log("attach");
     const blobName = "Capture" + uuidv1() + ".png";
-  // Get a block blob client
-  const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-  console.log("\nUploading to Azure storage as blob:\n\t", blobName);
-  // Upload data to the blob
-  var FileString =  req.body.taskAttachments[i].file;
-  const buffer = new Buffer.from(FileString, 'base64');
-  const uploadBlobResponse = await blockBlobClient.upload(buffer,buffer.byteLength );
+    // Get a block blob client
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+    console.log("\nUploading to Azure storage as blob:\n\t", );
+    // Upload data to the blob
+    var FileString =  req.body.taskAttachments[i].file;
+    const buffer = new Buffer.from(FileString, 'base64');
+    const uploadBlobResponse = await blockBlobClient.upload(buffer,buffer.length);
+    const url=process.env.CONTAINER_URL_BASE_URL+ process.env.CONTAINER_NAME+"/"+blobName; 
   console.log(
     "Blob was uploaded successfully. requestId: ",
     uploadBlobResponse.requestId
@@ -245,7 +245,8 @@ exports.addTask = catchAsync(async (req, res, next) => {
       createdOn: new Date(),
       updatedOn: new Date(),
       createdBy: req.cookies.userId,
-      updatedBy: req.cookies.userId
+      updatedBy: req.cookies.userId,
+      url:url
     });  
   
   }
@@ -329,7 +330,7 @@ exports.addTaskAttachment = catchAsync(async (req, res, next) => {
       attachmentSize:req.body.taskAttachments[i].attachmentSize,
       filePath:blobName,
       status:"Active",
-      commentId:req.body.commentId,
+      comment:req.body.commentId,
       createdOn: new Date(),
       updatedOn: new Date(),
       createdBy: req.cookies.userId,
@@ -654,20 +655,20 @@ exports.createComment = catchAsync(async (req, res, next) => {
   if(req.body.taskAttachments!=null)
   {
   for(var i = 0; i < req.body.taskAttachments.length; i++) {
-    console.log("attach");
     const blobName = "Capture" + uuidv1() + ".png";
-  // Get a block blob client
-  const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-  console.log("\nUploading to Azure storage as blob:\n\t", blobName);
-  // Upload data to the blob
-  var FileString =  req.body.taskAttachments[i].file;
-  const buffer = new Buffer.from(FileString, 'base64');
-  const uploadBlobResponse = await blockBlobClient.upload(buffer,buffer.byteLength );
-  console.log(
-    "Blob was uploaded successfully. requestId: ",
-    uploadBlobResponse.requestId
-  );
-
+    // Get a block blob client
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+    console.log("\nUploading to Azure storage as blob:\n\t", );
+    // Upload data to the blob
+    var FileString =  req.body.taskAttachments[i].file;
+    const buffer = new Buffer.from(FileString, 'base64');
+    const uploadBlobResponse = await blockBlobClient.upload(buffer,buffer.length);
+    const url=process.env.CONTAINER_URL_BASE_URL+ process.env.CONTAINER_NAME+"/"+blobName; 
+   
+    console.log(
+      "Blob was uploaded successfully. requestId: ",
+      uploadBlobResponse.requestId
+    );
     const newTaskUserItem = await TaskAttachments.create({
       task:newComment.taskId,
       attachmentType:req.body.taskAttachments[i].attachmentType,
@@ -679,7 +680,8 @@ exports.createComment = catchAsync(async (req, res, next) => {
       createdOn: new Date(),
       updatedOn: new Date(),
       createdBy: req.cookies.userId,
-      updatedBy: req.cookies.userId
+      updatedBy: req.cookies.userId,
+      url:url
     });  
   }
 }
