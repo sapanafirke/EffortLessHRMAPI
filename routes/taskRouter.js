@@ -565,7 +565,7 @@ router.route('/taskuser/:id').delete(authController.protect,taskController.delet
  *                      properties:
  *                          taskId:
  *                              type: string
- *                          comment:
+ *                          commentId:
  *                              type: string 
  *                              format: int64 
  *                          taskAttachments:

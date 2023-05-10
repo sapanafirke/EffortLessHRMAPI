@@ -313,9 +313,11 @@ exports.addTaskAttachment = catchAsync(async (req, res, next) => {
   const blockBlobClient = containerClient.getBlockBlobClient(blobName);
   console.log("\nUploading to Azure storage as blob:\n\t", );
   // Upload data to the blob
-  var fileString =  req.body.taskAttachments[i].file;
-  const buffer = fileString;
-  const uploadBlobResponse = await blockBlobClient.upload(buffer,buffer.byteLength );
+  var FileString =  req.body.taskAttachments[i].file;
+  const buffer = new Buffer.from(FileString, 'base64');
+  const uploadBlobResponse = await blockBlobClient.upload(buffer,buffer.length);
+  const url=process.env.CONTAINER_URL_BASE_URL+ process.env.CONTAINER_NAME+"/"+blobName; 
+ 
   console.log(
     "Blob was uploaded successfully. requestId: ",
     uploadBlobResponse.requestId
@@ -327,11 +329,12 @@ exports.addTaskAttachment = catchAsync(async (req, res, next) => {
       attachmentSize:req.body.taskAttachments[i].attachmentSize,
       filePath:blobName,
       status:"Active",
-      comment:req.body.comment,
+      commentId:req.body.commentId,
       createdOn: new Date(),
       updatedOn: new Date(),
       createdBy: req.cookies.userId,
-      updatedBy: req.cookies.userId
+      updatedBy: req.cookies.userId,
+      url: url
     });    
   }
   const newTaskAttachmentList = await TaskAttachments.find({}).where('task').equals(req.body.taskId);  
