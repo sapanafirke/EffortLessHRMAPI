@@ -138,7 +138,7 @@ router.route('/:id').get(authController.protect,taskController.getTask);
  *                              type: array
  *                              items:
  *                                type: string
- *                                example: {"attachmentType",attachmentName,attachmentSize,file}                            
+ *                                example: {"attachmentType",attachmentName,attachmentSize,extention,file}                            
  *                          
  *      produces:
  *          - application/json
@@ -565,14 +565,14 @@ router.route('/taskuser/:id').delete(authController.protect,taskController.delet
  *                      properties:
  *                          taskId:
  *                              type: string
- *                          commentId:
+ *                          comment:
  *                              type: string 
  *                              format: int64 
  *                          taskAttachments:
  *                              type: array
  *                              items:
  *                                type: string
- *                                example: {"attachmentType",attachmentName,attachmentSize,file}
+ *                                example: {"attachmentType",attachmentName,attachmentSize,extention,file}
  *                          
  *      produces:
  *          - application/json
@@ -1061,7 +1061,7 @@ router.delete('/TaskTag/:id', authController.protect, taskController.deleteTaskT
  *                               
  *                              items:
  *                                type: string
- *                                example: {"attachmentType",attachmentName,attachmentSize,file}    
+ *                                example: {"attachmentType",attachmentName,attachmentSize,extention,file}    
  *      produces:
  *          - application/json
  *      responses:

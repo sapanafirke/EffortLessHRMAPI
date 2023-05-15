@@ -11,6 +11,9 @@ var taskAttachmentsModelSchema = new Schema({
   attachmentName:{
     type:String
   },
+  extention:{
+    type:String
+  },
   attachmentType:{
     type:String
   },
@@ -35,8 +38,8 @@ var taskAttachmentsModelSchema = new Schema({
   },
   comment: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Comment'//,
-  //  required: [true, 'User must belong to a User']
+    ref: 'Comment',
+    required: false
   },
   url: {
     type: String,
@@ -77,6 +80,9 @@ var taskAttachmentsModelSchema = new Schema({
     }).populate({
       path: 'task',
       select: 'taskName'
+    }).populate({
+      path: 'comment',
+      select: 'content'
     });
     next();
   });

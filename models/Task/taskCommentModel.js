@@ -46,4 +46,9 @@ commentSchema.pre(/^find/,async function(next) {
   });
   next();
 });
+commentSchema.virtual('taskAttachments', {
+  ref: 'TaskAttachments',
+  foreignField: 'comment', // tour field in review model pointing to this model
+  localField: '_id' // id of current model
+});
 module.exports = mongoose.model('Comment', commentSchema);

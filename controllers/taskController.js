@@ -240,6 +240,7 @@ exports.addTask = catchAsync(async (req, res, next) => {
       attachmentType:req.body.taskAttachments[i].attachmentType,
       attachmentName:req.body.taskAttachments[i].attachmentName,
       attachmentSize:req.body.taskAttachments[i].attachmentSize,
+      extention:req.body.taskAttachments[i].extention,
       filePath:blobName,
       status:"Active",
       createdOn: new Date(),
@@ -309,7 +310,8 @@ exports.addTaskAttachment = catchAsync(async (req, res, next) => {
 
   // Upload Capture image on block blob client 
   for(var i = 0; i < req.body.taskAttachments.length; i++) {
-    const blobName = "Capture" + uuidv1() + ".png";
+    
+    const blobName = "Capture" + uuidv1() + req.body.taskAttachments[i].extention;
   // Get a block blob client
   const blockBlobClient = containerClient.getBlockBlobClient(blobName);
   console.log("\nUploading to Azure storage as blob:\n\t", );
@@ -323,28 +325,47 @@ exports.addTaskAttachment = catchAsync(async (req, res, next) => {
     "Blob was uploaded successfully. requestId: ",
     uploadBlobResponse.requestId
   );
-    const newTaskUserItem = await TaskAttachments.create({
+  console.log(req.body.comment);
+    const newTaskAttachment = await TaskAttachments.create({
       task:req.body.taskId,
       attachmentType:req.body.taskAttachments[i].attachmentType,
       attachmentName:req.body.taskAttachments[i].attachmentName,
       attachmentSize:req.body.taskAttachments[i].attachmentSize,
+      extention:req.body.taskAttachments[i].extention,
       filePath:blobName,
       status:"Active",
-      comment:req.body.commentId,
+      comment:req.body.comment,
       createdOn: new Date(),
       updatedOn: new Date(),
       createdBy: req.cookies.userId,
       updatedBy: req.cookies.userId,
       url: url
     });    
+  
+
+  if(req.body.comment!="")
+  {  
+    const newTaskAttachmentList = await TaskAttachments.find({}).where('comment').equals(req.body.comment);  
+    res.status(200).json({
+      status: 'success',
+      data: {
+        taskAttachmentList:newTaskAttachmentList
+      }
+    });
+ 
   }
+  else
+  {
   const newTaskAttachmentList = await TaskAttachments.find({}).where('task').equals(req.body.taskId);  
    res.status(200).json({
     status: 'success',
     data: {
-      newTaskUserList:newTaskAttachmentList
+      taskAttachmentList:newTaskAttachmentList
     }
   });
+  }
+
+}
 });
 exports.deleteTaskAttachment = catchAsync(async (req, res, next) => {
   const document = await TaskAttachments.findByIdAndDelete(req.params.id);
@@ -674,6 +695,7 @@ exports.createComment = catchAsync(async (req, res, next) => {
       attachmentType:req.body.taskAttachments[i].attachmentType,
       attachmentName:req.body.taskAttachments[i].attachmentName,
       attachmentSize:req.body.taskAttachments[i].attachmentSize,
+      extention:req.body.taskAttachments[i].extention,
       comment:newComment._id,
       filePath:blobName,
       status:"Active",
