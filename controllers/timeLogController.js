@@ -76,7 +76,8 @@ exports.addLog = catchAsync(async (req, res, next) => {
     keysPressed:req.body.keysPressed,
     clicks:req.body.clicks,
     scrolls:req.body.scrolls,
-    url:url
+    url:url,
+    isManualTime:false
   });  
   console.log('time log created');
   res.status(200).json({
@@ -249,6 +250,7 @@ exports.addManualTime = catchAsync(async (req, res, next) => {
       clicks:0,
       scrolls:0,
       filePath:"",     
+      isManualTime:true
     }
     //let result = await TimeLog.create();
     result.push(newLog);

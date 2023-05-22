@@ -656,7 +656,7 @@ exports.gettimeline = catchAsync(async (req, res, next) => {
                             newLogInUSer.time = timeLogAll.length * 10;      
                             var start = new Date(timeLogAll[0].startTime);
                             var end = new Date(timeLogAll[count].startTime);
-                            var manual = 0;
+                            var manual =  timeLogAll.filter(item => item.isManualTime === true).length*10;                            
                             newLogInUSer.starttime = start.getHours()+ ":" + start.getMinutes() + ":" + start.getSeconds();
                             newLogInUSer.endtime = end.getHours()+ ":" + end.getMinutes() + ":" + end.getSeconds();
                             newLogInUSer.activity = "";                           
