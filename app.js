@@ -58,11 +58,9 @@ app.set("email", path.join(__dirname, "email"));
 // Each request will contain requested time
 app.use((req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
-    res.header("Access-Control-Allow-Origin", "http://localhost:4200"); 
-    console.log('Running in development mode');
+    res.header("Access-Control-Allow-Origin", "http://localhost:4200");     
   } else if (process.env.NODE_ENV === 'production') {
-    res.header("Access-Control-Allow-Origin", "https://effort-less-hrm-web.vercel.app"); 
-    console.log('Running in production mode');
+    res.header("Access-Control-Allow-Origin", "https://effort-less-hrm-web.vercel.app");     
   } else {
     console.log('Unknown environment');
   }  

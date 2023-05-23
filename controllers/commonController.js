@@ -4,6 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
 const Permission = require('../models/permissions/permissionModel');
 const RolePerms = require('../models/rolePermsModel');
+const EmailTemplate = require('../models/commons/emailTemplateModel');
 
  // Get Country List
  exports.getCountryList = catchAsync(async (req, res, next) => {    
@@ -146,6 +147,79 @@ const RolePerms = require('../models/rolePermsModel');
       status: 'success',
       data:newCountry 
     });  
+  });
+
+  exports.addEmailTemplate = catchAsync(async (req, res, next) => {            
+    
+    const newEmailTemplate = req.body;
+    newEmailTemplate.createdOn= new Date();
+    newEmailTemplate.updatedOn= new Date();
+    newEmailTemplate.createdBy= req.cookies.userId;
+    newEmailTemplate.updatedBy =req.cookies.userId;
+
+    const result = await EmailTemplate.create(newEmailTemplate);
+    res.status(200).json({
+      status: 'success',
+      data:result 
+    });  
+  });
+
+  exports.updateEmailTemplate = catchAsync(async (req, res, next) => {        
+  const id = req.params.id;
+  const updatedTemplate = req.body;
+  updatedTemplate.updatedOn= new Date();
+  updatedTemplate.updatedBy= req.cookies.userId;
+  // Logic to update an existing email template
+   EmailTemplate.findByIdAndUpdate(id, updatedTemplate, { new: true })
+    .then((updatedTemplate) => {
+      res.status(200).json(updatedTemplate);
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error.message });
+    }); 
+  });
+
+  exports.deleteEmailTemplate = catchAsync(async (req, res, next) => {        
+    const id = req.params.id;
+    // Logic to delete an email template
+    EmailTemplate.findByIdAndRemove(id)
+      .then(() => {
+        res.sendStatus(204);
+      })
+      .catch((error) => {
+        res.status(500).json({ error: error.message });
+      });    
+  });
+
+  exports.getEmailTemplateById = catchAsync(async (req, res, next) => {        
+    
+    try {
+      const { id } = req.params;
+      const { companyId } = req.cookies.companyId;
+      const emailTemplate = await EmailTemplate.findOne({ _id: id, company: companyId });
+  
+      if (!emailTemplate) {
+        return res.status(404).json({ error: 'Email template not found' });
+      }
+  
+      res.status(200).json(emailTemplate);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Server error' });
+    }
+    
+  });
+
+  exports.getAllEmailTemplates = catchAsync(async (req, res, next) => {        
+    try {
+      const { companyId } = req.cookies.companyId;
+      const emailTemplates = await EmailTemplate.find({ company: companyId });
+  
+      res.status(200).json(emailTemplates);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Server error' });
+    }
   });
 
   //End Country region
