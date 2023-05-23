@@ -122,9 +122,9 @@ exports.getManualTimeRequestsByUser = catchAsync(async (req, res, next) => {
         });
   
   exports.getManualTimeRequestsForApprovalByUser = catchAsync(async (req, res, next) => {      
-    const manualTimeRequests = await manualTimeRequest.find({}).where('manager').equals(req.params.id);
+    const manualTimeRequests = await manualTimeRequest.find({}).where('manager').equals(req.params.id).populate('user');
     for(let i=0;i<manualTimeRequests.length;i++){ 
-      manualTimeRequests[i].project = await Project.findById(manualTimeRequests[i].project);      
+      manualTimeRequests[i].project = await Project.findById(manualTimeRequests[i].project);            
     }
     res.status(200).json({
         status: 'success',

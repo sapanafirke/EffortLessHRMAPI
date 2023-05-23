@@ -51,6 +51,10 @@ var timeLogSchema = new Schema({
   url: {
     type: String,
     required: false
+  },
+  isManualTime: {
+    type: Boolean,
+    required: false
   }
 
 }, { collection: 'TimeLog' });
