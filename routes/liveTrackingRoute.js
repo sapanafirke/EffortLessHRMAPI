@@ -32,6 +32,46 @@ const liveTrackingController = require('../controllers/liveTrackingController')
 
 router.post('/save', liveTrackingController.addOrUpdateIfExists);
 
+
+// Start Stop Live Preview
+/**
+ * @swagger
+ * /api/v1/liveTracking/startstoplivepreview:
+ *   post:
+ *     tags:
+ *       - Live Tracking
+ *     summary: Start Stop Live Preview
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          userId:
+ *                              type: string
+ *                          isStart:
+ *                              type: boolean
+ *     responses:
+ *       200:
+ *         description: Successfully Start/Stop Live Preview
+ */
+router.post('/startstoplivepreview', liveTrackingController.startStopLivePreview);
+
+
+// Start Close Web Socket
+/**
+ * @swagger
+ * /api/v1/liveTracking/closewebsocket:
+ *   post:
+ *     tags:
+ *       - Live Tracking
+ *     summary: Close Web Socket
+ *     responses:
+ *       200:
+ *         description: Successfully Start/Stop Live Preview
+ */
+router.post('/closewebsocket', liveTrackingController.closeWebSocket);
+
 // Read by ID
 /**
  * @swagger
